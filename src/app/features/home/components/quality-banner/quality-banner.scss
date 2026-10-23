@@ -1,0 +1,8 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.quality-banner__media {
+  @include skeleton.placeholder;
+  min-block-size: 12rem;
+  margin-block: var(--space-md);
+}

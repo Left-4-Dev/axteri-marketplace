@@ -1,0 +1,8 @@
+<section class="featured-products" id="featured-products" aria-labelledby="featured-products-title">
+  <h2 id="featured-products-title">Productos destacados</h2>
+  <ul class="featured-products__products">
+    @for (product of products(); track product.id) {
+      <li><app-product-card [product]="product" /></li>
+    }
+  </ul>
+</section>

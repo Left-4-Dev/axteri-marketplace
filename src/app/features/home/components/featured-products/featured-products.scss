@@ -1,0 +1,8 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.featured-products {
+  &__products {
+    @include skeleton.list;
+  }
+}

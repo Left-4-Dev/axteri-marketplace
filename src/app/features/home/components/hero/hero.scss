@@ -1,0 +1,28 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.hero {
+  h1 {
+    font-size: var(--font-size-heading);
+    line-height: var(--line-height-heading);
+  }
+  &__area,
+  &__areas,
+  &__pagination {
+    margin-block: var(--space-md);
+  }
+  &__search {
+    display: grid;
+    gap: var(--space-sm);
+    max-inline-size: 45rem;
+    input[type='search'] {
+      min-inline-size: 0;
+      padding: var(--space-sm);
+    }
+  }
+  &__search-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+}

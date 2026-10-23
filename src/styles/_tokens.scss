@@ -1,0 +1,20 @@
+// Valores provisionales: no representan la identidad visual definitiva de Axteri.
+:root {
+  --color-background: #fff;
+  --color-text: #202020;
+  --color-text-muted: #595959;
+  --color-focus: #202020;
+  --color-placeholder-surface: #f3f3f3;
+  --color-placeholder-border: #d4d4d4;
+
+  --font-primary: system-ui, sans-serif;
+  --font-size-body: 1rem;
+  --font-size-heading: clamp(1.75rem, 4vw, 2.5rem);
+  --line-height-body: 1.5;
+  --line-height-heading: 1.2;
+
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-xl: 3rem;
+  --content-width: 72rem;
+}

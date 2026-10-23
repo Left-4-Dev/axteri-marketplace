@@ -1,0 +1,32 @@
+:host {
+  display: block;
+}
+.footer {
+  max-inline-size: var(--content-width);
+  margin-inline: auto;
+  padding: var(--space-xl) var(--space-md);
+
+  &__columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-md);
+  }
+  &__columns > * {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  h2 {
+    font-size: var(--font-size-body);
+    margin-block: 0 var(--space-sm);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin-block-end: var(--space-sm);
+  }
+  &__copyright {
+    margin-block-start: var(--space-md);
+  }
+}

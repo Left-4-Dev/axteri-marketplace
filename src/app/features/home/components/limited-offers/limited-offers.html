@@ -1,0 +1,9 @@
+<section class="limited-offers" id="limited-offers" aria-labelledby="limited-offers-title">
+  <h2 id="limited-offers-title">Oferta por tiempo limitado</h2>
+  <ul class="limited-offers__products">
+    @for (product of products(); track product.id) {
+      <li><app-product-card [product]="product" /></li>
+    }
+  </ul>
+  <button class="limited-offers__more" type="button" disabled>Más ofertas</button>
+</section>

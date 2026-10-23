@@ -1,0 +1,36 @@
+<section class="preferred-brands" id="preferred-brands" aria-labelledby="preferred-brands-title">
+  <h2 id="preferred-brands-title">Las marcas preferidas</h2>
+  <ul class="preferred-brands__list">
+    @for (brand of brands(); track brand.id) {
+      <li>
+        <article class="preferred-brands__card">
+          <h3>{{ brand.name }}</h3>
+          <ul
+            class="preferred-brands__categories"
+            [attr.aria-label]="'Categorías de ' + brand.name"
+          >
+            @for (category of brand.categories; track category) {
+              <li>{{ category }}</li>
+            }
+          </ul>
+          <ul class="preferred-brands__previews" [attr.aria-label]="'Productos de ' + brand.name">
+            @for (preview of brand.previews; track preview.id; let index = $index) {
+              <li class="preferred-brands__image">
+                @if (preview.imageUrl; as imageUrl) {
+                  <img
+                    [ngSrc]="imageUrl"
+                    [alt]="'Producto ' + (index + 1) + ' de ' + brand.name"
+                    fill
+                  />
+                } @else {
+                  <span>Imagen {{ index + 1 }} pendiente</span>
+                }
+              </li>
+            }
+          </ul>
+          <button type="button" disabled>Ver más productos</button>
+        </article>
+      </li>
+    }
+  </ul>
+</section>

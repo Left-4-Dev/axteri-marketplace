@@ -1,0 +1,31 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.preferred-brands {
+  &__list {
+    @include skeleton.list(20rem);
+  }
+  &__card {
+    @include skeleton.card;
+  }
+  h3 {
+    margin-block: 0 var(--space-sm);
+  }
+  &__categories {
+    padding-inline-start: var(--space-md);
+  }
+  &__previews {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+    list-style: none;
+    padding: 0;
+  }
+  &__image {
+    @include skeleton.placeholder;
+    position: relative;
+    img {
+      object-fit: contain;
+    }
+  }
+}

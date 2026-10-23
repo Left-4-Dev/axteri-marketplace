@@ -1,0 +1,38 @@
+@use '../../../../styles/skeleton';
+
+:host {
+  display: block;
+  height: 100%;
+}
+.product-card {
+  @include skeleton.card;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  overflow-wrap: anywhere;
+
+  &__image {
+    @include skeleton.placeholder;
+    position: relative;
+    img {
+      object-fit: contain;
+    }
+  }
+  &__brand,
+  &__seller,
+  &__previous-price {
+    color: var(--color-text-muted);
+  }
+  &__title {
+    margin: 0;
+    font-size: var(--font-size-body);
+  }
+  &__price {
+    margin-block-start: auto;
+  }
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+}

@@ -1,0 +1,21 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.categories {
+  &__list {
+    @include skeleton.list(20rem);
+  }
+  &__card {
+    @include skeleton.card;
+  }
+  &__image {
+    @include skeleton.placeholder;
+    position: relative;
+    img {
+      object-fit: contain;
+    }
+  }
+  h3 {
+    font-size: var(--font-size-body);
+  }
+}

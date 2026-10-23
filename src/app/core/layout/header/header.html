@@ -1,0 +1,37 @@
+<header class="header">
+  <a class="header__brand" routerLink="/" aria-label="Axteri, inicio">AXTERI</a>
+  <nav class="header__navigation" aria-label="Navegación principal">
+    <a routerLink="/" fragment="featured-products">Productos</a>
+    <a routerLink="/" fragment="limited-offers">Oferta</a>
+    <button type="button" disabled>Vender</button>
+    <button type="button" disabled>Ayuda</button>
+    <a routerLink="/" fragment="home-search">Buscar</a>
+  </nav>
+  <div class="header__account">
+    <details class="header__delivery">
+      <summary>Enviar a · ubicación</summary>
+      <fieldset disabled>
+        <legend>Destino de envío</legend>
+        <label for="delivery-country">País</label>
+        <select id="delivery-country">
+          <option>Perú</option>
+        </select>
+        <label for="delivery-region">Región</label>
+        <select id="delivery-region">
+          <option>Lima</option>
+        </select>
+        <label for="delivery-district">Distrito</label>
+        <select id="delivery-district">
+          <option>Pachacámac</option>
+        </select>
+      </fieldset>
+    </details>
+    <button type="button" disabled>Registrarse / Iniciar sesión</button>
+    <button type="button" disabled>Mis pedidos</button>
+  </div>
+  <div class="header__shortcuts" role="group" aria-label="Accesos rápidos">
+    <button type="button" disabled>Mensajes</button>
+    <button type="button" disabled>Mi cuenta</button>
+    <button type="button" disabled>Favoritos</button>
+  </div>
+</header>

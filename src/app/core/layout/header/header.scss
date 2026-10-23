@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+.header {
+  max-inline-size: var(--content-width);
+  margin-inline: auto;
+  padding: var(--space-md);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--space-md);
+
+  &__brand {
+    color: inherit;
+    font-weight: 700;
+  }
+  &__navigation,
+  &__account,
+  &__shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+  &__delivery fieldset {
+    display: grid;
+    gap: var(--space-sm);
+  }
+}

@@ -1,0 +1,33 @@
+<section class="news" id="news" aria-labelledby="news-title">
+  <h2 id="news-title">Noticias</h2>
+  @let item = promotion();
+  <article class="news__promotion">
+    <div>
+      <p>{{ item.label }}</p>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+      <p>{{ item.priceLabel }}</p>
+      <dl class="news__specifications">
+        @for (specification of item.specifications; track specification.label) {
+          <div>
+            <dt>{{ specification.label }}</dt>
+            <dd>{{ specification.value }}</dd>
+          </div>
+        }
+      </dl>
+      <button type="button" disabled>Solicitar cotización</button>
+    </div>
+    <div class="news__image">
+      @if (item.imageUrl; as imageUrl) {
+        <img [ngSrc]="imageUrl" [alt]="item.title" fill />
+      } @else {
+        <span>Imagen promocional pendiente</span>
+      }
+    </div>
+  </article>
+  <div class="news__pagination" role="group" aria-label="Promociones de noticias">
+    <button type="button" disabled aria-label="Noticia 1">1</button>
+    <button type="button" disabled aria-label="Noticia 2">2</button>
+    <button type="button" disabled aria-label="Noticia 3">3</button>
+  </div>
+</section>

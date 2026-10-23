@@ -1,0 +1,31 @@
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <h1 id="hero-title">Axteri Marketplace</h1>
+  <p class="hero__area">AXTE INDUX</p>
+  <p>
+    El mercado digital que te brinda una forma sencilla, rápida y segura de comprar por internet.
+  </p>
+  <aside class="hero__areas" aria-label="Otras áreas">
+    <p>Otras áreas</p>
+    <button type="button" disabled>AXTE INDUX</button>
+    <button type="button" disabled>AXTE AGRO</button>
+  </aside>
+  <form class="hero__search" id="home-search" role="search" (submit)="$event.preventDefault()">
+    <label for="hero-query">¿Qué producto estás buscando?</label>
+    <input
+      id="hero-query"
+      name="query"
+      type="search"
+      placeholder="Describe el producto que necesitas"
+    />
+    <div class="hero__search-actions">
+      <button type="button" disabled>Adjuntar archivo</button>
+      <label><input type="checkbox" disabled /> Modo IA</label>
+      <button type="submit" disabled>Buscar</button>
+    </div>
+  </form>
+  <div class="hero__pagination" role="group" aria-label="Promociones del inicio">
+    <button type="button" disabled aria-label="Promoción 1">1</button>
+    <button type="button" disabled aria-label="Promoción 2">2</button>
+    <button type="button" disabled aria-label="Promoción 3">3</button>
+  </div>
+</section>

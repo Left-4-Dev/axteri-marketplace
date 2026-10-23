@@ -1,0 +1,19 @@
+<section class="categories" id="categories" aria-labelledby="categories-title">
+  <h2 id="categories-title">Categorías</h2>
+  <ul class="categories__list">
+    @for (category of categories(); track category.id) {
+      <li>
+        <article class="categories__card">
+          <div class="categories__image">
+            @if (category.imageUrl; as imageUrl) {
+              <img [ngSrc]="imageUrl" [alt]="category.name" fill />
+            } @else {
+              <span>Imagen de categoría pendiente</span>
+            }
+          </div>
+          <h3>{{ category.name }}</h3>
+        </article>
+      </li>
+    }
+  </ul>
+</section>

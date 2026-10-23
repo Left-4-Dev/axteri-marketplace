@@ -1,0 +1,12 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.limited-offers {
+  &__products {
+    @include skeleton.list;
+  }
+  &__more {
+    display: block;
+    margin: var(--space-md) auto 0;
+  }
+}

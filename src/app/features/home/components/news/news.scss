@@ -1,0 +1,28 @@
+@use '../../../../../styles/skeleton';
+
+@include skeleton.section;
+.news {
+  &__promotion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+  &__image {
+    @include skeleton.placeholder;
+    position: relative;
+    img {
+      object-fit: contain;
+    }
+  }
+  &__specifications {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+  dd {
+    margin: 0;
+  }
+  &__pagination {
+    margin-block-start: var(--space-md);
+  }
+}

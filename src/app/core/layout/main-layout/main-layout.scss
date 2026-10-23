@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+.main-layout {
+  &__content {
+    max-inline-size: var(--content-width);
+    margin-inline: auto;
+    padding-inline: var(--space-md);
+  }
+  &__skip-link {
+    position: absolute;
+    inset-block-start: var(--space-sm);
+    inset-inline-start: var(--space-sm);
+    padding: var(--space-sm);
+    background: var(--color-background);
+    z-index: 1;
+    transform: translateY(-200%);
+    &:focus {
+      transform: translateY(0);
+    }
+  }
+}
