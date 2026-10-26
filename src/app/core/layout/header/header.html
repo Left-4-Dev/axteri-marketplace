@@ -1,13 +1,37 @@
 <header class="header" [class.header--scrolled]="scrolled()">
-  <div class="header__navbar">
+  <div #navbar class="header__navbar">
     <a class="header__brand" routerLink="/" aria-label="Axteri, inicio">
       <img src="/assets/logos/axteri-logo.svg" alt="" />
     </a>
     <nav class="header__navigation" aria-label="Navegación principal">
-      <a class="header__link" routerLink="/" fragment="featured-products">
+      <a
+        #productsTrigger
+        class="header__link"
+        id="header-products-trigger"
+        routerLink="/"
+        fragment="featured-products"
+        [attr.aria-expanded]="productsMenuAvailable() ? productsMenuOpen() : null"
+        [attr.aria-controls]="productsMenuAvailable() ? 'header-products-menu' : null"
+        (pointerenter)="openProductsMenu($event)"
+        (pointerleave)="scheduleProductsClose()"
+        (focus)="openProductsMenu()"
+        (focusout)="onProductsFocusOut($event)"
+        (keydown.arrowdown)="enterProductsMenu($event)"
+        (click)="closeProductsMenu()"
+      >
         Productos
         <img class="header__chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
       </a>
+      <app-products-mega-menu
+        id="header-products-menu"
+        [hidden]="!productsMenuOpen()"
+        [style.inset-inline-start.px]="productsMenuPosition().offset"
+        [style.max-inline-size.px]="productsMenuPosition().maxWidth"
+        [style.max-block-size.px]="productsMenuPosition().maxHeight"
+        (pointerenter)="cancelProductsClose()"
+        (pointerleave)="scheduleProductsClose()"
+        (focusout)="onProductsFocusOut($event)"
+      />
       <a class="header__link" routerLink="/" fragment="limited-offers">Oferta</a>
       <button class="header__link" type="button" disabled>Vender</button>
       <button class="header__link" type="button" disabled>Ayuda</button>

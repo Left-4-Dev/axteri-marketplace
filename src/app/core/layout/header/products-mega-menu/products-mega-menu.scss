@@ -1,0 +1,202 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  --products-menu-text: #303341; // TODO: Illustrator
+  --products-menu-muted-text: #626574; // TODO: Illustrator
+  --products-menu-background: rgb(249 250 255 / 94%); // TODO: Illustrator
+  --products-menu-categories-background: rgb(255 255 255 / 92%); // TODO: Illustrator
+  --products-menu-brands-background: rgb(222 230 255 / 90%); // TODO: Illustrator
+  --products-menu-active-background: #d8e9fb; // TODO: Illustrator
+  --products-menu-brand-background: #fff; // TODO: Illustrator
+  --products-menu-column-background: rgb(226 230 250 / 60%); // TODO: Illustrator
+  --products-menu-scrollbar: #a3addd; // TODO: Illustrator
+  --products-menu-focus: #5146be; // TODO: Illustrator
+  --products-menu-shadow: 0 6px 18px rgb(53 44 105 / 18%); // TODO: Illustrator
+
+  position: absolute;
+  inset-block-start: 100%;
+  z-index: 1;
+  display: block;
+  inline-size: 68rem;
+  block-size: auto;
+  overflow: hidden;
+  border-radius: 0 1.25rem 1.25rem 1.25rem;
+  background: var(--products-menu-background);
+  box-shadow: var(--products-menu-shadow);
+  color: var(--products-menu-text);
+}
+
+:host([hidden]) {
+  display: none;
+}
+
+.products-menu {
+  display: grid;
+  grid-template-columns: 30% minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  max-block-size: inherit;
+}
+
+.products-menu__categories,
+.products-menu__content {
+  max-block-size: 24rem;
+}
+
+.products-menu__categories,
+.products-menu__column {
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--products-menu-scrollbar) transparent;
+}
+
+.products-menu__categories {
+  padding-block: 0.5rem;
+  background: var(--products-menu-categories-background);
+}
+
+.products-menu__category,
+.products-menu__subcategory {
+  display: block;
+  inline-size: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: start;
+  text-transform: uppercase;
+}
+
+.products-menu__category {
+  min-block-size: 2rem;
+  padding: 0.4375rem 0.875rem;
+  cursor: pointer;
+}
+
+.products-menu__category--active {
+  background: var(--products-menu-active-background);
+}
+
+.products-menu__category:focus-visible,
+.products-menu__subcategory:focus-visible,
+.products-menu__content:focus-visible {
+  outline: 2px solid var(--products-menu-focus);
+  outline-offset: -3px;
+}
+
+.products-menu__content {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.products-menu__recommended {
+  padding: 0.75rem 1.25rem;
+  background: var(--products-menu-brands-background);
+}
+
+.products-menu__heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.products-menu__brands {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.products-menu__brand {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.25rem;
+}
+
+.products-menu__brand-circle {
+  display: grid;
+  place-items: center;
+  inline-size: min(3.75rem, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--products-menu-brand-background);
+}
+
+.products-menu__brand-logo {
+  display: block;
+  inline-size: 74%;
+  block-size: 74%;
+  max-inline-size: 2.75rem;
+  max-block-size: 2.75rem;
+  object-fit: contain;
+}
+
+.products-menu__brand-name {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.products-menu__subcategories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-block-size: 0;
+}
+
+.products-menu__column {
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+}
+
+.products-menu__column + .products-menu__column {
+  background: var(--products-menu-column-background);
+}
+
+.products-menu__subcategory {
+  min-block-size: 1.875rem;
+  padding: 0.375rem 1rem;
+  cursor: default;
+}
+
+.products-menu__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 1rem;
+  color: var(--products-menu-muted-text);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+@media (max-width: bp.$xxl) {
+  .products-menu__recommended {
+    padding-inline: 1rem;
+  }
+  .products-menu__brands {
+    gap: 0.375rem;
+  }
+  .products-menu__category {
+    padding-inline: 0.75rem;
+  }
+  .products-menu__subcategory {
+    padding-inline: 0.875rem;
+  }
+}
+
+@media (max-width: bp.$xl) {
+  :host {
+    display: none;
+  }
+}
