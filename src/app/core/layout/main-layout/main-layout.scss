@@ -1,5 +1,27 @@
+@use '../../../../styles/breakpoints' as bp;
+
 :host {
+  --header-content-offset: 6.875rem;
   display: block;
+  position: relative;
+}
+
+@media (max-width: bp.$xxl) {
+  :host {
+    --header-content-offset: 6rem;
+  }
+}
+
+@media (max-width: bp.$xl) {
+  :host {
+    --header-content-offset: 11.25rem;
+  }
+}
+
+@media (max-width: bp.$sm) {
+  :host {
+    --header-content-offset: 15rem;
+  }
 }
 .main-layout {
   &__content {
@@ -13,7 +35,7 @@
     inset-inline-start: var(--space-sm);
     padding: var(--space-sm);
     background: var(--color-background);
-    z-index: 1;
+    z-index: 30;
     transform: translateY(-200%);
     &:focus {
       transform: translateY(0);

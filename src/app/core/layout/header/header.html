@@ -1,37 +1,73 @@
-<header class="header">
-  <a class="header__brand" routerLink="/" aria-label="Axteri, inicio">AXTERI</a>
-  <nav class="header__navigation" aria-label="Navegación principal">
-    <a routerLink="/" fragment="featured-products">Productos</a>
-    <a routerLink="/" fragment="limited-offers">Oferta</a>
-    <button type="button" disabled>Vender</button>
-    <button type="button" disabled>Ayuda</button>
-    <a routerLink="/" fragment="home-search">Buscar</a>
-  </nav>
-  <div class="header__account">
-    <details class="header__delivery">
-      <summary>Enviar a · ubicación</summary>
-      <fieldset disabled>
-        <legend>Destino de envío</legend>
-        <label for="delivery-country">País</label>
-        <select id="delivery-country">
-          <option>Perú</option>
-        </select>
-        <label for="delivery-region">Región</label>
-        <select id="delivery-region">
-          <option>Lima</option>
-        </select>
-        <label for="delivery-district">Distrito</label>
-        <select id="delivery-district">
-          <option>Pachacámac</option>
-        </select>
-      </fieldset>
-    </details>
-    <button type="button" disabled>Registrarse / Iniciar sesión</button>
-    <button type="button" disabled>Mis pedidos</button>
+<header class="header" [class.header--scrolled]="scrolled()">
+  <div class="header__navbar">
+    <a class="header__brand" routerLink="/" aria-label="Axteri, inicio">
+      <img src="/assets/logos/axteri-logo.svg" alt="" />
+    </a>
+    <nav class="header__navigation" aria-label="Navegación principal">
+      <a class="header__link" routerLink="/" fragment="featured-products">
+        Productos
+        <img class="header__chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
+      </a>
+      <a class="header__link" routerLink="/" fragment="limited-offers">Oferta</a>
+      <button class="header__link" type="button" disabled>Vender</button>
+      <button class="header__link" type="button" disabled>Ayuda</button>
+    </nav>
+    <form
+      class="header__search"
+      role="search"
+      aria-label="Buscar productos"
+      (submit)="$event.preventDefault()"
+    >
+      <input
+        #searchInput
+        class="header__search-input"
+        type="search"
+        name="query"
+        aria-label="Buscar productos"
+        placeholder="Buscar productos"
+        autocomplete="off"
+        [hidden]="!scrolled()"
+      />
+      <button
+        #searchButton
+        class="header__search-button"
+        [class.header__search-button--attention]="searchAttention()"
+        type="button"
+        [attr.aria-label]="scrolled() ? 'Buscar productos' : 'Ir al buscador principal'"
+        (click)="requestSearch()"
+        (animationend)="finishSearchAttention($event)"
+        (animationcancel)="finishSearchAttention($event)"
+      >
+        <img src="/assets/icons/common/search.svg" alt="" />
+      </button>
+    </form>
   </div>
-  <div class="header__shortcuts" role="group" aria-label="Accesos rápidos">
-    <button type="button" disabled>Mensajes</button>
-    <button type="button" disabled>Mi cuenta</button>
-    <button type="button" disabled>Favoritos</button>
+
+  <div class="header__actions" role="group" aria-label="Ubicación y cuenta">
+    <button class="header__action header__action--location" type="button" disabled>
+      <img class="header__action-icon" src="/assets/icons/header/location.svg" alt="" />
+      <span class="header__action-copy">
+        <span>Enviar a</span>
+        <strong>Seleccionar ubicación</strong>
+      </span>
+      <img class="header__location-chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
+    </button>
+    <button class="header__action" type="button" disabled>
+      <img class="header__action-icon" src="/assets/icons/header/account.svg" alt="" />
+      <span class="header__action-copy">
+        <span>Registrarse</span>
+        <strong>Iniciar sesión</strong>
+      </span>
+    </button>
+    <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
+      <span class="header__orders-icon">
+        <img class="header__action-icon" src="/assets/icons/header/orders.svg" alt="" />
+        <span class="header__orders-count" aria-hidden="true">1</span>
+      </span>
+      <span class="header__action-copy">
+        <span>Mis</span>
+        <strong>Pedidos</strong>
+      </span>
+    </button>
   </div>
 </header>

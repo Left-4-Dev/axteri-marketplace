@@ -1,0 +1,190 @@
+@use '../../../../styles/breakpoints' as bp;
+
+.header--scrolled {
+  .header__navbar {
+    inset-block-start: 0.5rem;
+    inline-size: calc(100% - 2 * var(--header-inset));
+    gap: 2rem;
+    min-block-size: 6.25rem;
+    padding-block: 0.875rem;
+    border-radius: 1.25rem;
+    box-shadow: var(--header-shadow);
+  }
+  .header__brand {
+    flex-basis: 15rem;
+  }
+  .header__navigation {
+    gap: 2rem;
+  }
+  .header__link {
+    font-size: 1.5rem;
+  }
+  .header__search {
+    flex: 1;
+    padding: 3px;
+    background: var(--header-search-gradient);
+  }
+  .header__search-button {
+    border-radius: 0 2rem 2rem 0;
+    flex-basis: 3.5rem;
+    block-size: 2.625rem;
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: bp.$xxl) {
+  .header--scrolled {
+    .header__navbar {
+      gap: 1.125rem;
+      min-block-size: 5.25rem;
+    }
+    .header__brand {
+      flex-basis: 10rem;
+    }
+    .header__navigation {
+      gap: 1rem;
+    }
+    .header__link {
+      font-size: 0.875rem;
+    }
+  }
+  .header {
+    --header-inset: 1.5rem;
+    min-block-size: 6rem;
+    padding: 2.25rem 1.5rem 0;
+    &__navbar {
+      gap: 1.125rem;
+      inline-size: 40rem;
+      min-block-size: 6rem;
+      padding-inline: 1rem;
+    }
+    &__brand {
+      flex-basis: 11rem;
+    }
+    &__navigation {
+      gap: 1.25rem;
+    }
+    &__link {
+      font-size: 1rem;
+    }
+    &__actions {
+      gap: 0.625rem;
+    }
+    &__action-icon {
+      inline-size: 2.75rem;
+    }
+    &__action {
+      min-block-size: 3.75rem;
+    }
+    &__action-copy {
+      font-size: 0.875rem;
+      strong {
+        font-size: 1rem;
+      }
+    }
+    &__action--location {
+      inline-size: 12rem;
+    }
+  }
+}
+
+@media (max-width: bp.$xl) {
+  .header {
+    padding-block: 6.5rem 1rem;
+    &__navbar {
+      inline-size: 35rem;
+    }
+    &__brand {
+      flex-basis: 10rem;
+    }
+    &__navigation {
+      gap: 1rem;
+    }
+    &__link {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: bp.$lg) {
+  .header {
+    --header-inset: 1rem;
+    padding: 6.5rem 1rem 1rem;
+    &__navbar {
+      max-inline-size: calc(100% - 2rem);
+      min-block-size: 5.5rem;
+    }
+    &__actions {
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@media (max-width: bp.$sm) {
+  .header--scrolled .header__link {
+    font-size: 0.75rem;
+  }
+  .header {
+    --header-inset: 0.5rem;
+    padding: 7.5rem 0.75rem 0.75rem;
+    &__navbar,
+    &--scrolled &__navbar {
+      display: grid;
+      grid-template-columns: 8rem minmax(0, 1fr);
+      gap: 0.375rem 0.75rem;
+      inline-size: calc(100% - 1rem);
+      max-inline-size: none;
+      padding: 0.75rem;
+    }
+    &__brand {
+      inline-size: 8rem;
+    }
+    &__navigation {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    &__link {
+      font-size: 0.75rem;
+      min-block-size: 2rem;
+    }
+    &__search {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+    &--scrolled &__search {
+      justify-self: stretch;
+    }
+    &__search-input {
+      padding-inline: 0.5rem;
+      font-size: 0.8125rem;
+    }
+    &--scrolled &__search-button {
+      flex-basis: 2.5rem;
+      padding-inline: 0.5rem;
+    }
+    &__actions {
+      inline-size: 100%;
+      gap: 0.5rem 0.75rem;
+    }
+    &__action-copy {
+      font-size: 0.6875rem;
+      strong {
+        font-size: inherit;
+      }
+    }
+    &__action-icon {
+      inline-size: 2rem;
+      padding: 0.375rem;
+    }
+    &__action--location {
+      inline-size: 10.5rem;
+    }
+    &__action--location &__action-icon,
+    &__orders-icon &__action-icon {
+      padding: 0.375rem;
+    }
+  }
+}
