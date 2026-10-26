@@ -17,7 +17,7 @@
     gap: 2rem;
   }
   .header__link {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
   }
   .header__search {
     flex: 1;
@@ -65,21 +65,21 @@
       gap: 1.25rem;
     }
     &__link {
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
     &__actions {
       gap: 0.625rem;
     }
     &__action-icon {
-      inline-size: 2.75rem;
+      inline-size: 2.5rem;
     }
     &__action {
       min-block-size: 3.75rem;
     }
     &__action-copy {
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       strong {
-        font-size: 1rem;
+        font-size: 0.875rem;
       }
     }
     &__action--location {
