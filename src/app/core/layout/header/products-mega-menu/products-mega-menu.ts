@@ -4,7 +4,7 @@ import { PRODUCT_MENU_CATEGORIES, RECOMMENDED_PRODUCT_BRANDS } from '../data/pro
 @Component({
   selector: 'app-products-mega-menu',
   templateUrl: './products-mega-menu.html',
-  styleUrl: './products-mega-menu.scss',
+  styleUrls: ['./products-mega-menu.scss', './products-mega-menu-responsive.scss'],
 })
 export class ProductsMegaMenu {
   protected readonly categories = PRODUCT_MENU_CATEGORIES;

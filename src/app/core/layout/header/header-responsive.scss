@@ -9,6 +9,11 @@
     padding-block: 0.875rem;
     border-radius: 1.25rem;
     box-shadow: var(--header-shadow);
+
+    &::before,
+    &::after {
+      display: none;
+    }
   }
   .header__brand {
     flex-basis: 15rem;
@@ -89,102 +94,151 @@
 }
 
 @media (max-width: bp.$xl) {
+  .header--scrolled {
+    .header__navbar {
+      gap: 1rem;
+      min-block-size: 4.875rem;
+      padding-inline: 1.25rem;
+    }
+    .header__brand {
+      flex-basis: clamp(9.25rem, 4.6875vw + 6.25rem, 10rem);
+    }
+    .header__navigation {
+      gap: clamp(0.6875rem, 1.171875vw + 0.125rem, 1rem);
+    }
+  }
   .header {
-    padding-block: 6.5rem 1rem;
+    --header-inset: 1.25rem;
+    min-block-size: 5.5rem;
+    padding: 1.875rem 1.25rem 0;
     &__navbar {
-      inline-size: 35rem;
+      gap: 0.875rem;
+      inline-size: clamp(34.5rem, 34.375vw + 12.5rem, 40rem);
+      min-block-size: 5.5rem;
+      padding: 0.75rem 1rem 0;
     }
     &__brand {
-      flex-basis: 10rem;
+      flex-basis: clamp(8.75rem, 14.0625vw - 0.25rem, 11rem);
     }
     &__navigation {
-      gap: 1rem;
+      gap: clamp(0.875rem, 2.34375vw - 0.625rem, 1.25rem);
     }
     &__link {
-      font-size: 0.875rem;
+      font-size: clamp(0.875rem, 0.390625vw + 0.625rem, 0.9375rem);
+    }
+    &__actions {
+      gap: 0.5rem;
+    }
+    &__action {
+      gap: 0.5rem;
+      min-block-size: 3.5rem;
+    }
+    &__action-icon {
+      inline-size: 2.25rem;
+      padding: 0.5rem;
+    }
+    &__action--location &__action-icon,
+    &__orders-icon &__action-icon {
+      padding: 0.4375rem;
+    }
+    &__action-copy {
+      font-size: 0.75rem;
+      strong {
+        font-size: 0.8125rem;
+      }
+    }
+    &__action--location {
+      inline-size: 10.25rem;
+      padding: 0.375rem 0.5rem;
     }
   }
 }
 
 @media (max-width: bp.$lg) {
+  .header--scrolled {
+    .header__navbar {
+      gap: 0.75rem;
+      min-block-size: 4.5rem;
+      padding: 0.5rem 1rem;
+    }
+    .header__brand {
+      flex: 0 1 8rem;
+    }
+    .header__search-button {
+      flex: 0 0 2.75rem;
+      block-size: 2.5rem;
+      padding-inline: 0.75rem;
+    }
+  }
   .header {
     --header-inset: 1rem;
-    padding: 6.5rem 1rem 1rem;
+    --header-tablet-navbar-width: clamp(29.9375rem, 28.90625vw + 16rem, 34.5rem);
+    min-block-size: 5rem;
+    padding: 0.625rem 1rem 0;
     &__navbar {
+      gap: 0.75rem;
+      inline-size: var(--header-tablet-navbar-width);
       max-inline-size: calc(100% - 2rem);
-      min-block-size: 5.5rem;
-    }
-    &__actions {
-      flex-wrap: wrap;
-    }
-  }
-}
-
-@media (max-width: bp.$sm) {
-  .header--scrolled .header__link {
-    font-size: 0.75rem;
-  }
-  .header {
-    --header-inset: 0.5rem;
-    padding: 7.5rem 0.75rem 0.75rem;
-    &__navbar,
-    &--scrolled &__navbar {
-      display: grid;
-      grid-template-columns: 8rem minmax(0, 1fr);
-      gap: 0.375rem 0.75rem;
-      inline-size: calc(100% - 1rem);
-      max-inline-size: none;
-      padding: 0.75rem;
-    }
-    &__brand {
-      inline-size: 8rem;
-    }
-    &__navigation {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    &__link {
-      font-size: 0.75rem;
-      min-block-size: 2rem;
-    }
-    &__search {
-      grid-column: 2;
-      grid-row: 1;
-      justify-self: end;
-    }
-    &--scrolled &__search {
-      justify-self: stretch;
-    }
-    &__search-input {
-      padding-inline: 0.5rem;
-      font-size: 0.8125rem;
-    }
-    &--scrolled &__search-button {
-      flex-basis: 2.5rem;
-      padding-inline: 0.5rem;
-    }
-    &__actions {
-      inline-size: 100%;
-      gap: 0.5rem 0.75rem;
-    }
-    &__action-copy {
-      font-size: 0.6875rem;
-      strong {
-        font-size: inherit;
+      min-block-size: 5rem;
+      padding: 0.625rem 0.875rem 0;
+        &::after {
+        top: 0.625rem;
       }
     }
-    &__action-icon {
-      inline-size: 2rem;
-      padding: 0.375rem;
+    &__brand {
+      flex: 0 1 clamp(7.5rem, 7.8125vw + 3.75rem, 8.75rem);
+      min-inline-size: 6rem;
+    }
+    &__navigation {
+      gap: clamp(0.6875rem, 1.171875vw + 0.125rem, 0.875rem);
+    }
+    &__link {
+      font-size: clamp(0.8125rem, 0.390625vw + 0.625rem, 0.875rem);
+    }
+    &__actions {
+      inline-size: calc(100% - var(--header-tablet-navbar-width) - 0.75rem);
+      min-inline-size: 0;
+    }
+    &__action {
+      flex-shrink: 1;
+      min-inline-size: 0;
+      min-block-size: 2.75rem;
+    }
+    // Keep both icons and their primary labels legible before the mobile switch.
+    &__actions &__action:not(&__action--location) {
+      flex: 0 0 auto;
+      flex-direction: column;
+      gap: 0.125rem;
+      text-align: center;
+    }
+    &__action-label {
+      display: none;
+    }
+    &__action-copy {
+      min-inline-size: 0;
+      strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.75rem;
+      }
     }
     &__action--location {
-      inline-size: 10.5rem;
+      flex: 1 1 auto;
+      min-inline-size: 4rem;
+      inline-size: auto;
+      max-inline-size: 9.5rem;
+      padding: 0.3125rem 0.5rem;
     }
-    &__action--location &__action-icon,
-    &__orders-icon &__action-icon {
-      padding: 0.375rem;
+    &__actions &__action--location {
+      flex-wrap: wrap;
+      justify-content: center;
+      column-gap: 0.25rem;
+      row-gap: 0.125rem;
+    }
+    &__actions &__action--location &__action-copy {
+      flex: 1 0 100%;
+      order: 1;
+      text-align: center;
     }
   }
 }

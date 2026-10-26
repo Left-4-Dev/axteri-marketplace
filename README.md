@@ -164,24 +164,31 @@ flujo normal del documento y salen del viewport al desplazarse.
   suave. El input scrolled entra con una transición visual de 180 ms.
 - Search scrolled enfoca su propio input. No hay búsqueda real; enviar el
   formulario no navega ni consulta una API.
-- La adaptación usa únicamente `96rem`, `64rem` y `40rem`, con media queries
-  `max-width`. Los cinco breakpoints oficiales están en
-  `src/styles/_breakpoints.scss`. No se ha diseñado un menú móvil.
-- Los estilos del mismo componente se separan en `header.scss`,
-  `header-responsive.scss` y `header-motion.scss`; los presupuestos globales de
-  Angular no se modificaron.
+- En mobile (`<= 48rem`), el estado `scrolled` mantiene la barra superior
+  simplificada (`Logo + Search + Menu`) y añade únicamente elevación visual, sin
+  desplegar el input horizontal para no saturar el ancho disponible; el botón
+  Search conserva la acción de dirigir el foco al buscador principal del Hero.
+- La adaptación utiliza exclusivamente los cinco breakpoints oficiales desktop-first
+  (`96rem`, `80rem`, `64rem`, `48rem` y `40rem`) definidos en
+  `src/styles/_breakpoints.scss`. En `<= 48rem` la navegación y las acciones
+  derechas pasan al panel móvil desplegable y `PRODUCTOS` se comporta como un
+  accordion accesible alimentado por la misma fuente de datos del mega menú.
+- Los estilos se dividen en `header.scss`, `header-responsive.scss`,
+  `header-mobile.scss` y `header-motion.scss` (y `products-mega-menu-responsive.scss`
+  en el mega menú) sin modificar los presupuestos globales de Angular.
 
 ### Assets preparados para reemplazo
 
-Angular copia `public/` al build. Estos seis archivos son SVG válidos,
-transparentes y sin gráficos inventados. Reemplaza su contenido conservando
-exactamente los nombres:
+Angular copia `public/` al build. Estos archivos son SVG válidos
+preparados para reemplazo conservando exactamente sus nombres:
 
 | Archivo                                       | Reemplazar por                        |
 | --------------------------------------------- | ------------------------------------- |
 | `public/assets/logos/axteri-logo.svg`         | SVG original del logo completo AXTERI |
 | `public/assets/icons/common/search.svg`       | SVG original de Search                |
 | `public/assets/icons/common/chevron-down.svg` | SVG original del dropdown             |
+| `public/assets/icons/common/menu.svg`         | SVG original de abrir menú mobile     |
+| `public/assets/icons/common/close.svg`        | SVG original de cerrar menú mobile    |
 | `public/assets/icons/header/location.svg`     | SVG original de ubicación             |
 | `public/assets/icons/header/account.svg`      | SVG original de cuenta                |
 | `public/assets/icons/header/orders.svg`       | SVG original de pedidos               |

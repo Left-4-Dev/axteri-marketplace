@@ -1,6 +1,7 @@
 import {
   afterNextRender,
   Component,
+  computed,
   DestroyRef,
   DOCUMENT,
   ElementRef,
@@ -11,12 +12,13 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HEADER_NAVIGATION_LINKS, PRODUCT_MENU_CATEGORIES } from './data/products-menu.data';
 import { ProductsMegaMenu } from './products-mega-menu/products-mega-menu';
 
 // Píxeles de scroll vertical antes de mostrar el buscador compacto.
 export const HEADER_SCROLL_THRESHOLD = 48;
-// Official xl breakpoint; the desktop panel is not a mobile navigation solution.
-export const PRODUCTS_MENU_MEDIA_QUERY = '(width > 80rem)';
+// Official md breakpoint; above 48rem uses desktop/tablet bar, <= 48rem switches to mobile header.
+export const PRODUCTS_MENU_MEDIA_QUERY = '(width > 48rem)';
 // Allows the pointer to cross the small gap between the link and the overlay.
 export const PRODUCTS_MENU_CLOSE_DELAY = 150;
 
@@ -24,8 +26,14 @@ export const PRODUCTS_MENU_CLOSE_DELAY = 150;
   selector: 'app-header',
   imports: [RouterLink, ProductsMegaMenu],
   templateUrl: './header.html',
-  styleUrls: ['./header.scss', './header-responsive.scss', './header-motion.scss'],
+  styleUrls: [
+    './header.scss',
+    './header-responsive.scss',
+    './header-mobile.scss',
+    './header-motion.scss',
+  ],
   host: {
+    '(focusout)': 'onResponsiveFocusOut($event)',
     '(document:keydown.escape)': 'onProductsEscape($event)',
     '(document:pointerdown)': 'onProductsOutsidePointer($event)',
   },
@@ -33,16 +41,26 @@ export const PRODUCTS_MENU_CLOSE_DELAY = 150;
 export class Header {
   readonly primarySearchRequested = output<void>();
 
+  protected readonly navigationLinks = HEADER_NAVIGATION_LINKS;
+  protected readonly productCategories = PRODUCT_MENU_CATEGORIES;
   protected readonly scrolled = signal(false);
   protected readonly searchAttention = signal(false);
   protected readonly productsMenuAvailable = signal(false);
   protected readonly productsMenuOpen = signal(false);
   protected readonly productsMenuPosition = signal({ offset: 0, maxWidth: 0, maxHeight: 0 });
+  protected readonly mobileMenuOpen = signal(false);
+  protected readonly mobileProductsOpen = signal(false);
+  // In mobile (<= 48rem), scrolled keeps the simplified bar (Logo + Search + Menu) without expanding the horizontal input.
+  protected readonly compactSearchVisible = computed(
+    () => this.scrolled() && this.productsMenuAvailable(),
+  );
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
   private readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
   private readonly searchButton = viewChild.required<ElementRef<HTMLButtonElement>>('searchButton');
+  private readonly menuButton = viewChild.required<ElementRef<HTMLButtonElement>>('menuButton');
+  private readonly mobileMenu = viewChild.required<ElementRef<HTMLElement>>('mobileMenu');
   private readonly navbar = viewChild.required<ElementRef<HTMLElement>>('navbar');
   private readonly productsTrigger =
     viewChild.required<ElementRef<HTMLAnchorElement>>('productsTrigger');
@@ -75,21 +93,45 @@ export class Header {
 
       updateScroll();
       window.addEventListener('scroll', updateScroll, { passive: true });
-      const desktop = window.matchMedia(PRODUCTS_MENU_MEDIA_QUERY);
+      const desktop = window.matchMedia?.(PRODUCTS_MENU_MEDIA_QUERY);
       const updateAvailability = () => {
-        this.productsMenuAvailable.set(desktop.matches);
-        if (!desktop.matches) this.closeProductsMenu();
+        const isDesktop = desktop ? desktop.matches : true;
+        const active = this.document.activeElement;
+        // Search remains visible in both layouts; never restore focus to a hidden trigger.
+        if (
+          isDesktop !== this.productsMenuAvailable() &&
+          (isDesktop
+            ? this.isMobileMenuTarget(active)
+            : this.isProductsTarget(active) ||
+              this.navbar().nativeElement.querySelector('nav')?.contains(active) ||
+              active === this.searchInput().nativeElement)
+        ) {
+          this.searchButton().nativeElement.focus({ preventScroll: true });
+        }
+        this.productsMenuAvailable.set(isDesktop);
+        if (isDesktop) {
+          this.closeMobileMenu();
+        } else {
+          this.closeProductsMenu();
+          if (this.document.activeElement === this.searchInput().nativeElement) {
+            this.searchButton().nativeElement.focus({ preventScroll: true });
+          }
+        }
       };
-      const closeOnResize = () => this.closeProductsMenu();
+      const closeOnResize = () => {
+        updateAvailability();
+        this.closeProductsMenu();
+        if (!desktop || desktop.matches) this.closeMobileMenu();
+      };
       updateAvailability();
-      desktop.addEventListener('change', updateAvailability);
+      desktop?.addEventListener('change', updateAvailability);
       window.addEventListener('resize', closeOnResize);
       window.addEventListener('blur', closeOnResize);
       this.destroyRef.onDestroy(() => {
         window.removeEventListener('scroll', updateScroll);
         window.removeEventListener('resize', closeOnResize);
         window.removeEventListener('blur', closeOnResize);
-        desktop.removeEventListener('change', updateAvailability);
+        desktop?.removeEventListener('change', updateAvailability);
         this.cancelProductsClose();
       });
     });
@@ -151,6 +193,21 @@ export class Header {
     if (!this.isProductsTarget(event.relatedTarget)) this.closeProductsMenu();
   }
 
+  protected onResponsiveFocusOut(event: FocusEvent): void {
+    if (event.relatedTarget || !(event.target instanceof Node)) return;
+    const desktop = this.document.defaultView?.matchMedia(PRODUCTS_MENU_MEDIA_QUERY).matches;
+    const disappears = desktop
+      ? this.isMobileMenuTarget(event.target)
+      : this.isProductsTarget(event.target) ||
+        this.navbar().nativeElement.querySelector('nav')?.contains(event.target) ||
+        event.target === this.searchInput().nativeElement;
+    if (!disappears) return;
+    // CSS can hide the focused control before the media-query change callback fires.
+    afterNextRender(() => this.searchButton().nativeElement.focus({ preventScroll: true }), {
+      injector: this.injector,
+    });
+  }
+
   protected closeProductsMenu(restoreFocus = false): void {
     this.cancelProductsClose();
     if (!this.productsMenuOpen()) return;
@@ -163,7 +220,36 @@ export class Header {
     }
   }
 
+  protected toggleMobileMenu(): void {
+    if (this.mobileMenuOpen()) {
+      this.closeMobileMenu();
+      return;
+    }
+    this.closeProductsMenu();
+    this.mobileMenuOpen.set(true);
+  }
+
+  protected closeMobileMenu(restoreFocus = false): void {
+    if (!this.mobileMenuOpen()) return;
+    this.mobileMenuOpen.set(false);
+    this.mobileProductsOpen.set(false);
+    const panel = this.mobileMenu().nativeElement;
+    if (restoreFocus || panel.contains(this.document.activeElement)) {
+      this.menuButton().nativeElement.focus({ preventScroll: true });
+    }
+  }
+
+  protected toggleMobileProducts(): void {
+    this.mobileProductsOpen.update((open) => !open);
+  }
+
   protected onProductsEscape(event: Event): void {
+    if (this.mobileMenuOpen()) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeMobileMenu(true);
+      return;
+    }
     if (!this.productsMenuOpen()) return;
     event.preventDefault();
     event.stopPropagation();
@@ -172,6 +258,9 @@ export class Header {
 
   protected onProductsOutsidePointer(event: PointerEvent): void {
     if (!this.isProductsTarget(event.target)) this.closeProductsMenu();
+    if (this.mobileMenuOpen() && !this.isMobileMenuTarget(event.target)) {
+      this.closeMobileMenu();
+    }
   }
 
   private isProductsTarget(target: EventTarget | null): boolean {
@@ -182,8 +271,17 @@ export class Header {
     );
   }
 
+  private isMobileMenuTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof Node)) return false;
+    return (
+      this.menuButton().nativeElement.contains(target) ||
+      this.mobileMenu().nativeElement.contains(target)
+    );
+  }
+
   protected requestSearch(): void {
-    if (this.scrolled()) {
+    this.closeMobileMenu();
+    if (this.compactSearchVisible()) {
       this.searchInput().nativeElement.focus({ preventScroll: true });
       return;
     }

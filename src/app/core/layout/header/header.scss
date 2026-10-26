@@ -44,6 +44,30 @@
     padding: 1rem 1.875rem 0 1.75rem;
     border-radius: 0 0 1rem 0;
     background: var(--header-surface);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      background-color: transparent;
+      border-top-left-radius: 16px;
+      box-shadow: -8px -8px 0 0 var(--header-surface);
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+      bottom: 0;
+      transform: translateY(100%);
+    }
+
+    &::after {
+      right: 0;
+      top: 1rem;
+      transform: translateX(100%);
+    }
   }
 
   &__brand {

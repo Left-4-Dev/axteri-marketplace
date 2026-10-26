@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { PRODUCT_MENU_CATEGORIES } from './data/products-menu.data';
 import { Header, PRODUCTS_MENU_CLOSE_DELAY, PRODUCTS_MENU_MEDIA_QUERY } from './header';
 
 describe('Header', () => {
@@ -115,6 +116,14 @@ describe('Header', () => {
     return element.querySelector<HTMLElement>('#header-products-menu')!;
   }
 
+  function menuButton(): HTMLButtonElement {
+    return element.querySelector<HTMLButtonElement>('.header__menu-button')!;
+  }
+
+  function mobileMenuPanel(): HTMLElement {
+    return element.querySelector<HTMLElement>('#header-mobile-menu')!;
+  }
+
   async function openProducts(): Promise<void> {
     productsTrigger().dispatchEvent(new Event('pointerenter'));
     await fixture.whenStable();
@@ -200,7 +209,7 @@ describe('Header', () => {
     expect(productsPanel().hidden).toBe(true);
   });
 
-  it('does not expose desktop disclosure below the official xl breakpoint', async () => {
+  it('does not expose desktop disclosure at or below the official md breakpoint', async () => {
     await openProducts();
     desktopMedia.matches = false;
     desktopMedia.addEventListener.mock.calls[0][1]();
@@ -209,5 +218,132 @@ describe('Header', () => {
     expect(productsTrigger().hasAttribute('aria-expanded')).toBe(false);
     await openProducts();
     expect(productsPanel().hidden).toBe(true);
+  });
+
+  it('opens and closes the mobile menu, toggles the products accordion, and cleans up on desktop resize', async () => {
+    desktopMedia.matches = false;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+
+    const trigger = menuButton();
+    const panel = mobileMenuPanel();
+    const icon = trigger.querySelector('img')!;
+    const productsDisclosure = panel.querySelector<HTMLButtonElement>(
+      '[aria-controls="header-mobile-products"]',
+    )!;
+    const productsList = panel.querySelector<HTMLElement>('#header-mobile-products')!;
+
+    expect(panel.hidden).toBe(true);
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger.getAttribute('aria-controls')).toBe('header-mobile-menu');
+    expect(icon.getAttribute('src')).toBe('/assets/icons/common/menu.svg');
+
+    trigger.click();
+    await fixture.whenStable();
+    expect(panel.hidden).toBe(false);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(icon.getAttribute('src')).toBe('/assets/icons/common/close.svg');
+    expect(productsDisclosure.getAttribute('aria-expanded')).toBe('false');
+    expect(productsList.hidden).toBe(true);
+
+    productsDisclosure.click();
+    await fixture.whenStable();
+    expect(productsDisclosure.getAttribute('aria-expanded')).toBe('true');
+    expect(productsList.hidden).toBe(false);
+    expect(productsList.querySelectorAll('.header__mobile-category')).toHaveLength(
+      PRODUCT_MENU_CATEGORIES.length,
+    );
+
+    desktopMedia.matches = true;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+    expect(panel.hidden).toBe(true);
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(productsDisclosure.getAttribute('aria-expanded')).toBe('false');
+    expect(productsList.hidden).toBe(true);
+  });
+
+  it('closes the mobile menu on Escape and restores focus to the menu button', async () => {
+    desktopMedia.matches = false;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+
+    menuButton().click();
+    await fixture.whenStable();
+    expect(mobileMenuPanel().hidden).toBe(false);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(mobileMenuPanel().hidden).toBe(true);
+    expect(document.activeElement).toBe(menuButton());
+  });
+
+  it('preserves keyboard focus when an open mobile accordion switches to desktop', async () => {
+    desktopMedia.matches = false;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+    menuButton().click();
+    await fixture.whenStable();
+    mobileMenuPanel()
+      .querySelector<HTMLButtonElement>('[aria-controls="header-mobile-products"]')!
+      .click();
+    await fixture.whenStable();
+    mobileMenuPanel().querySelector<HTMLAnchorElement>('.header__mobile-category')!.focus();
+
+    desktopMedia.matches = true;
+    // Resize can arrive before the media-query change event.
+    window.dispatchEvent(new Event('resize'));
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+    expect(mobileMenuPanel().hidden).toBe(true);
+    expect(element.querySelector<HTMLElement>('#header-mobile-products')!.hidden).toBe(true);
+    expect(productsPanel().hidden).toBe(true);
+    expect(document.activeElement).toBe(element.querySelector('.header__search-button'));
+  });
+
+  it('preserves keyboard focus when a desktop category switches to mobile', async () => {
+    productsTrigger().focus();
+    await fixture.whenStable();
+    productsTrigger().dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    await fixture.whenStable();
+    expect(document.activeElement?.getAttribute('role')).toBe('tab');
+
+    desktopMedia.matches = false;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    window.dispatchEvent(new Event('resize'));
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(true);
+    expect(document.activeElement).toBe(element.querySelector('.header__search-button'));
+    expect(menuButton().hidden).toBe(false);
+  });
+
+  it('recovers focus if CSS hides desktop navigation before the media-query event', async () => {
+    const offer = element.querySelector<HTMLAnchorElement>('a[href="/#limited-offers"]')!;
+    offer.focus();
+    desktopMedia.matches = false;
+    // Browser blur caused by display:none has no relatedTarget.
+    offer.blur();
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(element.querySelector('.header__search-button'));
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await fixture.whenStable();
+    expect(document.activeElement).toBe(element.querySelector('.header__search-button'));
+  });
+
+  it('keeps the horizontal search input hidden when scrolled in mobile and requests primary search', async () => {
+    desktopMedia.matches = false;
+    desktopMedia.addEventListener.mock.calls[0][1]();
+    await scrollTo(120);
+
+    const input = element.querySelector<HTMLInputElement>('.header__search-input')!;
+    const button = element.querySelector<HTMLButtonElement>('.header__search-button')!;
+    expect(input.hidden).toBe(true);
+    expect(button.getAttribute('aria-label')).toBe('Ir al buscador principal');
+
+    button.click();
+    await fixture.whenStable();
+    expect(button.classList.contains('header__search-button--attention')).toBe(true);
   });
 });

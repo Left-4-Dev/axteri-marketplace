@@ -1,3 +1,10 @@
+export interface HeaderNavigationLink {
+  readonly id: string;
+  readonly label: string;
+  readonly routerLink?: string;
+  readonly fragment?: string;
+}
+
 export interface ProductMenuCategory {
   readonly id: string;
   readonly name: string;
@@ -9,6 +16,12 @@ export interface RecommendedBrand {
   readonly name: string;
   readonly logoUrl: string;
 }
+
+export const HEADER_NAVIGATION_LINKS: readonly HeaderNavigationLink[] = [
+  { id: 'offers', label: 'Oferta', routerLink: '/', fragment: 'limited-offers' },
+  { id: 'sell', label: 'Vender' },
+  { id: 'help', label: 'Ayuda' },
+];
 
 // Only the initial mock has subcategory content. Empty collections avoid inventing a taxonomy.
 export const PRODUCT_MENU_CATEGORIES: readonly ProductMenuCategory[] = [

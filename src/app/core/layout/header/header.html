@@ -1,6 +1,6 @@
 <header class="header" [class.header--scrolled]="scrolled()">
   <div #navbar class="header__navbar">
-    <a class="header__brand" routerLink="/" aria-label="Axteri, inicio">
+    <a class="header__brand" routerLink="/" aria-label="Axteri, inicio" (click)="closeMobileMenu()">
       <img src="/assets/logos/axteri-logo.svg" alt="" />
     </a>
     <nav class="header__navigation" aria-label="Navegación principal">
@@ -32,9 +32,15 @@
         (pointerleave)="scheduleProductsClose()"
         (focusout)="onProductsFocusOut($event)"
       />
-      <a class="header__link" routerLink="/" fragment="limited-offers">Oferta</a>
-      <button class="header__link" type="button" disabled>Vender</button>
-      <button class="header__link" type="button" disabled>Ayuda</button>
+      @for (link of navigationLinks; track link.id) {
+        @if (link.routerLink) {
+          <a class="header__link" [routerLink]="link.routerLink" [fragment]="link.fragment">
+            {{ link.label }}
+          </a>
+        } @else {
+          <button class="header__link" type="button" disabled>{{ link.label }}</button>
+        }
+      }
     </nav>
     <form
       class="header__search"
@@ -50,14 +56,14 @@
         aria-label="Buscar productos"
         placeholder="Buscar productos"
         autocomplete="off"
-        [hidden]="!scrolled()"
+        [hidden]="!compactSearchVisible()"
       />
       <button
         #searchButton
         class="header__search-button"
         [class.header__search-button--attention]="searchAttention()"
         type="button"
-        [attr.aria-label]="scrolled() ? 'Buscar productos' : 'Ir al buscador principal'"
+        [attr.aria-label]="compactSearchVisible() ? 'Buscar productos' : 'Ir al buscador principal'"
         (click)="requestSearch()"
         (animationend)="finishSearchAttention($event)"
         (animationcancel)="finishSearchAttention($event)"
@@ -65,21 +71,136 @@
         <img src="/assets/icons/common/search.svg" alt="" />
       </button>
     </form>
+    <button
+      #menuButton
+      class="header__menu-button"
+      type="button"
+      [hidden]="productsMenuAvailable()"
+      [attr.aria-label]="
+        mobileMenuOpen() ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'
+      "
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-controls="header-mobile-menu"
+      (click)="toggleMobileMenu()"
+    >
+      <img
+        [src]="
+          mobileMenuOpen() ? '/assets/icons/common/close.svg' : '/assets/icons/common/menu.svg'
+        "
+        alt=""
+      />
+    </button>
+  </div>
+
+  <div #mobileMenu id="header-mobile-menu" class="header__mobile-menu" [hidden]="!mobileMenuOpen()">
+    <nav class="header__mobile-navigation" aria-label="Navegación móvil">
+      <button
+        class="header__mobile-link"
+        type="button"
+        [attr.aria-expanded]="mobileProductsOpen()"
+        aria-controls="header-mobile-products"
+        (click)="toggleMobileProducts()"
+      >
+        <span>Productos</span>
+        <img
+          class="header__chevron"
+          [class.header__chevron--expanded]="mobileProductsOpen()"
+          src="/assets/icons/common/chevron-down.svg"
+          alt=""
+        />
+      </button>
+      <ul
+        id="header-mobile-products"
+        class="header__mobile-categories"
+        aria-label="Categorías de productos"
+        [hidden]="!mobileProductsOpen()"
+      >
+        @for (category of productCategories; track category.id) {
+          <li>
+            <a
+              class="header__mobile-category"
+              routerLink="/"
+              fragment="featured-products"
+              (click)="closeMobileMenu()"
+            >
+              {{ category.name }}
+            </a>
+          </li>
+        }
+      </ul>
+      @for (link of navigationLinks; track link.id) {
+        @if (link.routerLink) {
+          <a
+            class="header__mobile-link"
+            [routerLink]="link.routerLink"
+            [fragment]="link.fragment"
+            (click)="closeMobileMenu()"
+          >
+            {{ link.label }}
+          </a>
+        } @else {
+          <button class="header__mobile-link" type="button" disabled>{{ link.label }}</button>
+        }
+      }
+    </nav>
+
+    <div class="header__mobile-actions" role="group" aria-label="Ubicación y cuenta">
+      <button
+        class="header__action header__action--location"
+        type="button"
+        disabled
+        aria-label="Enviar a, seleccionar ubicación"
+      >
+        <img class="header__action-icon" src="/assets/icons/header/location.svg" alt="" />
+        <span class="header__action-copy">
+          <span class="header__action-label">Enviar a</span>
+          <strong>Seleccionar ubicación</strong>
+        </span>
+        <img class="header__location-chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
+      </button>
+      <button
+        class="header__action"
+        type="button"
+        disabled
+        aria-label="Registrarse, iniciar sesión"
+      >
+        <img class="header__action-icon" src="/assets/icons/header/account.svg" alt="" />
+        <span class="header__action-copy">
+          <span class="header__action-label">Registrarse</span>
+          <strong>Iniciar sesión</strong>
+        </span>
+      </button>
+      <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
+        <span class="header__orders-icon">
+          <img class="header__action-icon" src="/assets/icons/header/orders.svg" alt="" />
+          <span class="header__orders-count" aria-hidden="true">1</span>
+        </span>
+        <span class="header__action-copy">
+          <span class="header__action-label">Mis</span>
+          <strong>Pedidos</strong>
+        </span>
+      </button>
+    </div>
   </div>
 
   <div class="header__actions" role="group" aria-label="Ubicación y cuenta">
-    <button class="header__action header__action--location" type="button" disabled>
+    <button
+      class="header__action header__action--location"
+      type="button"
+      disabled
+      aria-label="Enviar a, seleccionar ubicación"
+    >
       <img class="header__action-icon" src="/assets/icons/header/location.svg" alt="" />
       <span class="header__action-copy">
-        <span>Enviar a</span>
+        <span class="header__action-label">Enviar a</span>
         <strong>Seleccionar ubicación</strong>
       </span>
       <img class="header__location-chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
     </button>
-    <button class="header__action" type="button" disabled>
+    <button class="header__action" type="button" disabled aria-label="Registrarse, iniciar sesión">
       <img class="header__action-icon" src="/assets/icons/header/account.svg" alt="" />
       <span class="header__action-copy">
-        <span>Registrarse</span>
+        <span class="header__action-label">Registrarse</span>
         <strong>Iniciar sesión</strong>
       </span>
     </button>
@@ -89,7 +210,7 @@
         <span class="header__orders-count" aria-hidden="true">1</span>
       </span>
       <span class="header__action-copy">
-        <span>Mis</span>
+        <span class="header__action-label">Mis</span>
         <strong>Pedidos</strong>
       </span>
     </button>
