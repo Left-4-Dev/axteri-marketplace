@@ -1,230 +1,434 @@
 # Axteri Marketplace
 
-Frontend del marketplace de **Axteri**, mantenido por **L4Dev** en el repositorio
-`axteri-marketplace`. La landing desarrollada en Astro pertenece a otro repositorio.
+Frontend del marketplace B2B de **Axteri**, desarrollado y mantenido por **L4Dev**.
+
+Este repositorio contiene exclusivamente la aplicación del marketplace. La landing comercial de Axteri, desarrollada en Astro, se mantiene en un repositorio independiente.
 
 ## Stack
 
-- Angular 22, componentes standalone y Angular Router.
-- TypeScript 6 en modo strict, Angular Signals para el futuro estado local y RxJS 7.
-- SCSS, clases BEM y design tokens mediante CSS Custom Properties.
-- pnpm 10.23.0, Vitest 5 con el builder oficial de Angular, ESLint 10 y Prettier 3.
+- **Angular 22**
+- **TypeScript 6** con `strict`
+- **Angular Router**
+- **Angular Signals**
+- **RxJS**
+- **SCSS**
+- **BEM**
+- **CSS Custom Properties** para design tokens
+- **Vitest**
+- **ESLint**
+- **Prettier**
+- **pnpm**
 
-## Requisitos
+La aplicación utiliza componentes standalone y la configuración moderna de Angular.
 
-- Node.js `^22.22.3`, `^24.15.0` o `>=26.0.0`, según los requisitos del CLI instalado.
-  La base se validó con Node.js 22.23.3.
-- pnpm **10.23.0**, fijado en `packageManager`.
+## Inicio rápido
 
-## Instalación y desarrollo
+### Requisitos
 
-Desde la raíz del repositorio:
+- Node.js compatible con la versión de Angular definida en el proyecto.
+- pnpm `10.23.0`.
+
+### Instalación
 
 ```bash
 pnpm install --frozen-lockfile
+```
+
+### Desarrollo
+
+```bash
 pnpm start
 ```
 
-La aplicación está disponible en `http://localhost:4200/`.
-En PowerShell, si la política de ejecución bloquea `pnpm.ps1`, utiliza `pnpm.cmd`
-en lugar de `pnpm`; no es necesario cambiar la política del sistema.
+La aplicación estará disponible en:
 
-## Comandos
+```text
+http://localhost:4200/
+```
 
-| Comando                   | Uso                                                           |
-| ------------------------- | ------------------------------------------------------------- |
-| `pnpm start`              | Servidor de desarrollo con recarga automática.                |
-| `pnpm build`              | Build de producción en `dist/axteri-marketplace/browser/`.    |
-| `pnpm watch`              | Build de desarrollo en modo observación.                      |
-| `pnpm test`               | Pruebas Vitest; modo observación en terminal interactiva.     |
-| `pnpm test --watch=false` | Ejecutar los tests una vez, apropiado para CI.                |
-| `pnpm lint`               | ESLint para TypeScript y plantillas, sin warnings permitidos. |
-| `pnpm format`             | Aplicar Prettier.                                             |
-| `pnpm format:check`       | Verificar formato sin modificar archivos.                     |
+> En PowerShell, si la política de ejecución bloquea `pnpm.ps1`, utiliza `pnpm.cmd`.
 
-Las pruebas verifican el layout público, el orden de las ocho secciones, los
-datos renderizados y el contrato de `ProductCard` (precios y eventos).
+## Scripts
 
-## Estructura actual
+| Comando | Descripción |
+| --- | --- |
+| `pnpm start` | Inicia el servidor de desarrollo |
+| `pnpm build` | Genera el build de producción |
+| `pnpm watch` | Ejecuta el build en modo observación |
+| `pnpm test` | Ejecuta las pruebas con Vitest |
+| `pnpm test --watch=false` | Ejecuta las pruebas una sola vez |
+| `pnpm lint` | Ejecuta ESLint |
+| `pnpm format` | Formatea el proyecto con Prettier |
+| `pnpm format:check` | Verifica el formato sin modificar archivos |
+
+## Arquitectura
+
+El proyecto sigue una organización **feature-first**.
 
 ```text
 src/app/
-├── core/layout/
-│   ├── header/
-│   ├── footer/
-│   └── main-layout/
-├── shared/ui/product-card/
+├── core/
+│   └── layout/
+│       ├── header/
+│       ├── footer/
+│       └── main-layout/
+│
+├── shared/
+│   └── ui/
+│       └── product-card/
+│
 ├── models/
 │   └── product.model.ts
-├── features/home/
-│   ├── pages/home-page/
-│   ├── components/
-│   │   ├── hero/
-│   │   ├── limited-offers/
-│   │   ├── categories/
-│   │   ├── featured-products/
-│   │   ├── quality-banner/
-│   │   ├── preferred-brands/
-│   │   ├── news/
-│   │   └── recommendations/
-│   ├── data/
-│   │   ├── home-content.data.ts
-│   │   └── home-products.data.ts
-│   └── models/
-│       └── home-content.model.ts
-├── app.ts
+│
+├── features/
+│   └── home/
+│       ├── pages/
+│       │   └── home-page/
+│       ├── components/
+│       │   ├── hero/
+│       │   ├── limited-offers/
+│       │   ├── categories/
+│       │   ├── featured-products/
+│       │   ├── quality-banner/
+│       │   ├── preferred-brands/
+│       │   ├── news/
+│       │   └── recommendations/
+│       ├── data/
+│       └── models/
+│
 ├── app.config.ts
 ├── app.routes.ts
-└── app.spec.ts
+└── app.ts
 ```
 
-## Alcance y límites de esta iteración
+### Criterios de arquitectura
 
-La Home contiene header, hero, ofertas, categorías, destacados, banner de calidad,
-marcas preferidas, noticias, sugerencias y footer. Los datos de presentación incluyen
-cinco ofertas, nueve categorías, cinco destacados, tres marcas y diez sugerencias.
+- `core/` contiene infraestructura y elementos globales de la aplicación.
+- `shared/` contiene componentes reutilizables entre distintas features.
+- `features/` agrupa funcionalidad por dominio o sección.
+- Cada feature encapsula sus propios componentes, datos y modelos cuando corresponde.
+- Se evita crear abstracciones o carpetas antes de que exista una necesidad real.
+- Los componentes visuales se mantienen desacoplados de futuras APIs y servicios.
 
-La Home, salvo el Header desarrollado en la siguiente iteración, es un **esqueleto semántico**.
-Los colores y medidas siguen siendo provisionales. `src/styles/_skeleton.scss`
-comparte únicamente reglas SCSS mínimas de listas, secciones y placeholders.
-Se mantiene el enfoque desktop-first. Los breakpoints oficiales y la adaptación
-del Header se describen más abajo; el responsive definitivo de la Home sigue pendiente.
+## Git workflow
 
-## Routing y composición
+El repositorio utiliza dos ramas permanentes:
 
-La única URL implementada es `/`. Carga de forma diferida `MainLayout`, que contiene
-`Header → main/router-outlet → Footer`, y después `HomePage` como ruta hija.
-El componente raíz conserva únicamente su outlet.
+- `main`: versión estable del marketplace.
+- `dev`: rama de integración del desarrollo activo.
 
-`HomePage` compone ocho secciones y les entrega constantes tipadas. El layout
-público puede compartirse con futuras rutas sin duplicar header y footer. Los
-enlaces de navegación disponibles apuntan a secciones de la Home mediante
-fragmentos; no se crean rutas de catálogo, cuenta o vendedor.
+No se desarrolla directamente sobre `main` ni `dev`.
 
-Se conservan los defaults instalados de Angular 22: standalone, OnPush y
-ejecución sin Zone.js. TypeScript 6 activa strict y Angular 22 strictTemplates.
-No se añade estado global: estos mocks estáticos no necesitan Signals.
+### Flujo
 
-## Componentes y datos
+```text
+component/* ─┐
+feature/*   ─┤
+page/*      ─┤
+service/*   ─┤
+fix/*       ─┼── PR → dev
+refactor/*  ─┤
+chore/*     ─┤
+docs/*      ─┘
 
-- `ProductCard` es la única tarjeta usada por ofertas, destacados y sugerencias.
-  Recibe `input.required<Product>()` y expone `requestQuote` y `viewDetails` mediante
-  `output()`. Son eventos de presentación sin consumidores de negocio todavía:
-  no abren fichas, envían cotizaciones ni consultan servicios.
-- `Product` tiene identidad, marca, imagen opcional, vendedor opcional y un
-  precio discriminado: fijo, rango o por cotizar. Los datos del vendedor se
-  limitan a lo visible; no se crea un dominio completo de vendedores.
-- `Category`, `Brand` y `NewsPromotion` pertenecen a Home. Las marcas agrupan
-  categorías y cuatro previews visuales; no necesitan tarjetas completas de
-  producto, precios ni un componente compartido adicional.
-- `home-products.data.ts` agrupa ofertas, destacados y sugerencias. Los precios y
-  proveedores son muestras de presentación, no ofertas comerciales vigentes.
-- `home-content.data.ts` contiene las nueve categorías visibles, Siemens, ABB,
-  Omron y la promoción HAAS VF-3. No se inventan noticias ni slides adicionales.
-- Las URLs de imágenes quedan ausentes hasta recibir assets reales. Los templates
-  muestran bloques neutros cuando no existe `imageUrl`, sin solicitudes a URLs
-  ficticias. El Header reserva el logo mediante un SVG transparente; el resto del branding sigue como texto.
-- El buscador principal permanece dentro de Hero; Header contiene el campo compacto
-  del estado scrolled. Su integración se describe a continuación.
+dev
+ │
+ └── PR → main
+```
 
-## Pendiente
+Las ramas de trabajo deben partir siempre de un `dev` actualizado.
 
-Quedan pendientes assets originales, tokens de Illustrator, estilos fieles por
-sección, responsive y acabado final. Tampoco se implementan búsqueda, filtros,
-modo IA, cuenta, favoritos, carrito, cotizaciones ni reproducción audiovisual.
-Los controles sin funcionalidad están deshabilitados; los eventos de producto
-solo preparan su contrato de integración.
+```bash
+git switch dev
+git pull origin dev
+```
 
-Los indicadores de promociones son estructurales y están deshabilitados. Las
-listas no implementan carrusel, scroll snap, paginación ni temporizadores.
-No se ha elegido una solución de navegación horizontal.
+Luego crea la rama correspondiente:
 
-Catálogo, producto, checkout, perfil, vendedor, autenticación con Clerk, APIs,
-base de datos, backend y pagos siguen fuera de alcance. La landing Astro
-permanece separada. Playwright se evaluará al desarrollar flujos completos.
+```bash
+git switch -c component/<name>
+git switch -c feature/<name>
+git switch -c page/<name>
+git switch -c service/<name>
+git switch -c fix/<name>
+git switch -c refactor/<name>
+git switch -c chore/<name>
+git switch -c docs/<name>
+```
 
-Al desplegar esta SPA, el hosting deberá redirigir las rutas a `index.html`.
-No se configura hosting en esta fase.
+Ejemplos:
 
-## Header: estados, assets e integración
+```text
+component/header
+component/hero
+component/product-card
 
-El Header conserva un único navbar y un único Search.
-Solo `.header__navbar` tiene posición fija. Los controles derechos están en el
-flujo normal del documento y salen del viewport al desplazarse.
+feature/search
+feature/cart
 
-- `initial`: logo, navegación y Search circular, sin input visible.
-- `scrolled`: se activa cuando `scrollY > HEADER_SCROLL_THRESHOLD` (**48 px**,
-  en `header.ts`). El navbar se extiende y muestra un input horizontal.
-- El listener es pasivo, se registra con `afterNextRender` y se elimina mediante
-  `DestroyRef`. El estado es un Signal booleano.
-- Search inicial realiza un salto de 3 px y brillo durante 320 ms. Al terminar
-  emite `primarySearchRequested`. `MainLayout` enfoca el elemento con
-  `data-primary-search` y lo desplaza solo si hace falta. Header no importa Hero.
-- Con movimiento reducido, el foco es inmediato y no hay animación ni scroll
-  suave. El input scrolled entra con una transición visual de 180 ms.
-- Search scrolled enfoca su propio input. No hay búsqueda real; enviar el
-  formulario no navega ni consulta una API.
-- En mobile (`<= 48rem`), el estado `scrolled` mantiene la barra superior
-  simplificada (`Logo + Search + Menu`) y añade únicamente elevación visual, sin
-  desplegar el input horizontal para no saturar el ancho disponible; el botón
-  Search conserva la acción de dirigir el foco al buscador principal del Hero.
-- La adaptación utiliza exclusivamente los cinco breakpoints oficiales desktop-first
-  (`96rem`, `80rem`, `64rem`, `48rem` y `40rem`) definidos en
-  `src/styles/_breakpoints.scss`. En `<= 48rem` la navegación y las acciones
-  derechas pasan al panel móvil desplegable y `PRODUCTOS` se comporta como un
-  accordion accesible alimentado por la misma fuente de datos del mega menú.
-- Los estilos se dividen en `header.scss`, `header-responsive.scss`,
-  `header-mobile.scss` y `header-motion.scss` (y `products-mega-menu-responsive.scss`
-  en el mega menú) sin modificar los presupuestos globales de Angular.
+page/catalog
+page/product-detail
 
-### Assets preparados para reemplazo
+service/products-api
 
-Angular copia `public/` al build. Estos archivos son SVG válidos
-preparados para reemplazo conservando exactamente sus nombres:
+fix/header-responsive
+fix/products-mega-menu
 
-| Archivo                                       | Reemplazar por                        |
-| --------------------------------------------- | ------------------------------------- |
-| `public/assets/logos/axteri-logo.svg`         | SVG original del logo completo AXTERI |
-| `public/assets/icons/common/search.svg`       | SVG original de Search                |
-| `public/assets/icons/common/chevron-down.svg` | SVG original del dropdown             |
-| `public/assets/icons/common/menu.svg`         | SVG original de abrir menú mobile     |
-| `public/assets/icons/common/close.svg`        | SVG original de cerrar menú mobile    |
-| `public/assets/icons/header/location.svg`     | SVG original de ubicación             |
-| `public/assets/icons/header/account.svg`      | SVG original de cuenta                |
-| `public/assets/icons/header/orders.svg`       | SVG original de pedidos               |
+refactor/header-navigation
 
-Las rutas públicas empiezan en `/assets/`. Los SVG se muestran mediante `img`,
-con dimensiones CSS y proporción intrínseca. No se aplican filtros ni máscaras que
-alteren los originales. El indicador de pedidos es HTML y contiene un **1 de
-demostración**, no información de una cuenta.
+docs/git-workflow
+```
 
-La fuente global está preparada como `"Exo", sans-serif`. No hay archivos de
-fuente ni `@font-face` en el repositorio: falta incorporar Exo para distribuirla.
-La revisión en este equipo usa su instalación local de Exo, sin descargar fuentes.
+Las ramas deben ser específicas y de vida corta.
 
-### Valores pendientes de Illustrator
+Una rama ya integrada no debe reutilizarse para cambios posteriores.
 
-Todos los siguientes tokens están en
-`src/app/core/layout/header/header.scss` y llevan `TODO: Illustrator`:
+Por ejemplo, después de integrar:
 
-| Categoría | Custom property             | Elemento                       |
-| --------- | --------------------------- | ------------------------------ |
-| Texto     | `--header-text`             | Navegación, controles e input  |
-| Texto     | `--header-muted-text`       | Placeholder del input          |
-| Texto     | `--header-badge-text`       | Número de pedidos              |
-| Fondo     | `--header-surface`          | Navbar                         |
-| Fondo     | `--header-search-surface`   | Campo de búsqueda              |
-| Fondo     | `--header-accent`           | Botón Search                   |
-| Fondo     | `--header-accent-hover`     | Hover de Search                |
-| Fondo     | `--header-location-surface` | Control de ubicación           |
-| Fondo     | `--header-badge-surface`    | Indicador de pedidos           |
-| Gradiente | `--header-search-gradient`  | Contorno del buscador scrolled |
-| Sombra    | `--header-shadow`           | Navbar scrolled                |
-| Sombra    | `--header-search-glow`      | Brillo de Search               |
+```text
+component/header
+```
 
-Los **colores de iconos** pertenecen a los cinco SVG originales de
-`public/assets/icons/`: no tienen un token CSS porque los `img` externos
-conservan sus propios colores. Se incorporarán al reemplazar los archivos.
+una corrección futura debe realizarse desde una nueva rama:
 
-Las dimensiones, tipografía, radios, duración y breakpoints son decisiones de
-implementación, no valores pendientes de Illustrator.
+```text
+fix/header-search
+fix/header-responsive
+refactor/header-navigation
+```
+
+## Pull Requests
+
+Las ramas de trabajo crean Pull Request hacia:
+
+```text
+dev
+```
+
+Cuando `dev` representa una versión estable y validada:
+
+```text
+dev → PR → main
+```
+
+Antes de abrir un PR:
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm test --watch=false
+pnpm build
+```
+
+El PR no debe contener errores conocidos introducidos por sus cambios.
+
+### Títulos de Pull Request
+
+Los títulos siguen **Conventional Commits**:
+
+```text
+<type>(<scope>): <description>
+```
+
+Ejemplos:
+
+```text
+feat(header): implement responsive marketplace header
+feat(hero): implement marketplace hero
+fix(header): correct products mega menu behavior
+refactor(header): simplify navigation state
+docs(readme): document branch workflow
+```
+
+## Mantener una rama actualizada
+
+Obtén primero los cambios recientes:
+
+```bash
+git fetch origin
+```
+
+Si eres la única persona trabajando sobre la rama:
+
+```bash
+git rebase origin/dev
+```
+
+Si la rama está compartida:
+
+```bash
+git merge origin/dev
+```
+
+Después de hacer rebase sobre una rama que ya fue publicada:
+
+```bash
+git push --force-with-lease
+```
+
+No utilices `git push --force`.
+
+## Commits
+
+Los commits también siguen **Conventional Commits**:
+
+```text
+<type>(<scope>): <description>
+```
+
+Tipos principales:
+
+| Tipo | Uso |
+| --- | --- |
+| `feat` | Nueva funcionalidad |
+| `fix` | Corrección |
+| `refactor` | Refactor sin cambiar comportamiento |
+| `docs` | Documentación |
+| `chore` | Configuración o mantenimiento |
+| `test` | Pruebas |
+
+Ejemplos:
+
+```text
+feat(header): add products mega menu
+fix(header): refine responsive behavior
+feat(hero): implement marketplace hero
+docs(readme): document branch workflow
+```
+
+Los commits deben ser pequeños, coherentes y evitar mezclar cambios no relacionados.
+
+## Estilos
+
+### BEM
+
+Los estilos utilizan BEM:
+
+```scss
+.product-card {
+  &__image {
+  }
+
+  &__content {
+  }
+
+  &__title {
+  }
+
+  &__price {
+  }
+
+  &--featured {
+  }
+}
+```
+
+### Responsive
+
+La estrategia del proyecto es **desktop-first**.
+
+Breakpoints oficiales:
+
+| Breakpoint | Valor |
+| --- | ---: |
+| `2xl` | `96rem` / 1536px |
+| `xl` | `80rem` / 1280px |
+| `lg` | `64rem` / 1024px |
+| `md` | `48rem` / 768px |
+| `sm` | `40rem` / 640px |
+
+No es obligatorio utilizar todos los breakpoints en cada componente.
+
+Evita agregar breakpoints arbitrarios cuando los oficiales puedan resolver correctamente la adaptación.
+
+## Diseño y assets
+
+La interfaz se implementa a partir de los diseños oficiales de Axteri.
+
+Los recursos estáticos se organizan dentro de:
+
+```text
+public/assets/
+├── logos/
+├── icons/
+├── images/
+└── ...
+```
+
+Los valores visuales provenientes del diseño y pendientes de definición definitiva se gestionan mediante tokens o custom properties cuando corresponde.
+
+Principalmente:
+
+- colores de texto;
+- colores de iconos;
+- fondos;
+- gradientes;
+- sombras.
+
+Las dimensiones, spacing, tipografía responsive y comportamiento de los componentes son decisiones de implementación frontend.
+
+La tipografía principal del proyecto es **Exo**.
+
+## Estado actual
+
+La Home se encuentra en desarrollo por secciones.
+
+Estructura prevista:
+
+```text
+Header
+Hero
+Ofertas por tiempo limitado
+Categorías
+Productos destacados
+Productos de calidad
+Marcas preferidas
+Noticias
+Sugerencias
+Footer
+```
+
+Actualmente:
+
+- la estructura general de la Home está preparada;
+- el Header está implementado;
+- existen mocks tipados para desarrollar la interfaz sin depender todavía de APIs;
+- `ProductCard` se reutiliza entre las distintas secciones de productos;
+- el resto de secciones se implementará progresivamente.
+
+## Integraciones futuras
+
+Todavía están fuera del alcance de la fase actual:
+
+- autenticación con Clerk;
+- backend;
+- base de datos;
+- APIs de productos;
+- búsqueda real;
+- carrito;
+- favoritos;
+- cotizaciones;
+- checkout;
+- pagos;
+- funcionalidades de vendedor;
+- integraciones con n8n.
+
+Estas funcionalidades se incorporarán progresivamente sin acoplar prematuramente la UI a implementaciones futuras.
+
+## Buenas prácticas
+
+- No hagas push directo a `main` ni `dev`.
+- Parte siempre de un `dev` actualizado.
+- No reutilices ramas ya integradas.
+- Mantén los cambios de una rama enfocados en una responsabilidad.
+- No subas credenciales ni secretos.
+- No subas referencias de diseño locales que no formen parte del producto.
+- Evita dependencias innecesarias.
+- Reutiliza componentes únicamente cuando exista una necesidad real.
+- Evita sobrecomponentización y abstracciones prematuras.
+- Mantén accesibilidad y HTML semántico.
+- Ejecuta lint, tests y build antes de solicitar integración.
+
+## Licencia
+
+Proyecto privado desarrollado por **L4Dev** para **Axteri**.
