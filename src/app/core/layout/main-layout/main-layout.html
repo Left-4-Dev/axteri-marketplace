@@ -1,5 +1,5 @@
 <a class="main-layout__skip-link" href="#main-content">Saltar al contenido</a>
-<app-header />
+<app-header (primarySearchRequested)="focusPrimarySearch()" />
 <main class="main-layout__content" id="main-content" tabindex="-1">
   <router-outlet />
 </main>

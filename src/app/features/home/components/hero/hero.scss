@@ -2,6 +2,8 @@
 
 @include skeleton.section;
 .hero {
+  // Only the content clears the overlaid Header; the section starts behind it.
+  padding-block-start: calc(var(--header-content-offset, 0rem) + var(--space-xl));
   h1 {
     font-size: var(--font-size-heading);
     line-height: var(--line-height-heading);

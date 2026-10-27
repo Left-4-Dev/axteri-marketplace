@@ -1,0 +1,79 @@
+<div class="products-menu" role="group" aria-label="Productos">
+  <div
+    class="products-menu__categories"
+    role="tablist"
+    aria-label="Categorías de productos"
+    aria-orientation="vertical"
+  >
+    @for (category of categories; track category.id; let index = $index) {
+      <button
+        #categoryButton
+        class="products-menu__category"
+        [class.products-menu__category--active]="activeCategoryId() === category.id"
+        type="button"
+        role="tab"
+        [id]="'products-category-' + category.id"
+        [attr.aria-selected]="activeCategoryId() === category.id"
+        aria-controls="products-category-content"
+        [tabIndex]="activeCategoryId() === category.id ? 0 : -1"
+        (pointerenter)="selectCategory(category.id)"
+        (focus)="selectCategory(category.id)"
+        (click)="selectCategory(category.id)"
+        (keydown)="onCategoryKeydown($event, index)"
+      >
+        {{ category.name }}
+      </button>
+    }
+  </div>
+
+  <section
+    #contentPanel
+    class="products-menu__content"
+    id="products-category-content"
+    role="tabpanel"
+    tabindex="0"
+    [attr.aria-labelledby]="'products-category-' + activeCategoryId()"
+  >
+    <div class="products-menu__recommended">
+      <h2 class="products-menu__heading">Recomendados por Axter</h2>
+      <ul class="products-menu__brands" aria-label="Marcas recomendadas">
+        @for (brand of brands; track brand.id) {
+          <li class="products-menu__brand">
+            <span class="products-menu__brand-circle">
+              <img
+                class="products-menu__brand-logo"
+                [src]="brand.logoUrl"
+                alt=""
+                width="64"
+                height="64"
+              />
+            </span>
+            <span class="products-menu__brand-name">{{ brand.name }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="products-menu__subcategories">
+      @if (activeCategory().subcategories.length) {
+        @for (column of subcategoryColumns(); track $index) {
+          <ul
+            class="products-menu__column"
+            [attr.aria-label]="'Subcategorías de ' + activeCategory().name"
+          >
+            @for (subcategory of column; track subcategory) {
+              <li>
+                <button class="products-menu__subcategory" type="button" aria-disabled="true">
+                  {{ subcategory }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      } @else {
+        <p class="products-menu__empty">
+          Todavía no hay subcategorías disponibles para esta categoría.
+        </p>
+      }
+    </div>
+  </section>
+</div>
