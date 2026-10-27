@@ -29,6 +29,9 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Local design references
+/references/
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
