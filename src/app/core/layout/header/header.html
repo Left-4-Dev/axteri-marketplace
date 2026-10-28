@@ -1,15 +1,16 @@
 <header class="header" [class.header--scrolled]="scrolled()">
   <div #navbar class="header__navbar">
     <a class="header__brand" routerLink="/" aria-label="Axteri, inicio" (click)="closeMobileMenu()">
-      <img src="/assets/logos/axteri-logo.svg" alt="" />
+      <span class="header__logo" aria-hidden="true"
+        ><img src="/assets/logos/axteri-logo.svg" alt=""
+      /></span>
     </a>
     <nav class="header__navigation" aria-label="Navegación principal">
-      <a
+      <button
         #productsTrigger
         class="header__link"
         id="header-products-trigger"
-        routerLink="/"
-        fragment="featured-products"
+        type="button"
         [attr.aria-expanded]="productsMenuAvailable() ? productsMenuOpen() : null"
         [attr.aria-controls]="productsMenuAvailable() ? 'header-products-menu' : null"
         (pointerenter)="openProductsMenu($event)"
@@ -17,11 +18,11 @@
         (focus)="openProductsMenu()"
         (focusout)="onProductsFocusOut($event)"
         (keydown.arrowdown)="enterProductsMenu($event)"
-        (click)="closeProductsMenu()"
+        (click)="openProductsMenu()"
       >
         Productos
-        <img class="header__chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
-      </a>
+        <span class="header__icon header__chevron" aria-hidden="true"></span>
+      </button>
       <app-products-mega-menu
         id="header-products-menu"
         [hidden]="!productsMenuOpen()"
@@ -68,7 +69,7 @@
         (animationend)="finishSearchAttention($event)"
         (animationcancel)="finishSearchAttention($event)"
       >
-        <img src="/assets/icons/common/search.svg" alt="" />
+        <span class="header__icon header__icon--search" aria-hidden="true"></span>
       </button>
     </form>
     <button
@@ -83,12 +84,11 @@
       aria-controls="header-mobile-menu"
       (click)="toggleMobileMenu()"
     >
-      <img
-        [src]="
-          mobileMenuOpen() ? '/assets/icons/common/close.svg' : '/assets/icons/common/menu.svg'
-        "
-        alt=""
-      />
+      <span
+        class="header__icon header__icon--menu"
+        [class.header__icon--close]="mobileMenuOpen()"
+        aria-hidden="true"
+      ></span>
     </button>
   </div>
 
@@ -102,12 +102,11 @@
         (click)="toggleMobileProducts()"
       >
         <span>Productos</span>
-        <img
-          class="header__chevron"
+        <span
+          class="header__icon header__chevron"
           [class.header__chevron--expanded]="mobileProductsOpen()"
-          src="/assets/icons/common/chevron-down.svg"
-          alt=""
-        />
+          aria-hidden="true"
+        ></span>
       </button>
       <ul
         id="header-mobile-products"
@@ -151,12 +150,14 @@
         disabled
         aria-label="Enviar a, seleccionar ubicación"
       >
-        <img class="header__action-icon" src="/assets/icons/header/location.svg" alt="" />
+        <span class="header__action-icon" aria-hidden="true"
+          ><span class="header__icon header__icon--location"></span
+        ></span>
         <span class="header__action-copy">
           <span class="header__action-label">Enviar a</span>
           <strong>Seleccionar ubicación</strong>
         </span>
-        <img class="header__location-chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
+        <span class="header__icon header__location-chevron" aria-hidden="true"></span>
       </button>
       <button
         class="header__action"
@@ -164,7 +165,9 @@
         disabled
         aria-label="Registrarse, iniciar sesión"
       >
-        <img class="header__action-icon" src="/assets/icons/header/account.svg" alt="" />
+        <span class="header__action-icon" aria-hidden="true"
+          ><span class="header__icon header__icon--account"></span
+        ></span>
         <span class="header__action-copy">
           <span class="header__action-label">Registrarse</span>
           <strong>Iniciar sesión</strong>
@@ -172,7 +175,9 @@
       </button>
       <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
         <span class="header__orders-icon">
-          <img class="header__action-icon" src="/assets/icons/header/orders.svg" alt="" />
+          <span class="header__action-icon" aria-hidden="true"
+            ><span class="header__icon header__icon--orders"></span
+          ></span>
           <span class="header__orders-count" aria-hidden="true">1</span>
         </span>
         <span class="header__action-copy">
@@ -190,15 +195,21 @@
       disabled
       aria-label="Enviar a, seleccionar ubicación"
     >
-      <img class="header__action-icon" src="/assets/icons/header/location.svg" alt="" />
+      <span class="header__action-icon" aria-hidden="true"
+        ><span class="header__icon header__icon--location"></span
+      ></span>
+      <span class="header__action-short" aria-hidden="true">Envío</span>
       <span class="header__action-copy">
         <span class="header__action-label">Enviar a</span>
         <strong>Seleccionar ubicación</strong>
       </span>
-      <img class="header__location-chevron" src="/assets/icons/common/chevron-down.svg" alt="" />
+      <span class="header__icon header__location-chevron" aria-hidden="true"></span>
     </button>
     <button class="header__action" type="button" disabled aria-label="Registrarse, iniciar sesión">
-      <img class="header__action-icon" src="/assets/icons/header/account.svg" alt="" />
+      <span class="header__action-icon" aria-hidden="true"
+        ><span class="header__icon header__icon--account"></span
+      ></span>
+      <span class="header__action-short" aria-hidden="true">Cuenta</span>
       <span class="header__action-copy">
         <span class="header__action-label">Registrarse</span>
         <strong>Iniciar sesión</strong>
@@ -206,9 +217,12 @@
     </button>
     <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
       <span class="header__orders-icon">
-        <img class="header__action-icon" src="/assets/icons/header/orders.svg" alt="" />
+        <span class="header__action-icon" aria-hidden="true"
+          ><span class="header__icon header__icon--orders"></span
+        ></span>
         <span class="header__orders-count" aria-hidden="true">1</span>
       </span>
+      <span class="header__action-short" aria-hidden="true">Pedidos</span>
       <span class="header__action-copy">
         <span class="header__action-label">Mis</span>
         <strong>Pedidos</strong>

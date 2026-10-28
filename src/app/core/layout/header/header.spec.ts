@@ -108,8 +108,8 @@ describe('Header', () => {
     expect(desktopMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
   });
 
-  function productsTrigger(): HTMLAnchorElement {
-    return element.querySelector<HTMLAnchorElement>('#header-products-trigger')!;
+  function productsTrigger(): HTMLButtonElement {
+    return element.querySelector<HTMLButtonElement>('#header-products-trigger')!;
   }
 
   function productsPanel(): HTMLElement {
@@ -129,14 +129,44 @@ describe('Header', () => {
     await fixture.whenStable();
   }
 
-  it('keeps the navigation link and exposes the controlled panel on hover', async () => {
+  it('exposes the controlled panel on hover without a navigation link', async () => {
     expect(productsPanel().hidden).toBe(true);
     expect(productsTrigger().getAttribute('aria-expanded')).toBe('false');
-    expect(productsTrigger().getAttribute('href')).toBe('/#featured-products');
+    expect(productsTrigger().tagName).toBe('BUTTON');
+    expect(productsTrigger().type).toBe('button');
+    expect(productsTrigger().hasAttribute('href')).toBe(false);
     await openProducts();
     expect(productsPanel().hidden).toBe(false);
     expect(productsTrigger().getAttribute('aria-expanded')).toBe('true');
     expect(productsTrigger().getAttribute('aria-controls')).toBe(productsPanel().id);
+  });
+
+  it('opens on touch activation and stays open after focus and click', async () => {
+    const hash = window.location.hash;
+    const trigger = productsTrigger();
+    trigger.dispatchEvent(Object.assign(new Event('pointerenter'), { pointerType: 'touch' }));
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(true);
+    trigger.focus();
+    trigger.click();
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(false);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(window.location.hash).toBe(hash);
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(true);
+    // Reopening must also work when the trigger already holds focus.
+    trigger.click();
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(false);
+  });
+
+  it('keeps the hovered panel open when the trigger is clicked', async () => {
+    await openProducts();
+    productsTrigger().click();
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(false);
   });
 
   it('allows crossing from the trigger to the panel and closes after leaving both', async () => {
@@ -227,7 +257,7 @@ describe('Header', () => {
 
     const trigger = menuButton();
     const panel = mobileMenuPanel();
-    const icon = trigger.querySelector('img')!;
+    const icon = trigger.querySelector('.header__icon--menu')!;
     const productsDisclosure = panel.querySelector<HTMLButtonElement>(
       '[aria-controls="header-mobile-products"]',
     )!;
@@ -236,13 +266,13 @@ describe('Header', () => {
     expect(panel.hidden).toBe(true);
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
     expect(trigger.getAttribute('aria-controls')).toBe('header-mobile-menu');
-    expect(icon.getAttribute('src')).toBe('/assets/icons/common/menu.svg');
+    expect(icon.classList.contains('header__icon--close')).toBe(false);
 
     trigger.click();
     await fixture.whenStable();
     expect(panel.hidden).toBe(false);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
-    expect(icon.getAttribute('src')).toBe('/assets/icons/common/close.svg');
+    expect(icon.classList.contains('header__icon--close')).toBe(true);
     expect(productsDisclosure.getAttribute('aria-expanded')).toBe('false');
     expect(productsList.hidden).toBe(true);
 

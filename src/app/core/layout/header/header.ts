@@ -28,6 +28,7 @@ export const PRODUCTS_MENU_CLOSE_DELAY = 150;
   templateUrl: './header.html',
   styleUrls: [
     './header.scss',
+    './header-assets.scss',
     './header-responsive.scss',
     './header-mobile.scss',
     './header-motion.scss',
@@ -63,7 +64,7 @@ export class Header {
   private readonly mobileMenu = viewChild.required<ElementRef<HTMLElement>>('mobileMenu');
   private readonly navbar = viewChild.required<ElementRef<HTMLElement>>('navbar');
   private readonly productsTrigger =
-    viewChild.required<ElementRef<HTMLAnchorElement>>('productsTrigger');
+    viewChild.required<ElementRef<HTMLButtonElement>>('productsTrigger');
   private readonly productsPanel = viewChild.required(ProductsMegaMenu);
   private readonly productsPanelElement = viewChild.required(ProductsMegaMenu, {
     read: ElementRef,

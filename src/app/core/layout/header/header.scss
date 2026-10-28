@@ -15,11 +15,17 @@
   --header-location-surface: #efedff; // TODO: Illustrator
   --header-badge-surface: #303341; // TODO: Illustrator
   --header-badge-text: #fff; // TODO: Illustrator
-  --header-search-gradient: linear-gradient(100deg, #a8dff4, #887dff); // TODO: Illustrator
+  --header-search-gradient: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--header-accent) 55%, white),
+    var(--header-accent) 75%
+  );
   --header-shadow: 0 3px 9px rgb(53 44 105 / 18%); // TODO: Illustrator
   --header-search-glow: 0 0 0 6px rgb(116 108 255 / 16%); // TODO: Illustrator
 
-  --header-inset: max(1.875rem, calc((100vw - 120rem) / 2 + 1.875rem));
+  // Match the Hero backdrop's desktop bounds, including the scrollbar gutter.
+  --header-inset: max(1.5rem, calc((100% - 120rem) / 2 + 1.875rem));
+  --header-hero-top: 1.875rem;
   min-block-size: 6.875rem;
   max-inline-size: 120rem;
   margin-inline: auto;
@@ -40,7 +46,7 @@
     gap: 1.75rem;
     inline-size: 49.5rem;
     min-block-size: 6.875rem;
-    max-inline-size: calc(100% - 3rem);
+    max-inline-size: calc(100% - 2 * var(--header-inset));
     padding: 1rem 1.875rem 0 1.75rem;
     border-radius: 0 0 1rem 0;
     background: var(--header-surface);
@@ -52,7 +58,7 @@
       width: 2rem;
       height: 2rem;
       background-color: transparent;
-      border-top-left-radius: 16px;
+      border-top-left-radius: 1.25rem;
       box-shadow: -8px -8px 0 0 var(--header-surface);
       pointer-events: none;
     }
@@ -65,7 +71,7 @@
 
     &::after {
       right: 0;
-      top: 1rem;
+      top: var(--header-hero-top);
       transform: translateX(100%);
     }
   }
@@ -104,6 +110,9 @@
   &__link[href]:hover {
     text-decoration: underline;
     text-underline-offset: 0.3rem;
+  }
+  #header-products-trigger {
+    cursor: pointer;
   }
   &__link[href]:active {
     opacity: 0.75;
@@ -151,9 +160,6 @@
     border-radius: 50%;
     background: var(--header-accent);
     cursor: pointer;
-    img {
-      inline-size: 1.25rem;
-    }
   }
   &__actions {
     display: flex;
@@ -186,7 +192,6 @@
     inline-size: 2.75rem;
     // The circular base belongs to the control, not to the replaceable SVG.
     aspect-ratio: 1;
-    object-fit: contain;
     padding: 0.6875rem;
     border-radius: 50%;
     background: var(--header-accent);
@@ -209,6 +214,9 @@
       font-size: 1rem;
       font-weight: 700;
     }
+  }
+  &__action-short {
+    display: none;
   }
   &__action--location &__action-copy {
     flex: 1;
