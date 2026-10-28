@@ -1,10 +1,46 @@
 import { TestBed } from '@angular/core/testing';
-import { Title } from '@angular/platform-browser';
+import { By, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { App } from './app';
 import { appConfig } from './app.config';
+import { Header } from './core/layout/header/header';
 
 describe('App', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each([false, true])(
+    'connects Header Search to the Hero (reduced motion: %s)',
+    async (reducedMotion) => {
+      vi.stubGlobal(
+        'matchMedia',
+        vi.fn().mockImplementation((query: string) => ({
+          matches: query === '(prefers-reduced-motion: reduce)' ? reducedMotion : true,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        })),
+      );
+      await TestBed.configureTestingModule({
+        imports: [App],
+        providers: appConfig.providers,
+      }).compileComponents();
+      const fixture = TestBed.createComponent(App);
+      await TestBed.inject(Router).navigateByUrl('/');
+      await fixture.whenStable();
+      const query = (fixture.nativeElement as HTMLElement).querySelector<HTMLTextAreaElement>(
+        '[data-primary-search]',
+      )!;
+      query.scrollIntoView = vi.fn();
+      const header = fixture.debugElement.query(By.directive(Header)).componentInstance as Header;
+      header.primarySearchRequested.emit();
+      expect(document.activeElement).toBe(query);
+      expect(query.scrollIntoView).toHaveBeenCalledWith({
+        block: 'nearest',
+        behavior: reducedMotion ? 'instant' : 'smooth',
+      });
+      expect(query.value).toBe('');
+    },
+  );
+
   it('renders the public layout and home sections in the reference order', async () => {
     await TestBed.configureTestingModule({
       imports: [App],

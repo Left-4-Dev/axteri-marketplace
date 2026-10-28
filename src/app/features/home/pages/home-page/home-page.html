@@ -1,8 +1,15 @@
-<app-hero />
-<app-limited-offers [products]="offers" />
-<app-categories [categories]="categories" />
-<app-featured-products [products]="featured" />
-<app-quality-banner />
-<app-preferred-brands [brands]="brands" />
-<app-news [promotion]="news" />
-<app-recommendations [products]="recommendations" />
+<div class="home-intro">
+  <div class="home-intro__waves" aria-hidden="true">
+    <img src="/assets/backgrounds/home/hero-wave-background.svg" alt="" />
+  </div>
+  <app-hero />
+  <div class="home-content"><app-limited-offers [products]="offers" /></div>
+</div>
+<div class="home-content">
+  <app-categories [categories]="categories" />
+  <app-featured-products [products]="featured" />
+  <app-quality-banner />
+  <app-preferred-brands [brands]="brands" />
+  <app-news [promotion]="news" />
+  <app-recommendations [products]="recommendations" />
+</div>
