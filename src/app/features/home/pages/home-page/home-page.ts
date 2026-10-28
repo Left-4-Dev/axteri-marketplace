@@ -27,6 +27,7 @@ import {
     Recommendations,
   ],
   templateUrl: './home-page.html',
+  styleUrl: './home-page.scss',
 })
 export class HomePage {
   protected readonly categories = HOME_CATEGORIES;

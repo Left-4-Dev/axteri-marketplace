@@ -1,32 +1,83 @@
 <section class="hero" id="hero" aria-labelledby="hero-title">
-  <h1 id="hero-title">Axteri Marketplace</h1>
-  <p class="hero__area">AXTE INDUX</p>
-  <p>
-    El mercado digital que te brinda una forma sencilla, rápida y segura de comprar por internet.
-  </p>
-  <aside class="hero__areas" aria-label="Otras áreas">
-    <p>Otras áreas</p>
-    <button type="button" disabled>AXTE INDUX</button>
-    <button type="button" disabled>AXTE AGRO</button>
-  </aside>
-  <form class="hero__search" id="home-search" role="search" (submit)="$event.preventDefault()">
-    <label for="hero-query">¿Qué producto estás buscando?</label>
-    <input
-      id="hero-query"
-      data-primary-search
-      name="query"
-      type="search"
-      placeholder="Describe el producto que necesitas"
-    />
-    <div class="hero__search-actions">
-      <button type="button" disabled>Adjuntar archivo</button>
-      <label><input type="checkbox" disabled /> Modo IA</label>
-      <button type="submit" disabled>Buscar</button>
+  <h1 class="hero__sr-only" id="hero-title">Axteri Marketplace</h1>
+  <div class="hero__slide" role="group" aria-label="Presentación de Axteri Indux">
+    <div class="hero__branding">
+      <span class="hero__logo hero__brand-mark hero__brand-mark--axteri">
+        <img src="/assets/logos/axteri-logo.svg" alt="Axteri" />
+      </span>
+      <span class="hero__divider" aria-hidden="true"></span>
+      <div class="hero__industry">
+        <span class="hero__axte hero__brand-mark hero__brand-mark--axte">
+          <img src="/assets/logos/axte-logo.svg" alt="Axte" />
+        </span>
+        <span class="hero__industry-name">Indux</span>
+      </div>
     </div>
-  </form>
-  <div class="hero__pagination" role="group" aria-label="Promociones del inicio">
-    <button type="button" disabled aria-label="Promoción 1">1</button>
-    <button type="button" disabled aria-label="Promoción 2">2</button>
-    <button type="button" disabled aria-label="Promoción 3">3</button>
+    <p class="hero__description">
+      EL MERCADO DIGITAL QUE TE BRINDA UNA FORMA SENCILLA, RÁPIDA Y SEGURA DE COMPRAR POR INTERNET.
+    </p>
+    <form
+      class="hero__search"
+      id="home-search"
+      role="search"
+      aria-label="Buscador principal de productos"
+      (submit)="$event.preventDefault()"
+    >
+      <label class="hero__sr-only" for="hero-query">¿Qué producto estás buscando?</label>
+      <textarea
+        class="hero__query"
+        id="hero-query"
+        data-primary-search
+        name="query"
+        rows="2"
+        placeholder="DAME UNA LISTA COMPARATIVA DE ATOMIZADORES, COMPARANDO PRECIOS, PORTABOQUILLAS Y SISTEMA DE FILTRADO"
+      ></textarea>
+      <div class="hero__search-actions">
+        <button
+          class="hero__attachment"
+          type="button"
+          aria-label="Adjuntar archivo (próximamente)"
+          aria-disabled="true"
+        >
+          <img src="/assets/icons/common/attachment.svg" alt="" width="20" height="20" />
+        </button>
+        <button
+          class="hero__ai-toggle"
+          type="button"
+          role="switch"
+          [attr.aria-checked]="aiModeEnabled()"
+          (click)="toggleAiMode()"
+        >
+          <span class="hero__switch-track" aria-hidden="true"
+            ><span class="hero__switch-thumb"></span
+          ></span>
+          <span>Modo IA</span>
+        </button>
+        <button class="hero__submit" type="submit">Buscar</button>
+      </div>
+    </form>
+    <!-- One real slide; the remaining markers only reserve the visual carousel treatment. -->
+    <div class="hero__pagination" aria-hidden="true">
+      <span class="hero__dot hero__dot--active"></span>
+      <span class="hero__dot"></span>
+      <span class="hero__dot"></span>
+    </div>
   </div>
+  <aside class="hero__areas" aria-labelledby="hero-areas-title">
+    <h2 class="hero__areas-title" id="hero-areas-title">Otras áreas</h2>
+    <ul class="hero__areas-list">
+      <li class="hero__area-card hero__area-card--indux">
+        <span class="hero__area-logo hero__brand-mark hero__brand-mark--axte">
+          <img src="/assets/logos/axte-logo.svg" alt="Axte" />
+        </span>
+        <span>Indux</span>
+      </li>
+      <li class="hero__area-card hero__area-card--agro">
+        <span class="hero__area-logo hero__brand-mark hero__brand-mark--axte">
+          <img src="/assets/logos/axte-logo.svg" alt="Axte" />
+        </span>
+        <span>Agro</span>
+      </li>
+    </ul>
+  </aside>
 </section>

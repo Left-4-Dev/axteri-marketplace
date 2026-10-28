@@ -14,20 +14,23 @@
 
 @media (max-width: bp.$xl) {
   :host {
-    --header-content-offset: 11.25rem;
+    --header-content-offset: 5.5rem;
   }
 }
 
-@media (max-width: bp.$sm) {
+@media (max-width: bp.$lg) {
   :host {
-    --header-content-offset: 15rem;
+    --header-content-offset: 5rem;
+  }
+}
+@media (max-width: bp.$md) {
+  :host {
+    --header-content-offset: 4rem;
   }
 }
 .main-layout {
   &__content {
-    max-inline-size: var(--content-width);
-    margin-inline: auto;
-    padding-inline: var(--space-md);
+    min-inline-size: 0;
   }
   &__skip-link {
     position: absolute;

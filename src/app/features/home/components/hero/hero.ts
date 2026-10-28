@@ -1,8 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-hero',
   templateUrl: './hero.html',
-  styleUrl: './hero.scss',
+  styleUrls: ['./hero.scss', './hero-search.scss', './hero-responsive.scss'],
 })
-export class Hero {}
+export class Hero {
+  protected readonly aiModeEnabled = signal(false);
+
+  protected toggleAiMode(): void {
+    this.aiModeEnabled.update((enabled) => !enabled);
+  }
+}

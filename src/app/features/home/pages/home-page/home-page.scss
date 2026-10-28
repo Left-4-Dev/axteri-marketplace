@@ -1,0 +1,111 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+}
+
+.home-intro {
+  --home-intro-surface: #e2e7f7;
+  --home-intro-gradient-start: #a0d5fd;
+  --home-intro-gradient-end: #9d98fc;
+  --home-intro-gradient: linear-gradient(
+    90deg,
+    var(--home-intro-gradient-start),
+    var(--home-intro-gradient-end)
+  );
+  --home-intro-background-overlap: 8rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  position: relative;
+  isolation: isolate;
+  > app-hero {
+    grid-area: 1 / 1;
+    min-inline-size: 0;
+  }
+  > .home-content {
+    grid-area: 2 / 1;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+  &::before,
+  > .home-intro__waves {
+    position: absolute;
+    // Anchor to the Hero row, so additional offer content cannot stretch the image.
+    grid-area: 1 / 1 / 2 / 2;
+    z-index: -1;
+    inset: 1.875rem max(1.5rem, calc((100% - 120rem) / 2 + 1.875rem))
+      calc(-1 * var(--home-intro-background-overlap));
+    border-radius: 1.25rem 1.25rem 0 0;
+    pointer-events: none;
+  }
+  &::before {
+    content: '';
+    background-color: var(--home-intro-surface);
+    background-image:
+      var(--home-intro-gradient), url('/assets/backgrounds/home/hero-mesh-background.png');
+    background-blend-mode: color, normal;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+  }
+}
+
+.home-intro > .home-intro__waves {
+  // The mesh continues into offers; the wave illustration ends with the Hero.
+  inset-block-end: 0;
+  overflow: clip;
+
+  img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: fill;
+    // Overscan keeps the edges covered throughout the wider wave movement.
+    animation: home-wave-drift 10s ease-in-out infinite;
+  }
+}
+
+@keyframes home-wave-drift {
+  0%,
+  100% {
+    transform: translate(3%, 1.5%) scale(1.12, 1.1);
+  }
+  25% {
+    transform: translate(0, -2%) scale(1.16, 1.12);
+  }
+  50% {
+    transform: translate(-3%, 1%) scale(1.12, 1.14);
+  }
+  75% {
+    transform: translate(-0.5%, 2.5%) scale(1.16, 1.12);
+  }
+}
+
+.home-content {
+  max-inline-size: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+@media (max-width: bp.$md) {
+  .home-intro::before,
+  .home-intro > .home-intro__waves {
+    inset: 0 0.75rem calc(-1 * var(--home-intro-background-overlap));
+    border-radius: 0;
+  }
+  .home-intro > .home-intro__waves {
+    inset-block-end: 0;
+
+    img {
+      animation-duration: 12s;
+      object-fit: cover;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-intro > .home-intro__waves img {
+    animation: none;
+  }
+}

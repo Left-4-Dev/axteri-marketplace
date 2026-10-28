@@ -1,0 +1,169 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+@media (max-width: bp.$xl) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 56%) minmax(0, 1fr);
+    padding-inline: 2.5rem;
+  }
+  .hero__slide {
+    padding-block-start: 3rem;
+  }
+  .hero__branding {
+    gap: 1.5rem;
+  }
+  .hero__logo {
+    inline-size: clamp(10rem, 14vw, 11rem);
+  }
+  .hero__industry-name {
+    font-size: 2.75rem;
+  }
+  .hero__description {
+    max-inline-size: 31rem;
+  }
+  .hero__areas {
+    inline-size: min(100%, 9.5rem);
+  }
+  .hero__area-card {
+    min-block-size: 5rem;
+    padding: 0.75rem 1rem;
+  }
+}
+@media (max-width: bp.$lg) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    padding: calc(var(--header-content-offset) + 3rem) 2.5rem 2rem;
+  }
+  .hero__slide,
+  .hero__areas {
+    grid-column: 1;
+    inline-size: 100%;
+    justify-self: center;
+    padding: 0;
+  }
+  .hero__slide {
+    max-inline-size: 36rem;
+  }
+  .hero__branding {
+    gap: 1.25rem;
+  }
+  .hero__logo {
+    inline-size: 10rem;
+  }
+  .hero__industry-name {
+    font-size: 2.5rem;
+  }
+  .hero__areas {
+    max-inline-size: 26rem;
+  }
+  .hero__areas-title {
+    margin-block-end: 0.75rem;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+  .hero__areas-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .hero__area-card {
+    justify-items: center;
+    aspect-ratio: auto;
+    padding-inline: 0.75rem;
+    span {
+      font-size: 1.375rem;
+    }
+  }
+}
+@media (max-width: bp.$md) {
+  .hero {
+    gap: 1.5rem;
+    padding: calc(var(--header-content-offset) + 2rem) 2rem 1.5rem;
+  }
+  .hero__slide {
+    max-inline-size: 32rem;
+  }
+  .hero__description {
+    max-inline-size: 28rem;
+    margin-block-start: 1.25rem;
+    font-size: 0.875rem;
+  }
+  .hero__search {
+    gap: 0.5rem;
+    margin-block-start: 1.25rem;
+    padding: 0.75rem;
+  }
+  .hero__query {
+    block-size: 4.5rem;
+    min-block-size: 0;
+    font-size: 0.875rem;
+
+    &::placeholder {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+  }
+  .hero__pagination {
+    gap: 1rem;
+    margin-block-start: 1rem;
+  }
+}
+@media (max-width: bp.$sm) {
+  .hero {
+    gap: 1.25rem;
+    padding: calc(var(--header-content-offset) + 1.5rem) 1.25rem 1.25rem;
+  }
+  .hero__slide {
+    max-inline-size: 28rem;
+  }
+  .hero__branding {
+    gap: clamp(0.75rem, 3vw, 1rem);
+  }
+  .hero__logo {
+    inline-size: clamp(7.75rem, 32vw, 10rem);
+  }
+  .hero__divider {
+    block-size: 3.5rem;
+  }
+  .hero__axte {
+    inline-size: 3.5rem;
+  }
+  .hero__industry-name {
+    font-size: 2rem;
+  }
+  .hero__description {
+    max-inline-size: 24rem;
+    margin-block-start: 1rem;
+    font-size: 0.8125rem;
+  }
+  .hero__search {
+    inline-size: calc(100% - 1.5rem);
+    padding: 0.625rem;
+  }
+  .hero__search-actions {
+    gap: 0.5rem;
+  }
+  .hero__ai-toggle {
+    gap: 0.375rem;
+    font-size: 0.75rem;
+  }
+  .hero__switch-track {
+    inline-size: 2.25rem;
+  }
+  .hero__ai-toggle[aria-checked='true'] .hero__switch-thumb {
+    transform: translateX(0.75rem);
+  }
+  .hero__submit {
+    padding-inline: 0.75rem;
+    font-size: 0.75rem;
+  }
+  .hero__areas {
+    max-inline-size: 22rem;
+  }
+  .hero__areas-list {
+    gap: 0.75rem;
+  }
+  .hero__area-card {
+    min-block-size: 4.5rem;
+    padding: 0.625rem 0.75rem;
+  }
+}
