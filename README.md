@@ -70,6 +70,7 @@ src/app/
 ├── core/
 │   └── layout/
 │       ├── header/
+│       ├── floating-actions/
 │       ├── footer/
 │       └── main-layout/
 │
@@ -161,7 +162,7 @@ Ejemplos:
 ```text
 component/header
 component/hero
-component/product-card
+component/floating-actions
 
 feature/search
 feature/cart
@@ -199,7 +200,7 @@ refactor/header-navigation
 
 ## Pull Requests
 
-Las ramas de trabajo crean Pull Request hacia:
+Todas las ramas de trabajo crean Pull Request hacia:
 
 ```text
 dev
@@ -235,10 +236,111 @@ Ejemplos:
 ```text
 feat(header): implement responsive marketplace header
 feat(hero): implement marketplace hero
+feat(floating-actions): implement global floating actions
 fix(header): correct products mega menu behavior
 refactor(header): simplify navigation state
-docs(readme): document branch workflow
+docs(readme): update project workflow
 ```
+
+El número del Pull Request no forma parte del título original del PR. Se agrega al commit resultante de la integración para mantener trazabilidad con GitHub.
+
+## Estrategia de merge
+
+La estrategia depende del contenido e historial de la rama.
+
+### Squash and merge
+
+Utiliza **Squash and merge** cuando:
+
+- el PR contiene un único commit;
+- los commits intermedios no aportan información relevante;
+- existen commits temporales, correcciones menores o ajustes sucesivos;
+- se trata de cambios pequeños como documentación, configuración o fixes simples.
+
+Ejemplos habituales:
+
+```text
+docs/*
+chore/*
+fix/*
+```
+
+También puede utilizarse en cualquier rama cuyo historial interno no necesite conservarse.
+
+El commit resultante debe seguir:
+
+```text
+<type>(<scope>): <description> (#PR)
+```
+
+Ejemplo:
+
+```text
+feat(floating-actions): implement global floating actions (#4)
+```
+
+### Create a merge commit
+
+Utiliza **Create a merge commit** cuando:
+
+- el PR corresponde a una feature o componente importante;
+- contiene varios commits bien definidos que vale la pena conservar;
+- el historial interno explica de forma útil la evolución de la implementación;
+- se integra `dev` hacia `main`.
+
+Ejemplo:
+
+```text
+feat(hero): implement marketplace hero (#3)
+```
+
+Los commits internos se conservan y el merge commit identifica el Pull Request que los integró.
+
+### Rebase and merge
+
+`Rebase and merge` no forma parte del flujo estándar del proyecto.
+
+Se priorizan `Squash and merge` y `Create a merge commit` para mantener una estrategia simple, consistente y trazable.
+
+### Trazabilidad de Pull Requests
+
+Todo commit generado al integrar un Pull Request debe incluir su número:
+
+```text
+(#PR)
+```
+
+Ejemplos:
+
+```text
+feat(header): implement responsive marketplace header (#1)
+docs(readme): update project documentation and git workflow (#2)
+feat(hero): implement marketplace hero (#3)
+feat(floating-actions): implement global floating actions (#4)
+```
+
+Esta regla aplica tanto a:
+
+```text
+Squash and merge
+```
+
+como a:
+
+```text
+Create a merge commit
+```
+
+Los commits realizados normalmente dentro de una rama de desarrollo **no incluyen** el número del PR.
+
+Por ejemplo:
+
+```text
+feat(hero): implement marketplace hero
+fix(hero): refine responsive layout
+```
+
+El número se incorpora únicamente cuando el cambio es integrado mediante Pull Request.
 
 ## Mantener una rama actualizada
 
@@ -266,11 +368,15 @@ Después de hacer rebase sobre una rama que ya fue publicada:
 git push --force-with-lease
 ```
 
-No utilices `git push --force`.
+No utilices:
+
+```bash
+git push --force
+```
 
 ## Commits
 
-Los commits también siguen **Conventional Commits**:
+Los commits siguen **Conventional Commits**:
 
 ```text
 <type>(<scope>): <description>
@@ -287,16 +393,19 @@ Tipos principales:
 | `chore` | Configuración o mantenimiento |
 | `test` | Pruebas |
 
-Ejemplos:
+Ejemplos de commits durante el desarrollo:
 
 ```text
 feat(header): add products mega menu
 fix(header): refine responsive behavior
 feat(hero): implement marketplace hero
-docs(readme): document branch workflow
+feat(floating-actions): implement global floating actions
+docs(readme): update project workflow
 ```
 
 Los commits deben ser pequeños, coherentes y evitar mezclar cambios no relacionados.
+
+El identificador `(#PR)` está reservado para los commits resultantes de integrar Pull Requests.
 
 ## Estilos
 
@@ -355,6 +464,14 @@ public/assets/
 └── ...
 ```
 
+Las referencias locales utilizadas para comparar la implementación con los diseños se mantienen en:
+
+```text
+references/
+```
+
+Esta carpeta es únicamente material local de desarrollo y está excluida del repositorio mediante `.gitignore`.
+
 Los valores visuales provenientes del diseño y pendientes de definición definitiva se gestionan mediante tokens o custom properties cuando corresponde.
 
 Principalmente:
@@ -371,7 +488,7 @@ La tipografía principal del proyecto es **Exo**.
 
 ## Estado actual
 
-La Home se encuentra en desarrollo por secciones.
+La Home se desarrolla progresivamente por secciones.
 
 Estructura prevista:
 
@@ -392,6 +509,7 @@ Actualmente:
 
 - la estructura general de la Home está preparada;
 - el Header está implementado;
+- el Hero está implementado;
 - existen mocks tipados para desarrollar la interfaz sin depender todavía de APIs;
 - `ProductCard` se reutiliza entre las distintas secciones de productos;
 - el resto de secciones se implementará progresivamente.
@@ -421,13 +539,15 @@ Estas funcionalidades se incorporarán progresivamente sin acoplar prematurament
 - Parte siempre de un `dev` actualizado.
 - No reutilices ramas ya integradas.
 - Mantén los cambios de una rama enfocados en una responsabilidad.
+- Utiliza Pull Requests para integrar cambios.
+- Incluye `(#PR)` en todo commit resultante de un merge.
 - No subas credenciales ni secretos.
-- No subas referencias de diseño locales que no formen parte del producto.
+- No subas referencias locales de diseño.
 - Evita dependencias innecesarias.
 - Reutiliza componentes únicamente cuando exista una necesidad real.
 - Evita sobrecomponentización y abstracciones prematuras.
 - Mantén accesibilidad y HTML semántico.
-- Ejecuta lint, tests y build antes de solicitar integración.
+- Ejecuta formatter, lint, tests y build antes de solicitar integración.
 
 ## Licencia
 
