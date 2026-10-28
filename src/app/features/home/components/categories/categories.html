@@ -1,19 +1,57 @@
 <section class="categories" id="categories" aria-labelledby="categories-title">
-  <h2 id="categories-title">Categorías</h2>
-  <ul class="categories__list">
-    @for (category of categories(); track category.id) {
-      <li>
-        <article class="categories__card">
-          <div class="categories__image">
-            @if (category.imageUrl; as imageUrl) {
-              <img [ngSrc]="imageUrl" [alt]="category.name" fill />
-            } @else {
-              <span>Imagen de categoría pendiente</span>
-            }
-          </div>
-          <h3>{{ category.name }}</h3>
-        </article>
-      </li>
-    }
-  </ul>
+  <h2 class="categories__title" id="categories-title">CATEGORÍAS</h2>
+  <div class="categories__carousel">
+    <button
+      class="categories__arrow categories__arrow--previous"
+      type="button"
+      aria-label="Categorías anteriores"
+      aria-controls="categories-viewport"
+      [disabled]="!canGoBack()"
+      (click)="move(-1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+    <div
+      #viewport
+      class="categories__viewport"
+      id="categories-viewport"
+      role="region"
+      aria-labelledby="categories-title"
+      [attr.tabindex]="canGoBack() || canGoForward() ? 0 : null"
+      (scroll)="updateControls()"
+      (keydown)="onKeydown($event)"
+    >
+      <ul #list class="categories__list" role="list">
+        @for (category of categories(); track category.id) {
+          <li class="categories__item">
+            <article class="categories__card">
+              <div class="categories__image">
+                @if (category.imageUrl; as imageUrl) {
+                  <img
+                    [ngSrc]="imageUrl"
+                    [alt]="category.name"
+                    fill
+                    sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 15vw"
+                  />
+                } @else {
+                  <span class="categories__placeholder">Imagen de categoría pendiente</span>
+                }
+              </div>
+              <h3 class="categories__name">{{ category.name }}</h3>
+            </article>
+          </li>
+        }
+      </ul>
+    </div>
+    <button
+      class="categories__arrow categories__arrow--next"
+      type="button"
+      aria-label="Categorías siguientes"
+      aria-controls="categories-viewport"
+      [disabled]="!canGoForward()"
+      (click)="move(1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
 </section>

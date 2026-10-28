@@ -1,21 +1,196 @@
-@use '../../../../../styles/skeleton';
+@use '../../../../../styles/breakpoints' as bp;
 
-@include skeleton.section;
+:host {
+  // Match the implemented offers container without changing HomePage's wrapper.
+  --categories-width: min(112rem, calc(100vw - 6rem));
+  --categories-gap: 1.5rem;
+  --control-size: 2.75rem;
+  --categories-image-width: 43%;
+  --card-height: 10.75rem;
+  --categories-radius: 1.125rem;
+  --categories-text: #303341;
+  --categories-surface: #f2f2f2;
+  --control-muted: #a0a0a7;
+  --categories-shadow: 0 3px 14px rgb(80 73 139 / 15%);
+  display: block;
+  inline-size: var(--categories-width);
+  margin-inline: calc((100% - var(--categories-width)) / 2);
+}
 .categories {
-  &__list {
-    @include skeleton.list(20rem);
+  padding-block: var(--space-xl);
+  background: var(--categories-surface);
+  color: var(--categories-text);
+}
+.categories__title {
+  margin: 0 calc(var(--control-size) + 2 * var(--space-sm)) 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.categories__carousel {
+  display: grid;
+  grid-template-columns: var(--control-size) minmax(0, 1fr) var(--control-size);
+  gap: var(--space-sm);
+}
+.categories__viewport {
+  min-inline-size: 0;
+  padding: var(--space-sm);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--space-sm);
+  scrollbar-width: none;
+}
+.categories__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--categories-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.categories__item {
+  min-inline-size: 0;
+  scroll-snap-align: start;
+}
+.categories__card {
+  display: grid;
+  grid-template-columns: var(--categories-image-width) minmax(0, 1fr);
+  min-block-size: var(--card-height);
+  block-size: 100%;
+  overflow: hidden;
+  border-radius: var(--categories-radius);
+  background: var(--color-background);
+  box-shadow: var(--categories-shadow);
+}
+.categories__image {
+  display: grid;
+  place-items: center;
+  position: relative;
+  padding: var(--space-sm);
+  overflow: hidden;
+  border-radius: var(--categories-radius);
+  background: var(--color-placeholder-surface);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+.categories__image img {
+  object-fit: cover;
+}
+.categories__name {
+  align-self: center;
+  margin: 0;
+  padding: 1.25rem min(2rem, 1.75vw);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.categories__arrow {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  inline-size: var(--control-size);
+  block-size: var(--control-size);
+  padding: 0.625rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.categories__arrow span {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  background: currentColor;
+  mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
+  transform: rotate(-90deg);
+}
+.categories__arrow--previous span {
+  transform: rotate(90deg);
+}
+.categories__arrow:disabled {
+  color: var(--control-muted);
+  cursor: default;
+}
+.categories__arrow--previous:disabled {
+  visibility: hidden;
+}
+.categories__arrow:not(:disabled):active {
+  background: var(--color-placeholder-border);
+}
+.categories__viewport:focus-visible {
+  outline-offset: -2px;
+  border-radius: var(--categories-radius);
+}
+@media (hover: hover) {
+  .categories__arrow:not(:disabled):hover {
+    color: var(--categories-text);
+    background: var(--color-placeholder-border);
   }
-  &__card {
-    @include skeleton.card;
+}
+@media (max-width: bp.$xl) {
+  :host {
+    --categories-width: min(112rem, calc(100vw - 3rem));
+    --categories-gap: 1.25rem;
+    --categories-image-width: 36%;
+    --card-height: 10rem;
   }
-  &__image {
-    @include skeleton.placeholder;
-    position: relative;
-    img {
-      object-fit: contain;
-    }
+  .categories__name {
+    padding: 1rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.4;
   }
-  h3 {
-    font-size: var(--font-size-body);
+}
+@media (max-width: bp.$lg) {
+  :host {
+    --categories-width: 100%;
+    --categories-image-width: 40%;
+  }
+  .categories__list {
+    grid-template-columns: none;
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - var(--categories-gap)) / 2);
+  }
+}
+@media (max-width: bp.$md) {
+  .categories__title {
+    margin-inline: var(--space-sm);
+  }
+  .categories__carousel {
+    grid-template-columns: 1fr 1fr;
+  }
+  .categories__viewport {
+    grid-area: 1 / 1 / 2 / -1;
+  }
+  .categories__arrow--previous {
+    grid-area: 2 / 1;
+    justify-self: end;
+  }
+  .categories__arrow--next {
+    grid-area: 2 / 2;
+    justify-self: start;
+  }
+  .categories__arrow--previous:disabled {
+    visibility: visible;
+  }
+}
+@media (max-width: bp.$sm) {
+  :host {
+    --categories-gap: 1rem;
+    --card-height: 9rem;
+  }
+  .categories {
+    padding-block: 2rem;
+  }
+  .categories__title {
+    font-size: 1.0625rem;
+  }
+  .categories__list {
+    grid-auto-columns: 100%;
   }
 }
