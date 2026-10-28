@@ -2,30 +2,57 @@ import { Product } from '../../../models/product.model';
 
 // Precios y proveedores de demostración, no constituyen ofertas comerciales.
 const seller = { name: 'LDF Projects', location: 'San Miguel, Lima', years: 20 } as const;
+// Static design sample, not a live deadline or a renewable promotion.
+const offer = {
+  countdown: { kind: 'presentation', days: 2, hours: 5, minutes: 23, seconds: 45 },
+} as const;
+const offerPriceDetails = { unitLabel: 'Por unidad', includesTax: true } as const;
 
 const atlas: Product = {
   id: 'atlas-ga15',
   brand: 'Atlas',
   name: 'Compresor tornillo rotativo 15 kW Copco GA15 FF',
-  price: { kind: 'fixed', amount: 8500, previousAmount: 8700, currency: 'PEN' },
+  price: {
+    kind: 'fixed',
+    amount: 8500,
+    previousAmount: 8700,
+    currency: 'PEN',
+    ...offerPriceDetails,
+  },
+  offer,
 };
 const siemens: Product = {
   id: 'siemens-simotics',
   brand: 'Siemens',
   name: 'Simotics SD 1LE1002-1BB22 motor eléctrico trifásico',
-  price: { kind: 'fixed', amount: 1200, previousAmount: 1500, currency: 'PEN' },
+  price: {
+    kind: 'fixed',
+    amount: 1200,
+    previousAmount: 1500,
+    currency: 'PEN',
+    ...offerPriceDetails,
+  },
+  offer,
 };
 const metabo: Product = {
   id: 'metabo-khe96',
   brand: 'Metabo',
   name: 'KHE 96 BVS martillo perforador industrial 1550 W',
-  price: { kind: 'fixed', amount: 850, previousAmount: 900, currency: 'PEN' },
+  price: { kind: 'fixed', amount: 850, previousAmount: 900, currency: 'PEN', ...offerPriceDetails },
+  offer,
 };
 const lincoln: Product = {
   id: 'lincoln-350mp',
   brand: 'Lincoln',
   name: 'Electric Power MIG 350MP soldadora MIG/TIG/STICK 350 A',
-  price: { kind: 'fixed', amount: 3200, previousAmount: 3500, currency: 'PEN' },
+  price: {
+    kind: 'fixed',
+    amount: 3200,
+    previousAmount: 3500,
+    currency: 'PEN',
+    ...offerPriceDetails,
+  },
+  offer,
 };
 
 export const LIMITED_OFFERS: readonly Product[] = [
@@ -33,7 +60,14 @@ export const LIMITED_OFFERS: readonly Product[] = [
     id: 'grundfos-cm5',
     brand: 'Grundfos',
     name: 'Bomba centrífuga multietapa CM5-5 A-R-A-E-AVBE',
-    price: { kind: 'fixed', amount: 1850, previousAmount: 1900, currency: 'PEN' },
+    price: {
+      kind: 'fixed',
+      amount: 1850,
+      previousAmount: 1900,
+      currency: 'PEN',
+      ...offerPriceDetails,
+    },
+    offer,
   },
   atlas,
   siemens,

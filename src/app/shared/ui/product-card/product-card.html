@@ -1,12 +1,60 @@
 @let item = product();
-<article class="product-card">
-  <div class="product-card__image">
-    @if (item.imageUrl; as imageUrl) {
-      <img [ngSrc]="imageUrl" [alt]="item.name" fill />
-    } @else {
-      <span>Imagen de producto pendiente</span>
+@let isOffer = variant() === 'offer';
+<article class="product-card" [class.product-card--offer]="isOffer">
+  <div class="product-card__visual">
+    <div class="product-card__image">
+      @if (item.imageUrl; as imageUrl) {
+        <img
+          [ngSrc]="imageUrl"
+          [alt]="item.name"
+          fill
+          [sizes]="isOffer ? '(max-width: 640px) 85vw, (max-width: 1280px) 30vw, 20vw' : '100vw'"
+        />
+      } @else {
+        <span class="product-card__placeholder">Imagen de producto pendiente</span>
+      }
+    </div>
+    @if (isOffer) {
+      <div class="product-card__quick-actions">
+        <button
+          type="button"
+          disabled
+          (click)="requestQuote.emit(item)"
+          [attr.aria-label]="'Consultar sobre ' + item.name + ' (próximamente)'"
+        >
+          <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
+        </button>
+        <button
+          type="button"
+          disabled
+          (click)="viewDetails.emit(item)"
+          [attr.aria-label]="'Ver ficha de ' + item.name + ' (próximamente)'"
+        >
+          <span class="product-card__icon product-card__icon--details" aria-hidden="true"></span>
+        </button>
+      </div>
     }
   </div>
+  @if (isOffer) {
+    <div class="product-card__offer-band">
+      <span class="product-card__offer-label">OFERTA</span>
+      @if (countdownParts().length) {
+        <div
+          class="product-card__countdown"
+          role="img"
+          [attr.aria-label]="countdownLabel()"
+          title="Contador de demostración; fecha de fin pendiente"
+        >
+          @for (part of countdownParts(); track part.unit) {
+            <span class="product-card__time-part" aria-hidden="true"
+              ><b>{{ part.text }}</b
+              ><span>{{ part.unit }}</span></span
+            >
+          }
+        </div>
+      }
+    </div>
+  }
   <p class="product-card__brand">{{ item.brand }}</p>
   <h3 class="product-card__title">{{ item.name }}</h3>
   @if (item.seller; as seller) {
@@ -19,10 +67,30 @@
     @let price = item.price;
     @switch (price.kind) {
       @case ('fixed') {
-        <p>{{ price.amount | currency: price.currency : 'symbol-narrow' }}</p>
+        <p class="product-card__current-price">
+          <span>{{
+            price.amount
+              | currency
+                : price.currency
+                : (isOffer && price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+          }}</span>
+          @if (isOffer && discountPercent(); as discount) {
+            <span
+              class="product-card__discount"
+              [attr.aria-label]="(discount | number: '1.0-1') + '% de descuento'"
+              >-{{ discount | number: '1.0-1' }}%</span
+            >
+          }
+        </p>
         @if (price.previousAmount !== undefined) {
           <p class="product-card__previous-price">
-            Antes: <s>{{ price.previousAmount | currency: price.currency : 'symbol-narrow' }}</s>
+            Antes:
+            <s>{{
+              price.previousAmount
+                | currency
+                  : price.currency
+                  : (isOffer && price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+            }}</s>
           </p>
         }
       }
@@ -37,23 +105,48 @@
       }
     }
     @if (price.kind !== 'quote') {
-      <small>Por unidad · Incluye IGV</small>
+      @if (isOffer) {
+        <small class="product-card__terms">
+          @if (price.unitLabel) {
+            <span>*{{ price.unitLabel }}</span>
+          }
+          @if (price.unitLabel && price.includesTax !== undefined) {
+            <span aria-hidden="true">|</span>
+          }
+          @if (price.includesTax !== undefined) {
+            <span>
+              {{ price.includesTax ? 'Incluye IGV' : 'No incluye IGV' }}
+              <img
+                class="product-card__info-icon"
+                src="/assets/icons/product/info.svg"
+                alt=""
+                width="12"
+                height="12"
+              />
+            </span>
+          }
+        </small>
+      } @else {
+        <small>Por unidad · Incluye IGV</small>
+      }
     }
   </div>
-  <div class="product-card__actions">
-    <button
-      type="button"
-      (click)="requestQuote.emit(item)"
-      [attr.aria-label]="'Consultar sobre ' + item.name"
-    >
-      Consultar
-    </button>
-    <button
-      type="button"
-      (click)="viewDetails.emit(item)"
-      [attr.aria-label]="'Ver ficha de ' + item.name"
-    >
-      Ver ficha
-    </button>
-  </div>
+  @if (!isOffer) {
+    <div class="product-card__actions">
+      <button
+        type="button"
+        (click)="requestQuote.emit(item)"
+        [attr.aria-label]="'Consultar sobre ' + item.name"
+      >
+        Consultar
+      </button>
+      <button
+        type="button"
+        (click)="viewDetails.emit(item)"
+        [attr.aria-label]="'Ver ficha de ' + item.name"
+      >
+        Ver ficha
+      </button>
+    </div>
+  }
 </article>

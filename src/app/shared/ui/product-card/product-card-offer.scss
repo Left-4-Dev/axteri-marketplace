@@ -1,0 +1,203 @@
+@use '../../../../styles/breakpoints' as bp;
+
+.product-card--offer {
+  --offer-radius: 0.875rem;
+  padding: 0;
+  border: 0;
+  gap: 0;
+  color: #303341;
+  overflow-wrap: break-word;
+
+  .product-card__image {
+    grid-area: 1 / 1 / 2 / -1;
+    aspect-ratio: 1.2;
+    min-height: 0;
+    padding: 1.5rem;
+    border-radius: var(--offer-radius) var(--offer-radius) var(--offer-radius) 0;
+    background: #fff;
+    img {
+      padding: 1.25rem;
+    }
+  }
+  .product-card__brand,
+  .product-card__title,
+  .product-card__price {
+    margin-inline: 0.5rem 0.25rem;
+  }
+  .product-card__brand {
+    color: #727482;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+  }
+  .product-card__title {
+    min-height: 2.5em;
+    margin-block: 0.2rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .product-card__previous-price {
+    margin-top: 0.25rem;
+    color: #727482;
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    font-weight: 500;
+    s {
+      text-decoration: none;
+    }
+  }
+}
+
+.product-card__visual {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  filter: drop-shadow(1px 3px 7px rgb(53 44 105 / 16%));
+
+  &::after {
+    content: '';
+    grid-area: 2 / 1;
+    margin-top: calc(-1 * var(--offer-radius));
+    border-radius: 0 0 var(--offer-radius) var(--offer-radius);
+    background: #fff;
+  }
+}
+.product-card__placeholder {
+  max-width: 10rem;
+  color: #727482;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.product-card__current-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem 0.5rem;
+  font-size: clamp(1.375rem, 1.6vw, 1.625rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  > span:first-child {
+    white-space: nowrap;
+  }
+}
+.product-card__quick-actions {
+  grid-area: 2 / 2;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0 0 0.5rem;
+  button {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.625rem;
+    border: 0;
+    border-radius: 50%;
+    background: #7379ff;
+    color: #fff;
+    cursor: not-allowed;
+    &:focus-visible {
+      outline: 2px solid #6254cf;
+      outline-offset: 3px;
+    }
+  }
+}
+.product-card__icon {
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  mask: var(--product-icon) center / contain no-repeat;
+  &--chat {
+    --product-icon: url('/assets/icons/product/chat.svg');
+  }
+  &--details {
+    --product-icon: url('/assets/icons/product/details.svg');
+  }
+}
+.product-card__offer-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.375rem;
+  min-height: 2rem;
+  margin-block: 0.9375rem 0.8125rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3125rem;
+  background: linear-gradient(100deg, #c6e4ff, #c3c3ff);
+}
+.product-card__offer-label {
+  font-size: 0.8125rem;
+  line-height: 1;
+  font-weight: 700;
+}
+.product-card__countdown {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.product-card__time-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1875rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  b {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    min-height: 1.0625rem;
+    padding: 0.0625rem 0.1875rem 0;
+    border-radius: 0.1875rem;
+    background: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+}
+.product-card__discount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.1875rem;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.25rem;
+  background: #7379ff;
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.product-card__terms {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.125rem 0.375rem;
+  margin-top: 0.25rem;
+  color: #5c5e6b;
+  font-size: 0.8125rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.product-card__info-icon {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-left: 0.2rem;
+  vertical-align: -0.125rem;
+}
+
+@media (max-width: bp.$sm) {
+  .product-card--offer .product-card__image {
+    aspect-ratio: 1.25;
+    padding: 1.25rem;
+  }
+}

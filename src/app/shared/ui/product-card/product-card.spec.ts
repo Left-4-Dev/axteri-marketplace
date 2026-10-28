@@ -59,4 +59,96 @@ describe('ProductCard', () => {
     expect(onQuote).toHaveBeenCalledExactlyOnceWith(product);
     expect(onDetails).toHaveBeenCalledExactlyOnceWith(product);
   });
+
+  it('renders offer pricing, derived discount and a labelled presentation countdown', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('variant', 'offer');
+    fixture.componentRef.setInput('product', {
+      ...product,
+      price: {
+        kind: 'fixed',
+        amount: 1200,
+        previousAmount: 1500,
+        currency: 'PEN',
+        unitLabel: 'Por unidad',
+        includesTax: true,
+      },
+      offer: { countdown: { kind: 'presentation', days: 2, hours: 5, minutes: 23, seconds: 45 } },
+    } satisfies Product);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('article')?.classList).toContain('product-card--offer');
+    expect(element.querySelector('.product-card__current-price')?.textContent).toContain(
+      'S/ 1,200.00',
+    );
+    expect(element.querySelector('.product-card__discount')?.getAttribute('aria-label')).toBe(
+      '20% de descuento',
+    );
+    expect(element.querySelector('.product-card__previous-price')?.textContent).toContain(
+      'S/ 1,500.00',
+    );
+    expect(element.querySelector('.product-card__terms')?.textContent).toContain('Por unidad');
+    expect(element.querySelector('.product-card__terms')?.textContent).toContain('Incluye IGV');
+    const infoIcon = element.querySelector<HTMLImageElement>('.product-card__info-icon');
+    expect(infoIcon?.getAttribute('src')).toBe('/assets/icons/product/info.svg');
+    expect(infoIcon?.getAttribute('alt')).toBe('');
+    expect(element.querySelector('.product-card__countdown')?.getAttribute('aria-label')).toBe(
+      'Tiempo restante de ejemplo: 2 días, 5 horas, 23 minutos, 45 segundos',
+    );
+    expect(
+      Array.from(
+        element.querySelectorAll('.product-card__time-part b'),
+        (part) => part.textContent,
+      ),
+    ).toEqual(['02', '05', '23', '45']);
+    const actions = element.querySelectorAll<HTMLButtonElement>(
+      '.product-card__quick-actions button',
+    );
+    expect(actions).toHaveLength(2);
+    actions.forEach((button) => {
+      expect(button.disabled).toBe(true);
+      expect(button.getAttribute('aria-label')).toContain(product.name);
+      expect(button.querySelector('span')?.getAttribute('aria-hidden')).toBe('true');
+    });
+  });
+
+  it('does not assume tax, discount or a deadline when offer metadata is absent', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('variant', 'offer');
+    fixture.componentRef.setInput('product', {
+      ...product,
+      price: { kind: 'fixed', amount: 1200, currency: 'PEN' },
+    } satisfies Product);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.product-card__discount')).toBeNull();
+    expect(element.querySelector('.product-card__countdown')).toBeNull();
+    expect(element.textContent).not.toContain('IGV');
+    expect(element.textContent).not.toContain('Por unidad');
+  });
+
+  it('keeps the default variant free of offer visuals even with offer metadata', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', {
+      ...product,
+      offer: { countdown: { kind: 'presentation', days: 2, hours: 5, minutes: 23, seconds: 45 } },
+    } satisfies Product);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(fixture.componentInstance.variant()).toBe('default');
+    expect(element.querySelector('.product-card__offer-band')).toBeNull();
+    expect(element.querySelector('.product-card__quick-actions')).toBeNull();
+    expect(element.querySelectorAll('.product-card__actions button')).toHaveLength(2);
+  });
+
+  it('uses the product image contract and an accessible product name', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('variant', 'offer');
+    fixture.componentRef.setInput('product', { ...product, imageUrl: '/assets/product-test.png' });
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('img')?.alt).toBe(product.name);
+    expect(element.querySelector('img')?.getAttribute('src')).toBe('/assets/product-test.png');
+    expect(element.querySelector('.product-card__placeholder')).toBeNull();
+  });
 });
