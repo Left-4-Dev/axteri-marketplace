@@ -4,13 +4,13 @@
   // Match the implemented offers container without changing HomePage's wrapper.
   --categories-width: min(112rem, calc(100vw - 6rem));
   --categories-gap: 1.5rem;
-  --categories-control-size: 2.75rem;
+  --control-size: 2.75rem;
   --categories-image-width: 43%;
-  --categories-card-height: 10.75rem;
+  --card-height: 10.75rem;
   --categories-radius: 1.125rem;
   --categories-text: #303341;
   --categories-surface: #f2f2f2;
-  --categories-control-muted: #a0a0a7;
+  --control-muted: #a0a0a7;
   --categories-shadow: 0 3px 14px rgb(80 73 139 / 15%);
   display: block;
   inline-size: var(--categories-width);
@@ -22,16 +22,14 @@
   color: var(--categories-text);
 }
 .categories__title {
-  margin: 0 calc(var(--categories-control-size) + 2 * var(--space-sm)) 1rem;
+  margin: 0 calc(var(--control-size) + 2 * var(--space-sm)) 1rem;
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.35;
 }
 .categories__carousel {
   display: grid;
-  grid-template-columns: var(--categories-control-size) minmax(0, 1fr) var(
-      --categories-control-size
-    );
+  grid-template-columns: var(--control-size) minmax(0, 1fr) var(--control-size);
   gap: var(--space-sm);
 }
 .categories__viewport {
@@ -59,7 +57,7 @@
 .categories__card {
   display: grid;
   grid-template-columns: var(--categories-image-width) minmax(0, 1fr);
-  min-block-size: var(--categories-card-height);
+  min-block-size: var(--card-height);
   block-size: 100%;
   overflow: hidden;
   border-radius: var(--categories-radius);
@@ -67,10 +65,16 @@
   box-shadow: var(--categories-shadow);
 }
 .categories__image {
+  display: grid;
+  place-items: center;
   position: relative;
+  padding: var(--space-sm);
   overflow: hidden;
   border-radius: var(--categories-radius);
   background: var(--color-placeholder-surface);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
 }
 .categories__image img {
   object-fit: cover;
@@ -89,8 +93,8 @@
   display: grid;
   place-items: center;
   align-self: center;
-  inline-size: var(--categories-control-size);
-  block-size: var(--categories-control-size);
+  inline-size: var(--control-size);
+  block-size: var(--control-size);
   padding: 0.625rem;
   border: 0;
   border-radius: 50%;
@@ -109,7 +113,7 @@
   transform: rotate(90deg);
 }
 .categories__arrow:disabled {
-  color: var(--categories-control-muted);
+  color: var(--control-muted);
   cursor: default;
 }
 .categories__arrow--previous:disabled {
@@ -133,7 +137,7 @@
     --categories-width: min(112rem, calc(100vw - 3rem));
     --categories-gap: 1.25rem;
     --categories-image-width: 36%;
-    --categories-card-height: 10rem;
+    --card-height: 10rem;
   }
   .categories__name {
     padding: 1rem 0.75rem;
@@ -178,7 +182,7 @@
 @media (max-width: bp.$sm) {
   :host {
     --categories-gap: 1rem;
-    --categories-card-height: 9rem;
+    --card-height: 9rem;
   }
   .categories {
     padding-block: 2rem;

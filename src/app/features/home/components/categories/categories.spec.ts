@@ -72,12 +72,12 @@ describe('Categories', () => {
     expect(element.querySelector('article')?.hasAttribute('tabindex')).toBe(false);
   });
 
-  it('uses decorative structural placeholders when images are absent', () => {
+  it('shows accessible pending-image text when category images are absent', () => {
     const placeholders = element.querySelectorAll('.categories__placeholder');
     expect(placeholders).toHaveLength(HOME_CATEGORIES.length);
     placeholders.forEach((placeholder) => {
-      expect(placeholder.getAttribute('aria-hidden')).toBe('true');
-      expect(placeholder.textContent).toBe('');
+      expect(placeholder.hasAttribute('aria-hidden')).toBe(false);
+      expect(placeholder.textContent?.trim()).toBe('Imagen de categoría pendiente');
     });
     expect(element.querySelector('img')).toBeNull();
   });
