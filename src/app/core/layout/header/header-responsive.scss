@@ -54,26 +54,40 @@
     }
   }
   .header {
-    --header-inset: 1.5rem;
     min-block-size: 6rem;
     padding: 2.25rem 1.5rem 0;
     &__navbar {
-      gap: 1.125rem;
-      inline-size: 40rem;
-      min-block-size: 6rem;
-      padding-inline: 1rem;
+      gap: 1rem;
+      inline-size: 35.5rem;
+      min-block-size: 5.25rem;
+      padding: 1.5rem 1rem 0;
     }
     &__brand {
-      flex-basis: 11rem;
+      flex-basis: 9.5rem;
     }
     &__navigation {
-      gap: 1.25rem;
+      gap: 1rem;
     }
     &__link {
-      font-size: 0.9375rem;
+      font-size: 0.875rem;
     }
     &__actions {
       gap: 0.625rem;
+      margin-inline-end: 1rem;
+    }
+    &__actions &__action-copy,
+    &__actions &__location-chevron {
+      display: none;
+    }
+    &__actions &__action-short {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+    &__actions &__action--location {
+      inline-size: auto;
     }
     &__action-icon {
       inline-size: 2.5rem;
@@ -108,26 +122,43 @@
     }
   }
   .header {
-    --header-inset: 1.25rem;
+    --header-navbar-width: clamp(31.25rem, 26.5625vw + 14.25rem, 35.5rem);
     min-block-size: 5.5rem;
-    padding: 1.875rem 1.25rem 0;
+    padding: calc(var(--header-hero-top) + 0.375rem) 1.5rem 0;
     &__navbar {
-      gap: 0.875rem;
-      inline-size: clamp(34.5rem, 34.375vw + 12.5rem, 40rem);
-      min-block-size: 5.5rem;
-      padding: 0.75rem 1rem 0;
+      gap: 0.75rem;
+      inline-size: var(--header-navbar-width);
+      min-block-size: 4.75rem;
+      padding: 1.5rem 0.875rem 0;
     }
     &__brand {
-      flex-basis: clamp(8.75rem, 14.0625vw - 0.25rem, 11rem);
+      flex-basis: clamp(8rem, 9.375vw + 2rem, 9.5rem);
     }
     &__navigation {
-      gap: clamp(0.875rem, 2.34375vw - 0.625rem, 1.25rem);
+      gap: clamp(0.75rem, 1.5625vw - 0.25rem, 1rem);
     }
     &__link {
-      font-size: clamp(0.875rem, 0.390625vw + 0.625rem, 0.9375rem);
+      font-size: clamp(0.8125rem, 0.390625vw + 0.5625rem, 0.875rem);
     }
     &__actions {
       gap: 0.5rem;
+      max-inline-size: calc(100% - var(--header-navbar-width) - 2.5rem);
+    }
+    &__actions &__action {
+      flex: 0 0 3.25rem;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.375rem;
+      inline-size: 3.25rem;
+      min-block-size: 4rem;
+      padding: 0.25rem 0;
+      text-align: center;
+    }
+    &__actions &__action--location {
+      background: none;
+    }
+    &__actions &__action-short {
+      font-size: 0.6875rem;
     }
     &__action {
       gap: 0.5rem;
@@ -171,74 +202,25 @@
     }
   }
   .header {
-    --header-inset: 1rem;
-    --header-tablet-navbar-width: clamp(29.9375rem, 28.90625vw + 16rem, 34.5rem);
+    --header-tablet-navbar-width: clamp(28rem, 20.3125vw + 18.25rem, 31.25rem);
+    --header-navbar-width: var(--header-tablet-navbar-width);
     min-block-size: 5rem;
-    padding: 0.625rem 1rem 0;
+    padding: calc(var(--header-hero-top) + 0.375rem) 1.5rem 0;
     &__navbar {
       gap: 0.75rem;
       inline-size: var(--header-tablet-navbar-width);
-      max-inline-size: calc(100% - 2rem);
-      min-block-size: 5rem;
-      padding: 0.625rem 0.875rem 0;
-        &::after {
-        top: 0.625rem;
-      }
+      min-block-size: 4.5rem;
+      padding: 1rem 0.875rem 0;
     }
     &__brand {
-      flex: 0 1 clamp(7.5rem, 7.8125vw + 3.75rem, 8.75rem);
+      flex: 0 1 clamp(7rem, 6.25vw + 4rem, 8rem);
       min-inline-size: 6rem;
     }
     &__navigation {
-      gap: clamp(0.6875rem, 1.171875vw + 0.125rem, 0.875rem);
+      gap: clamp(0.625rem, 0.78125vw + 0.25rem, 0.75rem);
     }
     &__link {
-      font-size: clamp(0.8125rem, 0.390625vw + 0.625rem, 0.875rem);
-    }
-    &__actions {
-      inline-size: calc(100% - var(--header-tablet-navbar-width) - 0.75rem);
-      min-inline-size: 0;
-    }
-    &__action {
-      flex-shrink: 1;
-      min-inline-size: 0;
-      min-block-size: 2.75rem;
-    }
-    // Keep both icons and their primary labels legible before the mobile switch.
-    &__actions &__action:not(&__action--location) {
-      flex: 0 0 auto;
-      flex-direction: column;
-      gap: 0.125rem;
-      text-align: center;
-    }
-    &__action-label {
-      display: none;
-    }
-    &__action-copy {
-      min-inline-size: 0;
-      strong {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 0.75rem;
-      }
-    }
-    &__action--location {
-      flex: 1 1 auto;
-      min-inline-size: 4rem;
-      inline-size: auto;
-      max-inline-size: 9.5rem;
-      padding: 0.3125rem 0.5rem;
-    }
-    &__actions &__action--location {
-      flex-wrap: wrap;
-      justify-content: center;
-      column-gap: 0.25rem;
-      row-gap: 0.125rem;
-    }
-    &__actions &__action--location &__action-copy {
-      flex: 1 0 100%;
-      order: 1;
-      text-align: center;
+      font-size: clamp(0.78125rem, 0.1953125vw + 0.6875rem, 0.8125rem);
     }
   }
 }

@@ -19,7 +19,9 @@
   --header-shadow: 0 3px 9px rgb(53 44 105 / 18%); // TODO: Illustrator
   --header-search-glow: 0 0 0 6px rgb(116 108 255 / 16%); // TODO: Illustrator
 
-  --header-inset: max(1.875rem, calc((100vw - 120rem) / 2 + 1.875rem));
+  // Match the Hero backdrop's desktop bounds, including the scrollbar gutter.
+  --header-inset: max(1.5rem, calc((100% - 120rem) / 2 + 1.875rem));
+  --header-hero-top: 1.875rem;
   min-block-size: 6.875rem;
   max-inline-size: 120rem;
   margin-inline: auto;
@@ -40,7 +42,7 @@
     gap: 1.75rem;
     inline-size: 49.5rem;
     min-block-size: 6.875rem;
-    max-inline-size: calc(100% - 3rem);
+    max-inline-size: calc(100% - 2 * var(--header-inset));
     padding: 1rem 1.875rem 0 1.75rem;
     border-radius: 0 0 1rem 0;
     background: var(--header-surface);
@@ -52,7 +54,7 @@
       width: 2rem;
       height: 2rem;
       background-color: transparent;
-      border-top-left-radius: 16px;
+      border-top-left-radius: 1.25rem;
       box-shadow: -8px -8px 0 0 var(--header-surface);
       pointer-events: none;
     }
@@ -65,7 +67,7 @@
 
     &::after {
       right: 0;
-      top: 1rem;
+      top: var(--header-hero-top);
       transform: translateX(100%);
     }
   }
@@ -205,6 +207,9 @@
       font-size: 1rem;
       font-weight: 700;
     }
+  }
+  &__action-short {
+    display: none;
   }
   &__action--location &__action-copy {
     flex: 1;
