@@ -1,9 +1,47 @@
 <section class="limited-offers" id="limited-offers" aria-labelledby="limited-offers-title">
-  <h2 id="limited-offers-title">Oferta por tiempo limitado</h2>
-  <ul class="limited-offers__products">
-    @for (product of products(); track product.id) {
-      <li><app-product-card [product]="product" /></li>
-    }
-  </ul>
-  <button class="limited-offers__more" type="button" disabled>Más ofertas</button>
+  <h2 class="limited-offers__title" id="limited-offers-title">OFERTA POR TIEMPO LIMITADO</h2>
+  <div class="limited-offers__carousel">
+    <button
+      class="limited-offers__arrow limited-offers__arrow--previous"
+      type="button"
+      aria-label="Ofertas anteriores"
+      aria-controls="limited-offers-carousel"
+      [disabled]="!canGoBack()"
+      (click)="move(-1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+    <div
+      #viewport
+      class="limited-offers__viewport"
+      id="limited-offers-carousel"
+      role="region"
+      aria-roledescription="carrusel"
+      aria-label="Productos en oferta"
+      tabindex="0"
+      (scroll)="updateControls()"
+      (keydown)="onKeydown($event)"
+    >
+      <ul class="limited-offers__products">
+        @for (product of products(); track product.id) {
+          <li class="limited-offers__item">
+            <app-product-card [product]="product" variant="offer" />
+          </li>
+        }
+      </ul>
+    </div>
+    <button
+      class="limited-offers__arrow limited-offers__arrow--next"
+      type="button"
+      aria-label="Ofertas siguientes"
+      aria-controls="limited-offers-carousel"
+      [disabled]="!canGoForward()"
+      (click)="move(1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+  <button class="limited-offers__more" type="button" disabled title="Próximamente">
+    MÁS OFERTAS
+  </button>
 </section>

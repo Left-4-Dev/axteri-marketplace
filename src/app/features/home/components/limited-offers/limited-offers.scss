@@ -1,12 +1,170 @@
-@use '../../../../../styles/skeleton';
+@use '../../../../../styles/breakpoints' as bp;
 
-@include skeleton.section;
+:host {
+  // Local width: preserve HomePage's wrapper and the Hero geometry.
+  --offers-width: min(112rem, calc(100vw - 6rem));
+  --offers-columns: 5;
+  --offers-gap: 1.5rem;
+  --offers-control-size: 2.75rem;
+  --offers-control-gap: 0.5rem;
+  --offers-text: #303341;
+  --offers-accent: #7379ff;
+  --offers-button: #7379ff;
+  --offers-control-muted: #b8b8c4;
+  display: block;
+  inline-size: var(--offers-width);
+  margin-inline: calc((100% - var(--offers-width)) / 2);
+}
 .limited-offers {
-  &__products {
-    @include skeleton.list;
+  padding-block: var(--space-xl);
+  color: var(--offers-text);
+}
+.limited-offers__title {
+  margin: 0 calc(var(--offers-control-size) + var(--offers-control-gap) + 0.5rem) 1rem;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.limited-offers__carousel {
+  display: grid;
+  grid-template-columns: var(--offers-control-size) minmax(0, 1fr) var(--offers-control-size);
+  gap: var(--offers-control-gap);
+}
+.limited-offers__viewport {
+  min-inline-size: 0;
+  padding: 0.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.5rem;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
-  &__more {
-    display: block;
-    margin: var(--space-md) auto 0;
+}
+.limited-offers__products {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(
+    (100% - (var(--offers-columns) - 1) * var(--offers-gap)) / var(--offers-columns)
+  );
+  gap: var(--offers-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.limited-offers__item {
+  min-inline-size: 0;
+  scroll-snap-align: start;
+}
+.limited-offers__arrow {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  inline-size: var(--offers-control-size);
+  block-size: var(--offers-control-size);
+  margin-block-start: clamp(5rem, 7vw, 8.5rem);
+  padding: 0.625rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--offers-text);
+  cursor: pointer;
+  span {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    background: currentColor;
+    mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
+  }
+  &--previous span {
+    transform: rotate(90deg);
+  }
+  &--next span {
+    transform: rotate(-90deg);
+  }
+  &:disabled {
+    color: var(--offers-control-muted);
+    cursor: default;
+  }
+}
+.limited-offers__more {
+  display: block;
+  min-block-size: 2.75rem;
+  margin: 1.5rem auto 0;
+  padding: 0.625rem 1.5rem;
+  border: 0;
+  border-radius: 2rem;
+  background: var(--offers-button);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  opacity: 1;
+  cursor: not-allowed;
+}
+.limited-offers :focus-visible {
+  outline: 2px solid var(--offers-button);
+  outline-offset: 2px;
+}
+.limited-offers__viewport:focus-visible {
+  outline-offset: -2px;
+  border-radius: 0.5rem;
+}
+@media (hover: hover) {
+  .limited-offers__arrow:not(:disabled):hover {
+    color: var(--offers-accent);
+  }
+}
+@media (max-width: bp.$xl) {
+  :host {
+    --offers-width: min(112rem, calc(100vw - 3rem));
+    --offers-columns: 4;
+    --offers-gap: 1.25rem;
+  }
+}
+@media (max-width: bp.$lg) {
+  :host {
+    --offers-width: 100%;
+    --offers-columns: 3;
+  }
+}
+@media (max-width: bp.$md) {
+  :host {
+    --offers-columns: 2;
+    --offers-gap: 1rem;
+  }
+  .limited-offers__title {
+    margin-inline: 0.5rem;
+  }
+  .limited-offers__carousel {
+    grid-template-columns: 1fr 1fr;
+  }
+  .limited-offers__viewport {
+    grid-area: 1 / 1 / 2 / -1;
+  }
+  .limited-offers__arrow {
+    margin-block-start: 0.25rem;
+    &--previous {
+      grid-area: 2 / 1;
+      justify-self: end;
+    }
+    &--next {
+      grid-area: 2 / 2;
+      justify-self: start;
+    }
+  }
+  .limited-offers__more {
+    margin-block-start: 0.75rem;
+  }
+}
+@media (max-width: bp.$sm) {
+  .limited-offers {
+    padding-block: 2rem;
+  }
+  .limited-offers__title {
+    font-size: 1.0625rem;
+  }
+  .limited-offers__products {
+    grid-auto-columns: min(19rem, 85%);
   }
 }
