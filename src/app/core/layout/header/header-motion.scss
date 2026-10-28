@@ -28,6 +28,40 @@
   animation: header-search-enter 180ms ease-out;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .header--scrolled .header__search:has(.header__search-input:focus) {
+    // Keep the button end violet while a soft highlight moves through the existing border.
+    background-image:
+      linear-gradient(to left, var(--header-accent), transparent 60%),
+      linear-gradient(
+        110deg,
+        var(--header-accent) 0%,
+        color-mix(in srgb, var(--header-accent) 45%, white) 25%,
+        var(--header-accent) 50%,
+        color-mix(in srgb, var(--header-accent) 45%, white) 75%,
+        var(--header-accent) 100%
+      );
+    background-size:
+      100% 100%,
+      200% 100%;
+    animation: header-search-gradient-flow 4s ease-in-out infinite;
+  }
+}
+
+@keyframes header-search-gradient-flow {
+  0%,
+  100% {
+    background-position:
+      0 0,
+      0% 50%;
+  }
+  50% {
+    background-position:
+      0 0,
+      100% 50%;
+  }
+}
+
 @keyframes header-search-bounce {
   0%,
   100% {

@@ -3,11 +3,13 @@
 .header--scrolled {
   .header__navbar {
     inset-block-start: 0.5rem;
+    inset-inline-start: max(var(--header-inset), calc((100% - 80rem) / 2));
     inline-size: calc(100% - 2 * var(--header-inset));
-    gap: 2rem;
-    min-block-size: 6.25rem;
-    padding-block: 0.875rem;
-    border-radius: 1.25rem;
+    max-inline-size: min(80rem, calc(100% - 2 * var(--header-inset)));
+    gap: 1.25rem;
+    min-block-size: 4.5rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 1rem;
     box-shadow: var(--header-shadow);
 
     &::before,
@@ -16,24 +18,33 @@
     }
   }
   .header__brand {
-    flex-basis: 15rem;
+    flex-basis: 10rem;
   }
   .header__navigation {
-    gap: 2rem;
+    gap: 1.25rem;
   }
   .header__link {
-    font-size: 1.125rem;
+    font-size: 0.9375rem;
   }
   .header__search {
     flex: 1;
-    padding: 3px;
+    max-inline-size: 32rem;
+    padding: 2px;
     background: var(--header-search-gradient);
+  }
+  .header__search-input {
+    block-size: 2.75rem;
+
+    // The search container supplies the focus indicator around the whole control.
+    &:focus {
+      outline: none;
+    }
   }
   .header__search-button {
     border-radius: 0 2rem 2rem 0;
-    flex-basis: 3.5rem;
-    block-size: 2.625rem;
-    padding-inline: 1rem;
+    flex-basis: 3rem;
+    block-size: 2.75rem;
+    padding-inline: 0.75rem;
   }
 }
 
@@ -41,10 +52,10 @@
   .header--scrolled {
     .header__navbar {
       gap: 1.125rem;
-      min-block-size: 5.25rem;
+      min-block-size: 4.25rem;
     }
     .header__brand {
-      flex-basis: 10rem;
+      flex-basis: 9.5rem;
     }
     .header__navigation {
       gap: 1rem;
@@ -111,11 +122,11 @@
   .header--scrolled {
     .header__navbar {
       gap: 1rem;
-      min-block-size: 4.875rem;
-      padding-inline: 1.25rem;
+      min-block-size: 4rem;
+      padding-inline: 1rem;
     }
     .header__brand {
-      flex-basis: clamp(9.25rem, 4.6875vw + 6.25rem, 10rem);
+      flex-basis: clamp(8rem, 9.375vw + 2rem, 9.5rem);
     }
     .header__navigation {
       gap: clamp(0.6875rem, 1.171875vw + 0.125rem, 1rem);
@@ -189,15 +200,15 @@
   .header--scrolled {
     .header__navbar {
       gap: 0.75rem;
-      min-block-size: 4.5rem;
+      min-block-size: 4rem;
       padding: 0.5rem 1rem;
     }
     .header__brand {
-      flex: 0 1 8rem;
+      flex: 0 1 7.5rem;
     }
     .header__search-button {
       flex: 0 0 2.75rem;
-      block-size: 2.5rem;
+      block-size: 2.75rem;
       padding-inline: 0.75rem;
     }
   }

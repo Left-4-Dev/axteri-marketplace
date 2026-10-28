@@ -6,12 +6,11 @@
       /></span>
     </a>
     <nav class="header__navigation" aria-label="Navegación principal">
-      <a
+      <button
         #productsTrigger
         class="header__link"
         id="header-products-trigger"
-        routerLink="/"
-        fragment="featured-products"
+        type="button"
         [attr.aria-expanded]="productsMenuAvailable() ? productsMenuOpen() : null"
         [attr.aria-controls]="productsMenuAvailable() ? 'header-products-menu' : null"
         (pointerenter)="openProductsMenu($event)"
@@ -19,11 +18,11 @@
         (focus)="openProductsMenu()"
         (focusout)="onProductsFocusOut($event)"
         (keydown.arrowdown)="enterProductsMenu($event)"
-        (click)="closeProductsMenu()"
+        (click)="openProductsMenu()"
       >
         Productos
         <span class="header__icon header__chevron" aria-hidden="true"></span>
-      </a>
+      </button>
       <app-products-mega-menu
         id="header-products-menu"
         [hidden]="!productsMenuOpen()"
