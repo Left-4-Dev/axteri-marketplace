@@ -11,10 +11,6 @@
   border-radius: 50%;
   background: var(--header-location-surface);
   cursor: pointer;
-  img {
-    inline-size: 1.25rem;
-    block-size: 1.25rem;
-  }
   &[hidden] {
     display: none;
   }

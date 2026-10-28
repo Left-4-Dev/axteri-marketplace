@@ -151,9 +151,6 @@
     border-radius: 50%;
     background: var(--header-accent);
     cursor: pointer;
-    img {
-      inline-size: 1.25rem;
-    }
   }
   &__actions {
     display: flex;
@@ -186,7 +183,6 @@
     inline-size: 2.75rem;
     // The circular base belongs to the control, not to the replaceable SVG.
     aspect-ratio: 1;
-    object-fit: contain;
     padding: 0.6875rem;
     border-radius: 50%;
     background: var(--header-accent);

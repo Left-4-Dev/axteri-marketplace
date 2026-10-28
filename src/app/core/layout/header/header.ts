@@ -28,6 +28,7 @@ export const PRODUCTS_MENU_CLOSE_DELAY = 150;
   templateUrl: './header.html',
   styleUrls: [
     './header.scss',
+    './header-assets.scss',
     './header-responsive.scss',
     './header-mobile.scss',
     './header-motion.scss',

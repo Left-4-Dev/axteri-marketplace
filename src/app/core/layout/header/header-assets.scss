@@ -1,0 +1,74 @@
+.header {
+  // Header-only colors: shared SVG files keep their original artwork.
+  --header-logo-color: #323643;
+  --header-search-icon-color: #fff;
+  --header-account-icon-color: #fff;
+  --header-orders-icon-color: #fff;
+  --header-location-icon-color: #7379ff;
+  --header-chevron-color: #737884;
+  --header-menu-icon-color: var(--header-text);
+}
+
+.header__logo,
+.header__icon {
+  display: block;
+  background-color: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  mask-mode: alpha;
+}
+.header__logo {
+  inline-size: 100%;
+  max-inline-size: 11.25rem;
+  color: var(--header-logo-color);
+  mask-image: url('/assets/logos/axteri-logo.svg');
+
+  img {
+    opacity: 0;
+  }
+}
+.header__icon {
+  flex-shrink: 0;
+}
+.header__icon--search {
+  inline-size: 1.25rem;
+  aspect-ratio: 22.13 / 22.04;
+  color: var(--header-search-icon-color);
+  mask-image: url('/assets/icons/common/search.svg');
+}
+.header__chevron,
+.header__location-chevron {
+  aspect-ratio: 14.46 / 8.27;
+  color: var(--header-chevron-color);
+  mask-image: url('/assets/icons/common/chevron-down.svg');
+}
+.header__action-icon {
+  display: grid;
+
+  > .header__icon {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+}
+.header__icon--location {
+  color: var(--header-location-icon-color);
+  mask-image: url('/assets/icons/header/location.svg');
+}
+.header__icon--account {
+  color: var(--header-account-icon-color);
+  mask-image: url('/assets/icons/header/account.svg');
+}
+.header__icon--orders {
+  color: var(--header-orders-icon-color);
+  mask-image: url('/assets/icons/header/orders.svg');
+}
+.header__icon--menu {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  color: var(--header-menu-icon-color);
+  mask-image: url('/assets/icons/common/menu.svg');
+}
+.header__icon--close {
+  mask-image: url('/assets/icons/common/close.svg');
+}

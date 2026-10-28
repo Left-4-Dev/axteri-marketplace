@@ -227,7 +227,7 @@ describe('Header', () => {
 
     const trigger = menuButton();
     const panel = mobileMenuPanel();
-    const icon = trigger.querySelector('img')!;
+    const icon = trigger.querySelector('.header__icon--menu')!;
     const productsDisclosure = panel.querySelector<HTMLButtonElement>(
       '[aria-controls="header-mobile-products"]',
     )!;
@@ -236,13 +236,13 @@ describe('Header', () => {
     expect(panel.hidden).toBe(true);
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
     expect(trigger.getAttribute('aria-controls')).toBe('header-mobile-menu');
-    expect(icon.getAttribute('src')).toBe('/assets/icons/common/menu.svg');
+    expect(icon.classList.contains('header__icon--close')).toBe(false);
 
     trigger.click();
     await fixture.whenStable();
     expect(panel.hidden).toBe(false);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
-    expect(icon.getAttribute('src')).toBe('/assets/icons/common/close.svg');
+    expect(icon.classList.contains('header__icon--close')).toBe(true);
     expect(productsDisclosure.getAttribute('aria-expanded')).toBe('false');
     expect(productsList.hidden).toBe(true);
 
