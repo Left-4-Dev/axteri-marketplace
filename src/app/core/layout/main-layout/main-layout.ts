@@ -1,11 +1,12 @@
 import { Component, DOCUMENT, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Footer } from '../footer/footer';
+import { FloatingActions } from '../floating-actions/floating-actions';
 import { Header } from '../header/header';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [Header, RouterOutlet, Footer],
+  imports: [Header, RouterOutlet, Footer, FloatingActions],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })
