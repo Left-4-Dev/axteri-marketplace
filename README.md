@@ -163,6 +163,7 @@ Ejemplos:
 component/header
 component/hero
 component/floating-actions
+component/limited-offers
 
 feature/search
 feature/cart
@@ -237,6 +238,7 @@ Ejemplos:
 feat(header): implement responsive marketplace header
 feat(hero): implement marketplace hero
 feat(floating-actions): implement global floating actions
+feat(limited-offers): implement responsive offers carousel
 fix(header): correct products mega menu behavior
 refactor(header): simplify navigation state
 docs(readme): update project workflow
@@ -248,6 +250,29 @@ El número del Pull Request no forma parte del título original del PR. Se agreg
 
 La estrategia depende del contenido e historial de la rama.
 
+### Regla rápida
+
+| Situación | Estrategia |
+| --- | --- |
+| Rama con **1 commit** | `Squash and merge` |
+| Varios commits temporales, menores o poco relevantes | `Squash and merge` |
+| Varios commits bien organizados que vale la pena conservar | `Create a merge commit` |
+| Integración `dev → main` | `Create a merge commit` |
+
+`Rebase and merge` no forma parte del flujo estándar del proyecto.
+
+Independientemente de la estrategia utilizada, el commit resultante de la integración debe incluir el número del Pull Request:
+
+```text
+<type>(<scope>): <description> (#PR)
+```
+
+Ejemplo:
+
+```text
+feat(limited-offers): implement responsive offers carousel (#7)
+```
+
 ### Squash and merge
 
 Utiliza **Squash and merge** cuando:
@@ -255,9 +280,9 @@ Utiliza **Squash and merge** cuando:
 - el PR contiene un único commit;
 - los commits intermedios no aportan información relevante;
 - existen commits temporales, correcciones menores o ajustes sucesivos;
-- se trata de cambios pequeños como documentación, configuración o fixes simples.
+- el historial interno de la rama no necesita conservarse.
 
-Ejemplos habituales:
+Es habitual en cambios como:
 
 ```text
 docs/*
@@ -265,7 +290,7 @@ chore/*
 fix/*
 ```
 
-También puede utilizarse en cualquier rama cuyo historial interno no necesite conservarse.
+aunque también puede utilizarse en features o componentes cuando su historial no aporta valor adicional.
 
 El commit resultante debe seguir:
 
@@ -283,9 +308,9 @@ feat(floating-actions): implement global floating actions (#4)
 
 Utiliza **Create a merge commit** cuando:
 
-- el PR corresponde a una feature o componente importante;
-- contiene varios commits bien definidos que vale la pena conservar;
-- el historial interno explica de forma útil la evolución de la implementación;
+- el PR contiene varios commits bien definidos;
+- los commits aportan información útil sobre la evolución del cambio;
+- interesa conservar el historial interno de la rama;
 - se integra `dev` hacia `main`.
 
 Ejemplo:
@@ -304,7 +329,7 @@ Se priorizan `Squash and merge` y `Create a merge commit` para mantener una estr
 
 ### Trazabilidad de Pull Requests
 
-Todo commit generado al integrar un Pull Request debe incluir su número:
+Todo commit generado al integrar un Pull Request debe incluir:
 
 ```text
 (#PR)
@@ -317,6 +342,7 @@ feat(header): implement responsive marketplace header (#1)
 docs(readme): update project documentation and git workflow (#2)
 feat(hero): implement marketplace hero (#3)
 feat(floating-actions): implement global floating actions (#4)
+feat(limited-offers): implement responsive offers carousel (#7)
 ```
 
 Esta regla aplica tanto a:
@@ -400,6 +426,7 @@ feat(header): add products mega menu
 fix(header): refine responsive behavior
 feat(hero): implement marketplace hero
 feat(floating-actions): implement global floating actions
+feat(limited-offers): implement responsive offers carousel
 docs(readme): update project workflow
 ```
 
@@ -510,8 +537,10 @@ Actualmente:
 - la estructura general de la Home está preparada;
 - el Header está implementado;
 - el Hero está implementado;
+- Floating Actions está implementado;
+- Limited Offers está implementado;
+- `ProductCard` dispone de variantes reutilizables para distintos contextos de producto;
 - existen mocks tipados para desarrollar la interfaz sin depender todavía de APIs;
-- `ProductCard` se reutiliza entre las distintas secciones de productos;
 - el resto de secciones se implementará progresivamente.
 
 ## Integraciones futuras
@@ -540,6 +569,9 @@ Estas funcionalidades se incorporarán progresivamente sin acoplar prematurament
 - No reutilices ramas ya integradas.
 - Mantén los cambios de una rama enfocados en una responsabilidad.
 - Utiliza Pull Requests para integrar cambios.
+- Usa `Squash and merge` cuando la rama tenga un único commit o su historial no aporte valor.
+- Usa `Create a merge commit` cuando varios commits útiles deban conservarse.
+- Usa `Create a merge commit` para integrar `dev` hacia `main`.
 - Incluye `(#PR)` en todo commit resultante de un merge.
 - No subas credenciales ni secretos.
 - No subas referencias locales de diseño.
