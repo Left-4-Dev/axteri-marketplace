@@ -1,8 +1,6 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  // Match the implemented offers container without changing HomePage's wrapper.
-  --categories-width: min(112rem, calc(100vw - 6rem));
   --categories-gap: 1.5rem;
   --control-size: 2.75rem;
   --categories-image-width: 43%;
@@ -13,8 +11,8 @@
   --control-muted: #a0a0a7;
   --categories-shadow: 0 3px 14px rgb(80 73 139 / 15%);
   display: block;
-  inline-size: var(--categories-width);
-  margin-inline: calc((100% - var(--categories-width)) / 2);
+  inline-size: 100%;
+  min-inline-size: 0;
 }
 .categories {
   padding-block: var(--space-xl);
@@ -134,7 +132,6 @@
 }
 @media (max-width: bp.$xl) {
   :host {
-    --categories-width: min(112rem, calc(100vw - 3rem));
     --categories-gap: 1.25rem;
     --categories-image-width: 36%;
     --card-height: 10rem;
@@ -147,7 +144,6 @@
 }
 @media (max-width: bp.$lg) {
   :host {
-    --categories-width: 100%;
     --categories-image-width: 40%;
   }
   .categories__list {

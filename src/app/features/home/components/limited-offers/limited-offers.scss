@@ -1,8 +1,6 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  // Local width: preserve HomePage's wrapper and the Hero geometry.
-  --offers-width: min(112rem, calc(100vw - 6rem));
   --offers-columns: 5;
   --offers-gap: 1.5rem;
   --offers-control-size: 2.75rem;
@@ -12,8 +10,8 @@
   --offers-button: #7379ff;
   --offers-control-muted: #b8b8c4;
   display: block;
-  inline-size: var(--offers-width);
-  margin-inline: calc((100% - var(--offers-width)) / 2);
+  inline-size: 100%;
+  min-inline-size: 0;
 }
 .limited-offers {
   padding-block: var(--space-xl);
@@ -117,14 +115,12 @@
 }
 @media (max-width: bp.$xl) {
   :host {
-    --offers-width: min(112rem, calc(100vw - 3rem));
     --offers-columns: 4;
     --offers-gap: 1.25rem;
   }
 }
 @media (max-width: bp.$lg) {
   :host {
-    --offers-width: 100%;
     --offers-columns: 3;
   }
 }
