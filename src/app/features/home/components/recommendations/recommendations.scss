@@ -34,6 +34,34 @@
   min-inline-size: 0;
 }
 
+.recommendations__more {
+  display: block;
+  inline-size: fit-content;
+  min-block-size: 2.75rem;
+  margin: calc(var(--space-md) + var(--space-sm)) auto 0;
+  padding: var(--space-sm) calc(var(--space-md) + var(--space-sm));
+  border: 0;
+  border-radius: 999px;
+  background: #7379ff;
+  color: var(--color-background);
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, #7379ff, black 12%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+}
+
 @media (max-width: bp.$xl) {
   :host {
     --recommendations-columns: 4;

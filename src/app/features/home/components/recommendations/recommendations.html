@@ -1,12 +1,15 @@
 <section class="recommendations" id="recommendations" aria-labelledby="recommendations-title">
   <h2 class="recommendations__title" id="recommendations-title">SUGERENCIAS PARA TI</h2>
   <ul class="recommendations__products" role="list">
-    @for (product of products(); track product.id) {
+    @for (product of visibleProducts(); track product.id) {
       <li class="recommendations__item">
         <app-product-card [product]="product" variant="default" />
       </li>
     }
   </ul>
+  @if (hasMoreProducts()) {
+    <button class="recommendations__more" type="button" (click)="loadMore()">CARGAR MÁS</button>
+  }
   @if (!products().length) {
     <p>No hay sugerencias disponibles.</p>
   }

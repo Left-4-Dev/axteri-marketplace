@@ -8,6 +8,14 @@ describe('Recommendations', () => {
   let fixture: ComponentFixture<Recommendations>;
   let element: HTMLElement;
 
+  // Larger inputs are test fixtures only; production data remains unchanged.
+  const productsWithCount = (count: number) =>
+    Array.from({ length: count }, (_, index) => ({
+      ...RECOMMENDED_PRODUCTS[index % RECOMMENDED_PRODUCTS.length],
+      id: `recommendation-test-${index}`,
+    }));
+  const loadMoreButton = () => element.querySelector<HTMLButtonElement>('.recommendations__more');
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [Recommendations] }).compileComponents();
     fixture = TestBed.createComponent(Recommendations);
@@ -36,10 +44,74 @@ describe('Recommendations', () => {
     expect(element.querySelector('.product-card--offer')).toBeNull();
   });
 
-  it('omits load more because the current source has no additional products or loading action', () => {
+  it('starts with a limit of ten and omits load more when all ten products are visible', () => {
+    expect(fixture.componentInstance.visibleCount()).toBe(10);
     expect(element.textContent?.toUpperCase()).not.toContain('CARGAR MÁS');
     expect(element.querySelector('section > button')).toBeNull();
     expect(element.querySelectorAll('app-product-card')).toHaveLength(10);
+  });
+
+  it('shows only ten cards and an enabled load button for fifteen products', async () => {
+    const products = productsWithCount(15);
+    fixture.componentRef.setInput('products', products);
+    await fixture.whenStable();
+
+    const cards = fixture.debugElement.queryAll(By.directive(ProductCard));
+    expect(cards.map((card) => (card.componentInstance as ProductCard).product())).toEqual(
+      products.slice(0, 10),
+    );
+    expect(loadMoreButton()?.textContent).toBe('CARGAR MÁS');
+    expect(loadMoreButton()?.type).toBe('button');
+    expect(loadMoreButton()?.disabled).toBe(false);
+  });
+
+  it('shows all fifteen products and removes the button after a click', async () => {
+    fixture.componentRef.setInput('products', productsWithCount(15));
+    await fixture.whenStable();
+    loadMoreButton()!.click();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.visibleCount()).toBe(15);
+    expect(element.querySelectorAll('app-product-card')).toHaveLength(15);
+    expect(loadMoreButton()).toBeNull();
+  });
+
+  it('keeps the button while another batch remains and removes it after all twenty-five products', async () => {
+    fixture.componentRef.setInput('products', productsWithCount(25));
+    await fixture.whenStable();
+    loadMoreButton()!.click();
+    await fixture.whenStable();
+
+    expect(element.querySelectorAll('app-product-card')).toHaveLength(20);
+    expect(loadMoreButton()).not.toBeNull();
+    loadMoreButton()!.click();
+    await fixture.whenStable();
+
+    expect(element.querySelectorAll('app-product-card')).toHaveLength(25);
+    expect(loadMoreButton()).toBeNull();
+  });
+
+  it('reacts to the input growing from ten to fifteen products without changing the visible limit', async () => {
+    expect(loadMoreButton()).toBeNull();
+    fixture.componentRef.setInput('products', productsWithCount(15));
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.visibleCount()).toBe(10);
+    expect(element.querySelectorAll('app-product-card')).toHaveLength(10);
+    expect(loadMoreButton()).not.toBeNull();
+  });
+
+  it('shows the button again when the input grows after the previous batch was exhausted', async () => {
+    fixture.componentRef.setInput('products', productsWithCount(15));
+    await fixture.whenStable();
+    loadMoreButton()!.click();
+    await fixture.whenStable();
+    expect(loadMoreButton()).toBeNull();
+
+    fixture.componentRef.setInput('products', productsWithCount(20));
+    await fixture.whenStable();
+    expect(element.querySelectorAll('app-product-card')).toHaveLength(15);
+    expect(loadMoreButton()).not.toBeNull();
   });
 
   it('renders an accessible empty state without cards or a load button', async () => {
