@@ -7,7 +7,7 @@
 }
 
 .preferred-brands {
-  padding: var(--space-xl) clamp(1rem, 4.5vw, 5rem);
+  padding: var(--space-xl) 3.75rem;
   background: #f2f2f2;
   color: #303341;
 }
@@ -147,7 +147,7 @@
 
 @media (max-width: bp.$md) {
   .preferred-brands {
-    padding-inline: var(--space-md);
+    padding-inline: var(--space-sm);
   }
 
   .preferred-brands__list {
