@@ -1,6 +1,32 @@
 <section class="quality-banner" id="quality-banner" aria-labelledby="quality-banner-title">
-  <h2 id="quality-banner-title">Productos de calidad</h2>
-  <p>Nuestros proveedores cuentan con certificación.</p>
-  <div class="quality-banner__media">Contenido audiovisual pendiente</div>
-  <button type="button" disabled aria-label="Pausar contenido audiovisual">Pausar</button>
+  <div class="quality-banner__frame">
+    <div class="quality-banner__surface">
+      <div class="quality-banner__media">
+        @if (imageUrl(); as src) {
+          <img class="quality-banner__image" [src]="src" alt="" />
+        } @else {
+          <span class="quality-banner__placeholder">Fotografía pendiente</span>
+        }
+      </div>
+
+      <div class="quality-banner__content">
+        <h2 class="quality-banner__title" id="quality-banner-title">
+          <span class="quality-banner__title-line">PRODUCTOS</span>
+          <span class="quality-banner__title-line">
+            DE <mark class="quality-banner__highlight">CALIDAD</mark>
+          </span>
+        </h2>
+        <p class="quality-banner__subtitle">
+          <span class="quality-banner__subtitle-line">NUESTROS PROVEEDORES&ngsp;</span>
+          <span class="quality-banner__subtitle-line">CUENTAN CON CERTIFICACIÓN</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="quality-banner__notch" aria-hidden="true">
+      <span class="quality-banner__pause">
+        <span class="quality-banner__pause-icon"></span>
+      </span>
+    </div>
+  </div>
 </section>
