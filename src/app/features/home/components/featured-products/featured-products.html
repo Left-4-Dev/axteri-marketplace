@@ -1,8 +1,47 @@
 <section class="featured-products" id="featured-products" aria-labelledby="featured-products-title">
-  <h2 id="featured-products-title">Productos destacados</h2>
-  <ul class="featured-products__products">
-    @for (product of products(); track product.id) {
-      <li><app-product-card [product]="product" /></li>
-    }
-  </ul>
+  <h2 class="featured-products__title" id="featured-products-title">PRODUCTOS DESTACADOS</h2>
+  <div class="featured-products__carousel">
+    <button
+      class="featured-products__arrow featured-products__arrow--previous"
+      type="button"
+      aria-label="Productos destacados anteriores"
+      aria-controls="featured-products-carousel"
+      [disabled]="!canGoBack()"
+      (click)="move(-1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+    <div
+      #viewport
+      class="featured-products__viewport"
+      id="featured-products-carousel"
+      role="region"
+      aria-roledescription="carrusel"
+      aria-labelledby="featured-products-title"
+      [attr.tabindex]="canGoBack() || canGoForward() ? 0 : null"
+      (scroll)="updateControls()"
+      (keydown)="onKeydown($event)"
+    >
+      <ul #list class="featured-products__products" role="list">
+        @for (product of products(); track product.id) {
+          <li class="featured-products__item">
+            <app-product-card [product]="product" variant="default" />
+          </li>
+        }
+      </ul>
+    </div>
+    <button
+      class="featured-products__arrow featured-products__arrow--next"
+      type="button"
+      aria-label="Productos destacados siguientes"
+      aria-controls="featured-products-carousel"
+      [disabled]="!canGoForward()"
+      (click)="move(1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+  @if (!products().length) {
+    <p class="featured-products__empty">No hay productos destacados disponibles.</p>
+  }
 </section>

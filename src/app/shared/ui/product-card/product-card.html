@@ -1,6 +1,10 @@
 @let item = product();
 @let isOffer = variant() === 'offer';
-<article class="product-card" [class.product-card--offer]="isOffer">
+<article
+  class="product-card"
+  [class.product-card--offer]="isOffer"
+  [class.product-card--default]="!isOffer"
+>
   <div class="product-card__visual">
     <div class="product-card__image">
       @if (item.imageUrl; as imageUrl) {
@@ -33,6 +37,23 @@
           <span class="product-card__icon product-card__icon--details" aria-hidden="true"></span>
         </button>
       </div>
+    } @else {
+      <div class="product-card__actions">
+        <button
+          type="button"
+          (click)="requestQuote.emit(item)"
+          [attr.aria-label]="'Consultar sobre ' + item.name"
+        >
+          <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
+        </button>
+        <button
+          type="button"
+          (click)="viewDetails.emit(item)"
+          [attr.aria-label]="'Ver ficha de ' + item.name"
+        >
+          <span class="product-card__icon product-card__icon--details" aria-hidden="true"></span>
+        </button>
+      </div>
     }
   </div>
   @if (isOffer) {
@@ -59,8 +80,21 @@
   <h3 class="product-card__title">{{ item.name }}</h3>
   @if (item.seller; as seller) {
     <div class="product-card__seller">
-      <p>{{ seller.name }}</p>
-      <p>{{ seller.location }} · {{ seller.years }} años</p>
+      @if (isOffer) {
+        <p>{{ seller.name }}</p>
+        <p>{{ seller.location }} · {{ seller.years }} años</p>
+      } @else {
+        <p class="product-card__seller-name">{{ seller.name }}</p>
+        <div class="product-card__seller-details">
+          <p class="product-card__location">
+            <img src="/assets/icons/header/location.svg" alt="" width="12" height="12" />
+            {{ seller.location }}
+          </p>
+          <p class="product-card__tenure">
+            <span role="img" aria-label="Antigüedad del vendedor">◷</span> {{ seller.years }} años
+          </p>
+        </div>
+      }
     </div>
   }
   <div class="product-card__price">
@@ -70,11 +104,9 @@
         <p class="product-card__current-price">
           <span>{{
             price.amount
-              | currency
-                : price.currency
-                : (isOffer && price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+              | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
           }}</span>
-          @if (isOffer && discountPercent(); as discount) {
+          @if (discountPercent(); as discount) {
             <span
               class="product-card__discount"
               [attr.aria-label]="(discount | number: '1.0-1') + '% de descuento'"
@@ -87,25 +119,37 @@
             Antes:
             <s>{{
               price.previousAmount
-                | currency
-                  : price.currency
-                  : (isOffer && price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+                | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
             }}</s>
           </p>
         }
       }
       @case ('range') {
-        <p>
-          {{ price.min | currency: price.currency : 'symbol-narrow' }} –
-          {{ price.max | currency: price.currency : 'symbol-narrow' }}
-        </p>
+        @if (isOffer) {
+          <p>
+            {{ price.min | currency: price.currency : 'symbol-narrow' }} –
+            {{ price.max | currency: price.currency : 'symbol-narrow' }}
+          </p>
+        } @else {
+          <p class="product-card__range">
+            <span>{{
+              price.min
+                | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+            }}</span>
+            –
+            <span>{{
+              price.max
+                | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol-narrow')
+            }}</span>
+          </p>
+        }
       }
       @case ('quote') {
-        <p>Por cotizar</p>
+        <p [class.product-card__quote]="!isOffer">Por cotizar</p>
       }
     }
     @if (price.kind !== 'quote') {
-      @if (isOffer) {
+      @if (isOffer || price.unitLabel || price.includesTax !== undefined) {
         <small class="product-card__terms">
           @if (price.unitLabel) {
             <span>*{{ price.unitLabel }}</span>
@@ -126,27 +170,7 @@
             </span>
           }
         </small>
-      } @else {
-        <small>Por unidad · Incluye IGV</small>
       }
     }
   </div>
-  @if (!isOffer) {
-    <div class="product-card__actions">
-      <button
-        type="button"
-        (click)="requestQuote.emit(item)"
-        [attr.aria-label]="'Consultar sobre ' + item.name"
-      >
-        Consultar
-      </button>
-      <button
-        type="button"
-        (click)="viewDetails.emit(item)"
-        [attr.aria-label]="'Ver ficha de ' + item.name"
-      >
-        Ver ficha
-      </button>
-    </div>
-  }
 </article>
