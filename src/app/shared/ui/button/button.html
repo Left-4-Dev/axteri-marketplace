@@ -1,0 +1,10 @@
+<button
+  class="button"
+  [class.button--primary]="variant() === 'primary'"
+  [class.button--light]="variant() === 'light'"
+  [attr.type]="type()"
+  [disabled]="disabled()"
+  [attr.aria-describedby]="ariaDescribedby() || null"
+>
+  <ng-content />
+</button>

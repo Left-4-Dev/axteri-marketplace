@@ -10,11 +10,12 @@ import {
   signal,
   viewChildren,
 } from '@angular/core';
+import { Button } from '../../../../shared/ui/button/button';
 import { Brand } from '../../models/home-content.model';
 
 @Component({
   selector: 'app-preferred-brands',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, Button],
   templateUrl: './preferred-brands.html',
   styleUrl: './preferred-brands.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

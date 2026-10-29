@@ -1,0 +1,55 @@
+:host {
+  --button-accent: #7379ff;
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: var(--space-sm) calc(var(--space-md) + var(--space-sm));
+  border: 0;
+  border-radius: 999px;
+  background: var(--button-accent);
+  color: var(--color-background);
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: var(--button-disabled-opacity, 0.65);
+  }
+}
+
+.button--primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--button-accent), black 12%);
+}
+
+.button--light {
+  --button-disabled-opacity: 1;
+  padding: 0.625rem clamp(1rem, 2vw, 2.5rem);
+  background: var(--color-background);
+  color: var(--brand-ink, var(--button-accent));
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+
+  &:not(:disabled):hover {
+    background: color-mix(in srgb, var(--color-background), var(--button-accent) 10%);
+  }
+}

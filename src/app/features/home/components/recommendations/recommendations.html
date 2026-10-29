@@ -8,7 +8,7 @@
     }
   </ul>
   @if (hasMoreProducts()) {
-    <button class="recommendations__more" type="button" (click)="loadMore()">CARGAR MÁS</button>
+    <app-button class="recommendations__more" (click)="loadMore()">CARGAR MÁS</app-button>
   }
   @if (!products().length) {
     <p>No hay sugerencias disponibles.</p>
