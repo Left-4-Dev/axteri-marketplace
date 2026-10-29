@@ -16,6 +16,7 @@
 .limited-offers {
   padding-block: var(--space-xl);
   color: var(--offers-text);
+  box-shadow: 0 12px 19px -10px rgba(183, 164, 224, 0.37);
 }
 .limited-offers__title {
   margin: 0 calc(var(--offers-control-size) + var(--offers-control-gap) + 0.5rem) 1rem;
