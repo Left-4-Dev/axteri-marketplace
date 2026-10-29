@@ -1,31 +1,182 @@
-@use '../../../../../styles/skeleton';
+@use '../../../../../styles/breakpoints' as bp;
 
-@include skeleton.section;
+:host {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
 .preferred-brands {
-  &__list {
-    @include skeleton.list(20rem);
+  padding: var(--space-xl) clamp(1rem, 4.5vw, 5rem);
+  background: #f2f2f2;
+  color: #303341;
+}
+
+.preferred-brands__title {
+  margin: 0 0 var(--space-md);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.preferred-brands__list,
+.preferred-brands__categories-track,
+.preferred-brands__previews {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preferred-brands__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 2.5rem);
+}
+
+.preferred-brands__item {
+  min-inline-size: 0;
+}
+
+.preferred-brands__card {
+  --brand-surface:#9fc4fd;
+  --brand-ink: #9fc4fd;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  block-size: 100%;
+  padding: clamp(1rem, 1.5vw, 1.75rem);
+  border-radius: 1.25rem;
+  background: var(--brand-surface);
+  color: var(--color-background);
+
+  &--abb {
+    --brand-surface: #9eaefd;
+    --brand-ink: #9eaefd;
   }
-  &__card {
-    @include skeleton.card;
+
+  &--omron {
+    --brand-surface: #9d98fc;
+    --brand-ink: #9d98fc;
   }
-  h3 {
-    margin-block: 0 var(--space-sm);
+}
+
+.preferred-brands__name {
+  margin: 0;
+  font-size: clamp(1.75rem, 2.2vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.preferred-brands__categories {
+  min-inline-size: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
-  &__categories {
-    padding-inline-start: var(--space-md);
+
+  &:focus-visible {
+    outline-offset: 2px;
+    border-radius: var(--space-sm);
   }
-  &__previews {
-    display: grid;
+}
+
+.preferred-brands__categories-track {
+  display: flex;
+  inline-size: max-content;
+  gap: var(--space-sm);
+}
+
+.preferred-brands__category {
+  flex: 0 0 auto;
+  padding: var(--space-sm) 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: var(--brand-surface);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+
+.preferred-brands__previews {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.preferred-brands__image {
+  display: grid;
+  place-items: center;
+  position: relative;
+  min-inline-size: 0;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  background: var(--color-background);
+
+  img {
+    padding: var(--space-sm);
+    object-fit: contain;
+  }
+}
+
+.preferred-brands__placeholder {
+  padding: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.preferred-brands__cta {
+  align-self: center;
+  max-inline-size: 100%;
+  min-block-size: 2.75rem;
+  margin-block-start: auto;
+  padding: 0.625rem clamp(1rem, 2vw, 2.5rem);
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-background);
+  color: var(--brand-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  opacity: 1;
+}
+
+@media (max-width: bp.$lg) {
+  .preferred-brands__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-sm);
-    list-style: none;
-    padding: 0;
   }
-  &__image {
-    @include skeleton.placeholder;
-    position: relative;
-    img {
-      object-fit: contain;
-    }
+}
+
+@media (max-width: bp.$md) {
+  .preferred-brands {
+    padding-inline: var(--space-md);
+  }
+
+  .preferred-brands__list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: bp.$sm) {
+  .preferred-brands {
+    padding: calc(2 * var(--space-md)) var(--space-sm);
+  }
+
+  .preferred-brands__title {
+    font-size: 1.0625rem;
+  }
+
+  .preferred-brands__previews {
+    gap: var(--space-sm);
   }
 }
