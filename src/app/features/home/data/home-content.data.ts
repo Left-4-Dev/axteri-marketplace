@@ -1,4 +1,4 @@
-import { Brand, Category, NewsPromotion } from '../models/home-content.model';
+import { Brand, Category, NewsItem } from '../models/home-content.model';
 
 // Contenido de demostración basado en la referencia; los assets originales están pendientes.
 export const HOME_CATEGORIES: readonly Category[] = [
@@ -34,15 +34,14 @@ export const HOME_BRANDS: readonly Brand[] = [
   },
 ];
 
-export const HOME_NEWS: NewsPromotion = {
-  label: 'Nuevo lanzamiento',
-  title: 'HAAS VF-3',
-  description: 'Centro mecanizado vertical CNC',
-  priceLabel: 'USD 87,995',
-  specifications: [
-    { label: 'Cono', value: '40' },
-    { label: 'Ejes', value: '3' },
-    { label: 'RPM', value: '8.1K' },
-    { label: 'Capacidad de herramientas', value: '20' },
-  ],
-};
+export const HOME_NEWS: readonly NewsItem[] = [
+  { id: 'haas-vf3', alt: 'Promoción de lanzamiento Haas VF-3', badge: 'Nuevo lanzamiento' },
+  { id: 'hola',
+    alt: 'Promoción de lanzamiento Hola', 
+    badge: 'Nuevo lanzamiento',
+    cta: {
+      label: 'Más información',
+      destination: '/'
+    }
+  },
+];

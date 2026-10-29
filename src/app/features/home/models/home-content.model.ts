@@ -14,14 +14,17 @@ export interface Brand {
   }[];
 }
 
-export interface NewsPromotion {
-  readonly label: string;
-  readonly title: string;
-  readonly description: string;
-  readonly priceLabel: string;
+export interface NewsItem {
+  readonly id: string;
+  readonly alt: string;
+  readonly badge?: string;
+  // Optional while the complete artwork is pending from the design team.
+  // Artwork excludes badge, CTA and dots, and reserves their shared UI safe areas.
   readonly imageUrl?: string;
-  readonly specifications: readonly {
+  readonly mobileImageUrl?: string;
+  readonly cta?: {
     readonly label: string;
-    readonly value: string;
-  }[];
+    // A real application destination, supplied only when that navigation is available.
+    readonly destination: string;
+  };
 }
