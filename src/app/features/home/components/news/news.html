@@ -1,33 +1,81 @@
-<section class="news" id="news" aria-labelledby="news-title">
-  <h2 id="news-title">Noticias</h2>
-  @let item = promotion();
-  <article class="news__promotion">
-    <div>
-      <p>{{ item.label }}</p>
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.description }}</p>
-      <p>{{ item.priceLabel }}</p>
-      <dl class="news__specifications">
-        @for (specification of item.specifications; track specification.label) {
-          <div>
-            <dt>{{ specification.label }}</dt>
-            <dd>{{ specification.value }}</dd>
+﻿@if (items().length) {
+  <section class="news" id="news" aria-labelledby="news-title">
+    <h2 class="news__title" id="news-title">NOTICIAS</h2>
+    <div class="news__viewport">
+      <div
+        #track
+        class="news__track"
+        role="region"
+        aria-label="Banners de noticias"
+        [attr.aria-roledescription]="items().length > 1 ? 'carrusel' : null"
+        [attr.tabindex]="items().length > 1 ? 0 : null"
+        (scroll)="updateActiveSlide()"
+        (keydown)="onKeydown($event)"
+      >
+        @for (item of items(); track item.id; let index = $index) {
+          <div
+            class="news__slide"
+            [id]="'news-slide-' + item.id"
+            role="group"
+            aria-roledescription="diapositiva"
+            [attr.aria-label]="'Noticia ' + (index + 1) + ' de ' + items().length"
+            [attr.aria-hidden]="index !== activeIndex() ? 'true' : null"
+            [attr.inert]="index !== activeIndex() ? '' : null"
+          >
+            <div class="news__media">
+              @if (item.imageUrl; as imageUrl) {
+                <picture>
+                  @if (item.mobileImageUrl; as mobileImageUrl) {
+                    <source media="(max-width: 48rem)" [srcset]="mobileImageUrl" />
+                  }
+                  <img [src]="imageUrl" [alt]="item.alt" loading="lazy" decoding="async" />
+                </picture>
+              } @else {
+                <div
+                  class="news__placeholder"
+                  role="img"
+                  [attr.aria-label]="item.alt + ': banner pendiente'"
+                >
+                  <span aria-hidden="true">Banner de noticia pendiente</span>
+                </div>
+              }
+            </div>
+            @if (item.badge?.trim(); as badge) {
+              <div class="news__notch">
+                <span class="news__badge">{{ badge }}</span>
+              </div>
+            }
+            @if (item.cta; as cta) {
+              @if (cta.label.trim() && cta.destination.trim()) {
+                <div class="news__cta">
+                  <app-button variant="light" (click)="navigateTo(cta.destination)">
+                    {{ cta.label }}
+                  </app-button>
+                </div>
+              }
+            }
           </div>
         }
-      </dl>
-      <button type="button" disabled>Solicitar cotización</button>
-    </div>
-    <div class="news__image">
-      @if (item.imageUrl; as imageUrl) {
-        <img [ngSrc]="imageUrl" [alt]="item.title" fill />
-      } @else {
-        <span>Imagen promocional pendiente</span>
+      </div>
+      @if (items().length > 1) {
+        <div class="news__pagination" role="group" aria-label="Seleccionar noticia">
+          @for (item of items(); track item.id; let index = $index) {
+            <button
+              class="news__dot"
+              type="button"
+              [attr.aria-label]="'Ir a la noticia ' + (index + 1)"
+              [attr.aria-controls]="'news-slide-' + item.id"
+              [attr.aria-current]="index === activeIndex() ? 'true' : null"
+              (click)="goTo(index)"
+            >
+              <span aria-hidden="true"></span>
+            </button>
+          }
+        </div>
+        <p class="news__status" aria-live="polite" aria-atomic="true">
+          Noticia {{ activeIndex() + 1 }} de {{ items().length }}
+        </p>
       }
     </div>
-  </article>
-  <div class="news__pagination" role="group" aria-label="Promociones de noticias">
-    <button type="button" disabled aria-label="Noticia 1">1</button>
-    <button type="button" disabled aria-label="Noticia 2">2</button>
-    <button type="button" disabled aria-label="Noticia 3">3</button>
-  </div>
-</section>
+  </section>
+}
