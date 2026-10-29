@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Product } from '../../../../models/product.model';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 
@@ -7,6 +7,7 @@ import { ProductCard } from '../../../../shared/ui/product-card/product-card';
   imports: [ProductCard],
   templateUrl: './recommendations.html',
   styleUrl: './recommendations.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Recommendations {
   readonly products = input.required<readonly Product[]>();

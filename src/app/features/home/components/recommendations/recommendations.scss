@@ -1,12 +1,73 @@
-@use '../../../../../styles/skeleton';
+@use '../../../../../styles/breakpoints' as bp;
 
-@include skeleton.section;
+:host {
+  --recommendations-columns: 5;
+  --recommendations-gap: 1.5rem;
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
 .recommendations {
-  &__products {
-    @include skeleton.list;
+  padding: var(--space-xl) clamp(1rem, 4.5vw, 5rem);
+  background: #f2f2f2;
+  color: #303341;
+}
+
+.recommendations__title {
+  margin: 0 0 var(--space-md);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.recommendations__products {
+  display: grid;
+  grid-template-columns: repeat(var(--recommendations-columns), minmax(0, 1fr));
+  gap: var(--recommendations-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recommendations__item {
+  min-inline-size: 0;
+}
+
+@media (max-width: bp.$xl) {
+  :host {
+    --recommendations-columns: 4;
+    --recommendations-gap: 1.25rem;
   }
-  &__more {
-    display: block;
-    margin: var(--space-md) auto 0;
+}
+
+@media (max-width: bp.$lg) {
+  :host {
+    --recommendations-columns: 3;
+  }
+}
+
+@media (max-width: bp.$md) {
+  :host {
+    --recommendations-columns: 2;
+    --recommendations-gap: 1rem;
+  }
+
+  .recommendations {
+    padding-inline: var(--space-md);
+  }
+}
+
+@media (max-width: bp.$sm) {
+  :host {
+    --recommendations-columns: 1;
+  }
+
+  .recommendations {
+    padding: calc(2 * var(--space-md)) var(--space-sm);
+  }
+
+  .recommendations__title {
+    font-size: 1.0625rem;
   }
 }
