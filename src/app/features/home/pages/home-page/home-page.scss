@@ -1,6 +1,13 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
+  // Single source of truth for the intro background and both content containers.
+  --home-layout-max-width: 116.25rem;
+  --home-layout-inline-gap: 1.5rem;
+  --home-inline-inset: max(
+    var(--home-layout-inline-gap),
+    calc((100% - var(--home-layout-max-width)) / 2)
+  );
   display: block;
 }
 
@@ -25,8 +32,6 @@
   }
   > .home-content {
     grid-area: 2 / 1;
-    inline-size: 100%;
-    min-inline-size: 0;
   }
   &::before,
   > .home-intro__waves {
@@ -34,8 +39,7 @@
     // Anchor to the Hero row, so additional offer content cannot stretch the image.
     grid-area: 1 / 1 / 2 / 2;
     z-index: -1;
-    inset: 1.875rem max(1.5rem, calc((100% - 120rem) / 2 + 1.875rem))
-      calc(-1 * var(--home-intro-background-overlap));
+    inset: 1.875rem var(--home-inline-inset) calc(-1 * var(--home-intro-background-overlap));
     border-radius: 1.25rem 1.25rem 0 0;
     pointer-events: none;
   }
@@ -83,15 +87,20 @@
 }
 
 .home-content {
-  max-inline-size: var(--content-width);
+  box-sizing: border-box;
+  inline-size: calc(100% - (2 * var(--home-layout-inline-gap)));
+  max-inline-size: var(--home-layout-max-width);
+  min-inline-size: 0;
   margin-inline: auto;
-  padding-inline: var(--space-md);
 }
 
 @media (max-width: bp.$md) {
+  :host {
+    --home-layout-inline-gap: 0.75rem;
+  }
   .home-intro::before,
   .home-intro > .home-intro__waves {
-    inset: 0 0.75rem calc(-1 * var(--home-intro-background-overlap));
+    inset-block-start: 0;
     border-radius: 0;
   }
   .home-intro > .home-intro__waves {
