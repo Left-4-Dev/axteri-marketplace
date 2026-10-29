@@ -1,18 +1,32 @@
 <section class="preferred-brands" id="preferred-brands" aria-labelledby="preferred-brands-title">
-  <h2 id="preferred-brands-title">Las marcas preferidas</h2>
+  <h2 class="preferred-brands__title" id="preferred-brands-title">LAS MARCAS PREFERIDAS</h2>
   <ul class="preferred-brands__list">
     @for (brand of brands(); track brand.id) {
-      <li>
-        <article class="preferred-brands__card">
-          <h3>{{ brand.name }}</h3>
-          <ul
+      <li class="preferred-brands__item">
+        <article
+          class="preferred-brands__card"
+          [class.preferred-brands__card--abb]="brand.id === 'abb'"
+          [class.preferred-brands__card--omron]="brand.id === 'omron'"
+          [attr.aria-labelledby]="'preferred-brand-' + brand.id"
+        >
+          <h3 class="preferred-brands__name" [id]="'preferred-brand-' + brand.id">
+            {{ brand.name }}
+          </h3>
+          <div
+            #categoriesViewport
             class="preferred-brands__categories"
+            role="region"
+            [attr.data-brand-id]="brand.id"
             [attr.aria-label]="'Categorías de ' + brand.name"
+            [attr.tabindex]="scrollableBrands().has(brand.id) ? 0 : null"
+            (keydown)="onCategoriesKeydown($event, categoriesViewport)"
           >
-            @for (category of brand.categories; track category) {
-              <li>{{ category }}</li>
-            }
-          </ul>
+            <ul class="preferred-brands__categories-track">
+              @for (category of brand.categories; track category) {
+                <li class="preferred-brands__category">{{ category }}</li>
+              }
+            </ul>
+          </div>
           <ul class="preferred-brands__previews" [attr.aria-label]="'Productos de ' + brand.name">
             @for (preview of brand.previews; track preview.id; let index = $index) {
               <li class="preferred-brands__image">
@@ -21,16 +35,38 @@
                     [ngSrc]="imageUrl"
                     [alt]="'Producto ' + (index + 1) + ' de ' + brand.name"
                     fill
+                    sizes="(max-width: 768px) 45vw, (max-width: 1024px) 22vw, 14vw"
                   />
                 } @else {
-                  <span>Imagen {{ index + 1 }} pendiente</span>
+                  <span
+                    class="preferred-brands__placeholder"
+                    role="img"
+                    [attr.aria-label]="
+                      'Imagen del producto ' + (index + 1) + ' de ' + brand.name + ' pendiente'
+                    "
+                    >Imagen de producto pendiente</span
+                  >
                 }
               </li>
             }
           </ul>
-          <button type="button" disabled>Ver más productos</button>
+          <button
+            class="preferred-brands__cta"
+            type="button"
+            disabled
+            aria-describedby="preferred-brands-unavailable"
+          >
+            VER MÁS PRODUCTOS
+          </button>
         </article>
       </li>
     }
   </ul>
+  @if (brands().length === 0) {
+    <p>No hay marcas preferidas disponibles.</p>
+  } @else {
+    <span id="preferred-brands-unavailable" hidden
+      >El catálogo por marca aún no está disponible.</span
+    >
+  }
 </section>
