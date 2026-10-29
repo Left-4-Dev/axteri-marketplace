@@ -151,4 +151,66 @@ describe('ProductCard', () => {
     expect(element.querySelector('img')?.getAttribute('src')).toBe('/assets/product-test.png');
     expect(element.querySelector('.product-card__placeholder')).toBeNull();
   });
+
+  it('renders default seller information and preserves accessible image actions', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', {
+      ...product,
+      seller: { name: 'LDF Projects', location: 'San Miguel, Lima', years: 20 },
+    } satisfies Product);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.product-card__seller-name')?.textContent).toBe('LDF Projects');
+    expect(element.querySelector('.product-card__location')?.textContent).toContain(
+      'San Miguel, Lima',
+    );
+    expect(
+      element.querySelector('.product-card__tenure [role="img"]')?.getAttribute('aria-label'),
+    ).toBe('Antigüedad del vendedor');
+    expect(element.querySelector('.product-card__tenure')?.textContent).toContain('20 años');
+    const actions = element.querySelectorAll<HTMLButtonElement>('.product-card__visual button');
+    expect(actions).toHaveLength(2);
+    actions.forEach((button) => {
+      expect(button.disabled).toBe(false);
+      expect(button.getAttribute('aria-label')).toContain(product.name);
+      expect(button.querySelector('span')?.getAttribute('aria-hidden')).toBe('true');
+    });
+    expect(element.querySelector('.product-card__terms')).toBeNull();
+  });
+
+  for (const includesTax of [true, false, undefined]) {
+    it(`uses only supplied commercial terms in the default variant (tax: ${includesTax})`, async () => {
+      const fixture = TestBed.createComponent(ProductCard);
+      fixture.componentRef.setInput('product', {
+        ...product,
+        price: {
+          kind: 'fixed',
+          amount: 8500,
+          previousAmount: 9500,
+          currency: 'PEN',
+          ...(includesTax === undefined ? {} : { includesTax, unitLabel: 'Por unidad' }),
+        },
+      } satisfies Product);
+      await fixture.whenStable();
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.querySelector('.product-card__current-price')?.textContent).toContain(
+        'S/ 8,500.00',
+      );
+      expect(element.querySelector('.product-card__discount')?.getAttribute('aria-label')).toBe(
+        '10.5% de descuento',
+      );
+      if (includesTax === undefined) {
+        expect(element.querySelector('.product-card__terms')).toBeNull();
+        expect(element.textContent).not.toContain('IGV');
+      } else {
+        expect(element.querySelector('.product-card__terms')?.textContent).toContain('*Por unidad');
+        expect(element.querySelector('.product-card__terms')?.textContent).toContain(
+          includesTax ? 'Incluye IGV' : 'No incluye IGV',
+        );
+        expect(element.querySelector('.product-card__info-icon')?.getAttribute('src')).toBe(
+          '/assets/icons/product/info.svg',
+        );
+      }
+    });
+  }
 });

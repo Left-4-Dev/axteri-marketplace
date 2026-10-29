@@ -6,7 +6,7 @@ import { Product } from '../../../models/product.model';
   selector: 'app-product-card',
   imports: [CurrencyPipe, DecimalPipe, NgOptimizedImage],
   templateUrl: './product-card.html',
-  styleUrls: ['./product-card.scss', './product-card-offer.scss'],
+  styleUrls: ['./product-card.scss', './product-card-offer.scss', './product-card-default.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCard {
