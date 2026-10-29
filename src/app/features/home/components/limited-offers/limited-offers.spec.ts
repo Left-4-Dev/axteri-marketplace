@@ -83,7 +83,7 @@ describe('LimitedOffers', () => {
     expect(element.textContent).toContain('S/ 1,850.00');
   });
 
-  it('labels the keyboard-accessible carousel and keeps unimplemented navigation disabled', () => {
+  it('labels the keyboard-accessible carousel and omits the CTA without a catalog destination', () => {
     expect(viewport.tabIndex).toBe(0);
     expect(viewport.getAttribute('role')).toBe('region');
     expect(viewport.getAttribute('aria-label')).toBe('Productos en oferta');
@@ -92,10 +92,45 @@ describe('LimitedOffers', () => {
       expect(button.getAttribute('aria-controls')).toBe(viewport.id);
       expect(button.disabled).toBe(true);
     }
-    const more = element.querySelector<HTMLButtonElement>('.limited-offers__more')!;
-    expect(more.textContent?.trim()).toBe('MÁS OFERTAS');
-    expect(more.disabled).toBe(true);
+    expect(element.querySelector('.limited-offers__more, section > button')).toBeNull();
+    expect(element.textContent).not.toContain('MÁS OFERTAS');
     expect(element.querySelector('a')).toBeNull();
+  });
+
+  it('keeps all ten offers in the carousel without a CTA, regardless of viewport overflow', async () => {
+    const products = Array.from({ length: 10 }, (_, index) => ({
+      ...LIMITED_OFFERS[index % LIMITED_OFFERS.length],
+      id: `offer-test-${index}`,
+    }));
+    fixture.componentRef.setInput('products', products);
+    await fixture.whenStable();
+    await setScrollable();
+
+    const cards = fixture.debugElement.queryAll(By.directive(ProductCard));
+    expect(cards.map((card) => (card.componentInstance as ProductCard).product())).toEqual(
+      products,
+    );
+    expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
+    expect(next.disabled).toBe(false);
+    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
+
+    next.click();
+    await fixture.whenStable();
+    expect(viewport.scrollLeft).toBeGreaterThan(0);
+    key('End');
+    await fixture.whenStable();
+    expect(viewport.scrollLeft).toBe(viewport.scrollWidth - viewport.clientWidth);
+    expect(next.disabled).toBe(true);
+    expect(viewport.querySelectorAll('app-product-card')).toHaveLength(10);
+    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
+
+    Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
+    viewport.scrollLeft = 0;
+    resize();
+    await fixture.whenStable();
+    expect(previous.disabled).toBe(true);
+    expect(next.disabled).toBe(true);
+    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
   });
 
   it('moves forward and backward and updates arrow availability from actual scroll position', async () => {
