@@ -14,7 +14,8 @@ describe('Recommendations', () => {
       ...RECOMMENDED_PRODUCTS[index % RECOMMENDED_PRODUCTS.length],
       id: `recommendation-test-${index}`,
     }));
-  const loadMoreButton = () => element.querySelector<HTMLButtonElement>('.recommendations__more');
+  const loadMoreButton = () =>
+    element.querySelector<HTMLButtonElement>('.recommendations__more button');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [Recommendations] }).compileComponents();

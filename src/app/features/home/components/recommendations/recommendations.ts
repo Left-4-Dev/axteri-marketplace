@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { Product } from '../../../../models/product.model';
+import { Button } from '../../../../shared/ui/button/button';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 
 const PRODUCTS_PER_BATCH = 10;
 
 @Component({
   selector: 'app-recommendations',
-  imports: [ProductCard],
+  imports: [ProductCard, Button],
   templateUrl: './recommendations.html',
   styleUrl: './recommendations.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

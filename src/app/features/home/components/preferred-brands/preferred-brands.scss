@@ -38,7 +38,7 @@
 }
 
 .preferred-brands__card {
-  --brand-surface:#9fc4fd;
+  --brand-surface: #9fc4fd;
   --brand-ink: #9fc4fd;
   display: flex;
   flex-direction: column;
@@ -136,18 +136,7 @@
 
 .preferred-brands__cta {
   align-self: center;
-  max-inline-size: 100%;
-  min-block-size: 2.75rem;
   margin-block-start: auto;
-  padding: 0.625rem clamp(1rem, 2vw, 2.5rem);
-  border: 0;
-  border-radius: 999px;
-  background: var(--color-background);
-  color: var(--brand-ink);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5;
-  opacity: 1;
 }
 
 @media (max-width: bp.$lg) {
