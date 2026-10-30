@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
+import { ProductFilters } from '../../components/product-filters/product-filters';
 import { PRODUCT_LISTING_ITEMS, PRODUCT_LISTING_SUMMARY } from '../../data/product-listing.data';
 import { ProductListPage } from './product-list-page';
 
@@ -13,6 +14,8 @@ describe('ProductListPage', () => {
     element.querySelector<HTMLButtonElement>('button[aria-label="Vista en cuadrícula"]')!;
   const listButton = () =>
     element.querySelector<HTMLButtonElement>('button[aria-label="Vista en lista"]')!;
+  const applyButton = () =>
+    element.querySelector<HTMLButtonElement>('button.product-filters__apply')!;
   const cards = () =>
     fixture.debugElement
       .queryAll(By.directive(ProductCard))
@@ -47,10 +50,9 @@ describe('ProductListPage', () => {
 
     expect(breadcrumbNav?.getAttribute('aria-label')).toBe('Breadcrumb');
     expect(breadcrumbList).not.toBeNull();
-    expect(breadcrumbItems.map((item) => item.textContent?.trim())).toEqual([
-      'Inicio',
-      'Schneider',
-    ]);
+    expect(breadcrumbItems.map((item) => item.textContent?.trim())).toEqual(
+      PRODUCT_LISTING_SUMMARY.breadcrumbs.map((crumb) => crumb.label),
+    );
     expect(homeLink?.getAttribute('href')).toBe('/');
     expect(breadcrumbItems[0]?.getAttribute('aria-current')).toBeNull();
     expect(currentCrumb?.querySelector('a')).toBeNull();
@@ -134,6 +136,84 @@ describe('ProductListPage', () => {
     expect(cards()).toHaveLength(initialCount);
     expect(cards().every((card) => card.variant() === 'default')).toBe(true);
     expect(element.querySelectorAll('.product-card--default')).toHaveLength(initialCount);
+  });
+
+  it('does not change products when editing a filter until APLICAR FILTROS is clicked, and preserves Grid/List switching', async () => {
+    const filtersDebug = fixture.debugElement.query(By.directive(ProductFilters));
+    expect(filtersDebug).not.toBeNull();
+
+    const unitCheckbox = element.querySelector<HTMLInputElement>(
+      'input[type="checkbox"][value="Por unidad"]',
+    )!;
+    unitCheckbox.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
+    expect(element.querySelector('.product-list__count')?.textContent?.trim()).toBe(
+      `${PRODUCT_LISTING_SUMMARY.totalResults} productos encontrados`,
+    );
+
+    applyButton().click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(cards()).toHaveLength(4);
+    expect(element.querySelector('.product-list__count')?.textContent?.trim()).toBe(
+      '4 productos encontrados',
+    );
+
+    listButton().click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(cards()).toHaveLength(4);
+    expect(cards().every((card) => card.variant() === 'list')).toBe(true);
+  });
+
+  it('opens and closes the mobile filters panel without changing results when closed via ×, and closes on apply', async () => {
+    const toggleBtn = element.querySelector<HTMLButtonElement>('.product-list__filters-toggle')!;
+    const closeBtn = element.querySelector<HTMLButtonElement>(
+      'button[aria-label="Cerrar filtros"]',
+    )!;
+    const sidebar = element.querySelector<HTMLElement>('#product-list-filters-sidebar')!;
+    const unitCheckbox = element.querySelector<HTMLInputElement>(
+      'input[type="checkbox"][value="Por unidad"]',
+    )!;
+
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(false);
+
+    toggleBtn.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('true');
+    expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(true);
+
+    unitCheckbox.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(unitCheckbox.checked).toBe(true);
+
+    closeBtn.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(false);
+    expect(unitCheckbox.checked).toBe(false);
+    expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
+
+    toggleBtn.click();
+    unitCheckbox.click();
+    applyButton().click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(false);
+    expect(cards()).toHaveLength(4);
   });
 
   it('handles an empty product list gracefully without breaking the page', async () => {

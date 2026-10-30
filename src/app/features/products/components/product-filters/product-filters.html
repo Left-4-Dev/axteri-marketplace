@@ -1,0 +1,233 @@
+@let chips = activeChips();
+@let draft = draftFilters();
+@let bounds = priceBounds();
+
+<div class="product-filters">
+  <div class="product-filters__body">
+    @if (chips.length) {
+      <section
+        class="product-filters__group product-filters__group--selected"
+        aria-labelledby="selected-filters-heading"
+      >
+        <h2 class="product-filters__title" id="selected-filters-heading">Filtros seleccionados</h2>
+
+        <div class="product-filters__chips">
+          @for (chip of chips; track chip.id) {
+            <button
+              type="button"
+              class="product-filters__chip"
+              [attr.aria-label]="'Quitar filtro ' + chip.label"
+              (click)="chip.remove()"
+            >
+              <span>{{ chip.label }}</span>
+              <span aria-hidden="true">×</span>
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Organizar por</legend>
+      <div class="product-filters__options">
+        @for (option of sortOptions; track option.value) {
+          <label class="product-filters__option">
+            <input
+              type="radio"
+              name="product-sort"
+              [value]="option.value"
+              [checked]="draft.sortBy === option.value"
+              (change)="setSortBy(option.value)"
+            />
+            <span>{{ option.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Verificación de proveedor</legend>
+      <div class="product-filters__options">
+        @for (option of verificationOptions; track option.value) {
+          <label class="product-filters__option">
+            <input
+              type="checkbox"
+              [value]="option.value"
+              [checked]="draft.supplierVerification.includes(option.value)"
+              (change)="toggleSupplierVerification(option.value)"
+            />
+            <span>{{ option.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Rango de precio</legend>
+      <div class="price-range" [style.--min-pct]="minPercent()" [style.--max-pct]="maxPercent()">
+        <div class="price-range__track">
+          <div class="price-range__selected"></div>
+
+          <input
+            type="range"
+            class="price-range__input price-range__input--min"
+            [class.price-range__input--top]="isMinHandleNearMax()"
+            [min]="bounds.min"
+            [max]="bounds.max"
+            step="50"
+            [value]="draft.priceRange.min"
+            aria-label="Precio mínimo"
+            (input)="onMinPriceInput($event)"
+          />
+          <input
+            type="range"
+            class="price-range__input price-range__input--max"
+            [min]="bounds.min"
+            [max]="bounds.max"
+            step="50"
+            [value]="draft.priceRange.max"
+            aria-label="Precio máximo"
+            (input)="onMaxPriceInput($event)"
+          />
+        </div>
+
+        <div class="price-range__values">
+          <span>S/ {{ formatPrice(draft.priceRange.min) }}</span>
+          <span>S/ {{ formatPrice(draft.priceRange.max) }}</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Capacidad de compra</legend>
+      <div class="product-filters__options">
+        @for (option of capacityOptions; track option.value) {
+          <label class="product-filters__option">
+            <input
+              type="checkbox"
+              [value]="option.value"
+              [checked]="draft.purchaseCapacity.includes(option.value)"
+              (change)="togglePurchaseCapacity(option.value)"
+            />
+            <span>{{ option.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Reseña del producto</legend>
+      <div class="product-filters__rating">
+        <span class="product-filters__rating-edge">1 estrella</span>
+        <div class="product-filters__stars" role="group" aria-label="Calificación mínima">
+          @for (star of ratingOptions; track star) {
+            <button
+              type="button"
+              class="product-filters__star"
+              [class.product-filters__star--active]="(draft.minRating ?? 0) >= star"
+              [attr.aria-pressed]="draft.minRating === star"
+              [attr.aria-label]="star === 1 ? '1 estrella o más' : star + ' estrellas o más'"
+              (click)="toggleRating(star)"
+            >
+              ★
+            </button>
+          }
+        </div>
+        <span class="product-filters__rating-edge">5 estrellas</span>
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Marcas</legend>
+      <div class="product-filters__box">
+        <div class="product-filters__search">
+          <input
+            type="search"
+            class="product-filters__search-input"
+            placeholder="Buscar"
+            aria-label="Buscar marca"
+            [value]="brandQuery()"
+            (input)="onBrandQueryInput($event)"
+          />
+          <svg class="product-filters__search-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M10.5 10.5L14 14"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <ul class="product-filters__scroll-list" role="list">
+          @for (brand of filteredBrands(); track brand) {
+            <li>
+              <label class="product-filters__option product-filters__option--brand">
+                <input
+                  type="checkbox"
+                  [value]="brand"
+                  [checked]="draft.brands.includes(brand)"
+                  (change)="toggleBrand(brand)"
+                />
+                <span>{{ brand }}</span>
+              </label>
+            </li>
+          } @empty {
+            <li class="product-filters__empty">Sin coincidencias</li>
+          }
+        </ul>
+      </div>
+    </fieldset>
+
+    <fieldset class="product-filters__group">
+      <legend class="product-filters__title">Origen del producto</legend>
+      <div class="product-filters__box">
+        <div class="product-filters__search">
+          <input
+            type="search"
+            class="product-filters__search-input"
+            placeholder="Buscar"
+            aria-label="Buscar origen"
+            [value]="originQuery()"
+            (input)="onOriginQueryInput($event)"
+          />
+          <svg class="product-filters__search-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M10.5 10.5L14 14"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <ul class="product-filters__scroll-list" role="list">
+          @for (origin of filteredOrigins(); track origin) {
+            <li>
+              <label class="product-filters__option">
+                <input
+                  type="checkbox"
+                  [value]="origin"
+                  [checked]="draft.origins.includes(origin)"
+                  (change)="toggleOrigin(origin)"
+                />
+                <span>{{ origin }}</span>
+              </label>
+            </li>
+          } @empty {
+            <li class="product-filters__empty">Sin coincidencias</li>
+          }
+        </ul>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="product-filters__footer">
+    <button type="button" class="product-filters__clear" (click)="clearDraftFilters()">
+      Limpiar
+    </button>
+    <button type="button" class="product-filters__apply" (click)="applyFilters()">
+      APLICAR FILTROS
+    </button>
+  </div>
+</div>

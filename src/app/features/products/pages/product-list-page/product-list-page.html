@@ -1,5 +1,8 @@
 @let listing = summary();
 @let currentMode = viewMode();
+@let visibleProducts = filteredProducts();
+@let mobileOpen = isMobileFiltersOpen();
+@let activeCount = appliedFilterCount();
 <div class="product-list">
   <div class="product-list__shell">
     <nav class="product-list__breadcrumb" aria-label="Breadcrumb">
@@ -23,8 +26,28 @@
     </nav>
 
     <div class="product-list__surface">
-      <aside class="product-list__sidebar" aria-label="Filtros de productos">
-        <p class="product-list__sidebar-placeholder">Filtros disponibles en la siguiente etapa</p>
+      <aside
+        class="product-list__sidebar"
+        id="product-list-filters-sidebar"
+        [class.product-list__sidebar--open]="mobileOpen"
+        aria-label="Filtros de productos"
+      >
+        <div class="product-list__panel-header">
+          <span class="product-list__panel-title">FILTROS</span>
+          <button
+            type="button"
+            class="product-list__panel-close"
+            aria-label="Cerrar filtros"
+            (click)="closeMobileFilters()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <app-product-filters
+          [appliedFilters]="appliedFilters()"
+          (filtersChange)="onFiltersChange($event)"
+        />
       </aside>
 
       <section class="product-list__results" aria-labelledby="product-list-title">
@@ -33,53 +56,69 @@
             <h1 class="product-list__title" id="product-list-title">
               {{ listing.categoryTitle }}
             </h1>
-            <p class="product-list__count">{{ listing.totalResults }} productos encontrados</p>
+            <p class="product-list__count">{{ displayedTotalResults() }} productos encontrados</p>
           </div>
 
-          <div class="product-list__view-controls" role="group" aria-label="Modo de visualización">
+          <div class="product-list__toolbar">
             <button
-              class="product-list__view-button"
-              [class.product-list__view-button--active]="currentMode === 'grid'"
               type="button"
-              aria-label="Vista en cuadrícula"
-              [attr.aria-pressed]="currentMode === 'grid'"
-              (click)="setViewMode('grid')"
+              class="product-list__filters-toggle"
+              [attr.aria-expanded]="mobileOpen"
+              aria-controls="product-list-filters-sidebar"
+              (click)="toggleMobileFilters()"
             >
-              <svg viewBox="0 0 20 20" aria-hidden="true">
-                <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" />
-                <rect x="11" y="3" width="6" height="6" rx="1" fill="currentColor" />
-                <rect x="3" y="11" width="6" height="6" rx="1" fill="currentColor" />
-                <rect x="11" y="11" width="6" height="6" rx="1" fill="currentColor" />
-              </svg>
+              {{ activeCount ? 'FILTROS (' + activeCount + ')' : 'FILTROS' }}
             </button>
-            <button
-              class="product-list__view-button"
-              [class.product-list__view-button--active]="currentMode === 'list'"
-              type="button"
-              aria-label="Vista en lista"
-              [attr.aria-pressed]="currentMode === 'list'"
-              (click)="setViewMode('list')"
+
+            <div
+              class="product-list__view-controls"
+              role="group"
+              aria-label="Modo de visualización"
             >
-              <svg viewBox="0 0 20 20" aria-hidden="true">
-                <circle cx="4.5" cy="5.5" r="1.25" fill="currentColor" />
-                <rect x="7.5" y="4.5" width="9.5" height="2" rx="1" fill="currentColor" />
-                <circle cx="4.5" cy="10" r="1.25" fill="currentColor" />
-                <rect x="7.5" y="9" width="9.5" height="2" rx="1" fill="currentColor" />
-                <circle cx="4.5" cy="14.5" r="1.25" fill="currentColor" />
-                <rect x="7.5" y="13.5" width="9.5" height="2" rx="1" fill="currentColor" />
-              </svg>
-            </button>
+              <button
+                class="product-list__view-button"
+                [class.product-list__view-button--active]="currentMode === 'grid'"
+                type="button"
+                aria-label="Vista en cuadrícula"
+                [attr.aria-pressed]="currentMode === 'grid'"
+                (click)="setViewMode('grid')"
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                  <rect x="11" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                  <rect x="3" y="11" width="6" height="6" rx="1" fill="currentColor" />
+                  <rect x="11" y="11" width="6" height="6" rx="1" fill="currentColor" />
+                </svg>
+              </button>
+              <button
+                class="product-list__view-button"
+                [class.product-list__view-button--active]="currentMode === 'list'"
+                type="button"
+                aria-label="Vista en lista"
+                [attr.aria-pressed]="currentMode === 'list'"
+                (click)="setViewMode('list')"
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <circle cx="4.5" cy="5.5" r="1.25" fill="currentColor" />
+                  <rect x="7.5" y="4.5" width="9.5" height="2" rx="1" fill="currentColor" />
+                  <circle cx="4.5" cy="10" r="1.25" fill="currentColor" />
+                  <rect x="7.5" y="9" width="9.5" height="2" rx="1" fill="currentColor" />
+                  <circle cx="4.5" cy="14.5" r="1.25" fill="currentColor" />
+                  <rect x="7.5" y="13.5" width="9.5" height="2" rx="1" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
           </div>
         </header>
 
-        @if (products().length) {
+        @if (visibleProducts.length) {
           <ul
             class="product-list__items"
             [class.product-list__items--grid]="currentMode === 'grid'"
             [class.product-list__items--list]="currentMode === 'list'"
             role="list"
           >
-            @for (product of products(); track product.id) {
+            @for (product of visibleProducts; track product.id) {
               <li class="product-list__item">
                 <app-product-card
                   [product]="product"
