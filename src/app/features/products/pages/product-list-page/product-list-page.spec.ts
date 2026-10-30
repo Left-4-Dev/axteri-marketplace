@@ -32,23 +32,64 @@ describe('ProductListPage', () => {
 
   it('renders the semantic breadcrumb, category title, and product count', () => {
     const breadcrumbNav = element.querySelector<HTMLElement>('nav.product-list__breadcrumb');
-    const breadcrumbItems = Array.from(
-      element.querySelectorAll<HTMLElement>('.product-list__breadcrumb-item'),
-      (item) => item.textContent?.trim(),
+    const breadcrumbList = breadcrumbNav?.querySelector<HTMLOListElement>(
+      'ol.product-list__breadcrumb-list',
     );
-    const homeLink = element.querySelector<HTMLAnchorElement>('.product-list__breadcrumb-link');
-    const currentCrumb = element.querySelector<HTMLElement>('.product-list__breadcrumb-current');
+    const breadcrumbItems = Array.from(
+      breadcrumbList?.querySelectorAll<HTMLLIElement>('li.product-list__breadcrumb-item') ?? [],
+    );
+    const homeLink = breadcrumbItems[0]?.querySelector<HTMLAnchorElement>(
+      'a.product-list__breadcrumb-link',
+    );
+    const currentCrumb = breadcrumbItems[1];
     const title = element.querySelector<HTMLHeadingElement>('#product-list-title');
     const count = element.querySelector<HTMLParagraphElement>('.product-list__count');
 
-    expect(breadcrumbNav?.getAttribute('aria-label')).toBe('Ruta de navegación');
-    expect(breadcrumbItems).toEqual(['Inicio', 'Schneider']);
+    expect(breadcrumbNav?.getAttribute('aria-label')).toBe('Breadcrumb');
+    expect(breadcrumbList).not.toBeNull();
+    expect(breadcrumbItems.map((item) => item.textContent?.trim())).toEqual([
+      'Inicio',
+      'Schneider',
+    ]);
     expect(homeLink?.getAttribute('href')).toBe('/');
+    expect(breadcrumbItems[0]?.getAttribute('aria-current')).toBeNull();
+    expect(currentCrumb?.querySelector('a')).toBeNull();
     expect(currentCrumb?.getAttribute('aria-current')).toBe('page');
+    expect(currentCrumb?.classList.contains('product-list__breadcrumb-current')).toBe(true);
     expect(title?.textContent?.trim()).toBe(PRODUCT_LISTING_SUMMARY.categoryTitle);
     expect(count?.textContent?.trim()).toBe(
       `${PRODUCT_LISTING_SUMMARY.totalResults} productos encontrados`,
     );
+  });
+
+  it('supports multi-level breadcrumbs keeping intermediate levels navigable or plain and only the last item as current page', async () => {
+    fixture.componentRef.setInput('summary', {
+      ...PRODUCT_LISTING_SUMMARY,
+      breadcrumbs: [
+        { label: 'Inicio', routerLink: '/' },
+        { label: 'Productos', routerLink: '/productos' },
+        { label: 'Schneider' },
+      ],
+    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const items = Array.from(
+      element.querySelectorAll<HTMLLIElement>('li.product-list__breadcrumb-item'),
+    );
+
+    expect(items.map((item) => item.textContent?.trim())).toEqual([
+      'Inicio',
+      'Productos',
+      'Schneider',
+    ]);
+    expect(items[0]?.querySelector('a')?.getAttribute('href')).toBe('/');
+    expect(items[1]?.querySelector('a')?.getAttribute('href')).toBe('/productos');
+    expect(items[1]?.getAttribute('aria-current')).toBeNull();
+    expect(items[1]?.classList.contains('product-list__breadcrumb-current')).toBe(false);
+    expect(items[2]?.querySelector('a')).toBeNull();
+    expect(items[2]?.getAttribute('aria-current')).toBe('page');
+    expect(items[2]?.classList.contains('product-list__breadcrumb-current')).toBe(true);
   });
 
   it('starts in Grid mode using ProductCard default with accessible toggle controls', () => {

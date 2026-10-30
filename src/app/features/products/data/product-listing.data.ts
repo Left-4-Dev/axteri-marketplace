@@ -4,7 +4,7 @@ import { ProductListingSummary } from '../models/product-listing.model';
 export const PRODUCT_LISTING_SUMMARY: ProductListingSummary = {
   categoryTitle: 'Automatización industrial y tecnología',
   totalResults: 230,
-  breadcrumbs: [{ label: 'Inicio', routerLink: '/' }, { label: 'Schneider' }],
+  breadcrumbs: [{ label: 'Inicio', routerLink: '/' }, { label: 'Productos' }],
 };
 
 const verifiedLimaSeller = {
