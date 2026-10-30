@@ -1,0 +1,100 @@
+@let listing = summary();
+@let currentMode = viewMode();
+<div class="product-list">
+  <div class="product-list__shell">
+    <nav class="product-list__breadcrumb" aria-label="Ruta de navegación">
+      <ol class="product-list__breadcrumb-list">
+        @for (crumb of listing.breadcrumbs; track crumb.label; let last = $last) {
+          <li class="product-list__breadcrumb-item">
+            @if (crumb.routerLink && !last) {
+              <a class="product-list__breadcrumb-link" [routerLink]="crumb.routerLink">
+                {{ crumb.label }}
+              </a>
+            } @else {
+              <span
+                class="product-list__breadcrumb-current"
+                [attr.aria-current]="last ? 'page' : null"
+              >
+                {{ crumb.label }}
+              </span>
+            }
+          </li>
+        }
+      </ol>
+    </nav>
+
+    <div class="product-list__surface">
+      <aside class="product-list__sidebar" aria-label="Filtros de productos">
+        <p class="product-list__sidebar-placeholder">Filtros disponibles en la siguiente etapa</p>
+      </aside>
+
+      <section class="product-list__results" aria-labelledby="product-list-title">
+        <header class="product-list__header">
+          <div class="product-list__heading">
+            <h1 class="product-list__title" id="product-list-title">
+              {{ listing.categoryTitle }}
+            </h1>
+            <p class="product-list__count">{{ listing.totalResults }} productos encontrados</p>
+          </div>
+
+          <div class="product-list__view-controls" role="group" aria-label="Modo de visualización">
+            <button
+              class="product-list__view-button"
+              [class.product-list__view-button--active]="currentMode === 'grid'"
+              type="button"
+              aria-label="Vista en cuadrícula"
+              [attr.aria-pressed]="currentMode === 'grid'"
+              (click)="setViewMode('grid')"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                <rect x="11" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                <rect x="3" y="11" width="6" height="6" rx="1" fill="currentColor" />
+                <rect x="11" y="11" width="6" height="6" rx="1" fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              class="product-list__view-button"
+              [class.product-list__view-button--active]="currentMode === 'list'"
+              type="button"
+              aria-label="Vista en lista"
+              [attr.aria-pressed]="currentMode === 'list'"
+              (click)="setViewMode('list')"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="4.5" cy="5.5" r="1.25" fill="currentColor" />
+                <rect x="7.5" y="4.5" width="9.5" height="2" rx="1" fill="currentColor" />
+                <circle cx="4.5" cy="10" r="1.25" fill="currentColor" />
+                <rect x="7.5" y="9" width="9.5" height="2" rx="1" fill="currentColor" />
+                <circle cx="4.5" cy="14.5" r="1.25" fill="currentColor" />
+                <rect x="7.5" y="13.5" width="9.5" height="2" rx="1" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        @if (products().length) {
+          <ul
+            class="product-list__items"
+            [class.product-list__items--grid]="currentMode === 'grid'"
+            [class.product-list__items--list]="currentMode === 'list'"
+            role="list"
+          >
+            @for (product of products(); track product.id) {
+              <li class="product-list__item">
+                <app-product-card
+                  [product]="product"
+                  [variant]="cardVariant()"
+                  (requestQuote)="onRequestQuote()"
+                  (viewDetails)="onViewDetails()"
+                />
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="product-list__empty">No se encontraron productos disponibles.</p>
+        }
+      </section>
+    </div>
+  </div>
+</div>
