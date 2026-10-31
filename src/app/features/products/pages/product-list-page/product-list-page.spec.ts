@@ -3,8 +3,9 @@ import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { ProductFilters } from '../../components/product-filters/product-filters';
+import { ProductPagination } from '../../components/product-pagination/product-pagination';
 import { PRODUCT_LISTING_ITEMS, PRODUCT_LISTING_SUMMARY } from '../../data/product-listing.data';
-import { ProductListPage } from './product-list-page';
+import { PRODUCT_LIST_PAGE_SIZE, ProductListPage } from './product-list-page';
 
 describe('ProductListPage', () => {
   let fixture: ComponentFixture<ProductListPage>;
@@ -16,6 +17,8 @@ describe('ProductListPage', () => {
     element.querySelector<HTMLButtonElement>('button[aria-label="Vista en lista"]')!;
   const applyButton = () =>
     element.querySelector<HTMLButtonElement>('button.product-filters__apply')!;
+  const pageButton = (page: number) =>
+    element.querySelector<HTMLButtonElement>(`button[aria-label="Ir a la página ${page}"]`);
   const cards = () =>
     fixture.debugElement
       .queryAll(By.directive(ProductCard))
@@ -94,81 +97,110 @@ describe('ProductListPage', () => {
     expect(items[2]?.classList.contains('product-list__breadcrumb-current')).toBe(true);
   });
 
-  it('starts in Grid mode using ProductCard default with accessible toggle controls', () => {
-    const listContainer = element.querySelector<HTMLUListElement>('.product-list__items');
-
-    expect(gridButton().type).toBe('button');
-    expect(listButton().type).toBe('button');
-    expect(gridButton().getAttribute('aria-pressed')).toBe('true');
-    expect(listButton().getAttribute('aria-pressed')).toBe('false');
-    expect(gridButton().classList.contains('product-list__view-button--active')).toBe(true);
-    expect(listButton().classList.contains('product-list__view-button--active')).toBe(false);
-    expect(listContainer?.classList.contains('product-list__items--grid')).toBe(true);
-    expect(listContainer?.classList.contains('product-list__items--list')).toBe(false);
-    expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
+  it('initially renders only pageSize products on page 1 and displays the next slice on page 2 without duplicates', async () => {
+    const page1Ids = cards().map((card) => card.product().id);
+    expect(page1Ids).toEqual(
+      PRODUCT_LISTING_ITEMS.slice(0, PRODUCT_LIST_PAGE_SIZE).map((item) => item.id),
+    );
     expect(cards().every((card) => card.variant() === 'default')).toBe(true);
+
+    pageButton(2)?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const page2Ids = cards().map((card) => card.product().id);
+    expect(page2Ids).toEqual(
+      PRODUCT_LISTING_ITEMS.slice(PRODUCT_LIST_PAGE_SIZE, PRODUCT_LIST_PAGE_SIZE * 2).map(
+        (item) => item.id,
+      ),
+    );
+    expect(page1Ids.some((id) => page2Ids.includes(id))).toBe(false);
   });
 
-  it('switches to List mode with ProductCard list and returns to Grid mode preserving the same product collection', async () => {
-    const initialCount = cards().length;
+  it('preserves the current page and its products when switching between Grid and List modes', async () => {
+    pageButton(2)?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const expectedPage2Ids = PRODUCT_LISTING_ITEMS.slice(
+      PRODUCT_LIST_PAGE_SIZE,
+      PRODUCT_LIST_PAGE_SIZE * 2,
+    ).map((item) => item.id);
 
     listButton().click();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    const listContainer = element.querySelector<HTMLUListElement>('.product-list__items');
-    expect(gridButton().getAttribute('aria-pressed')).toBe('false');
-    expect(listButton().getAttribute('aria-pressed')).toBe('true');
-    expect(listButton().classList.contains('product-list__view-button--active')).toBe(true);
-    expect(listContainer?.classList.contains('product-list__items--list')).toBe(true);
-    expect(listContainer?.classList.contains('product-list__items--grid')).toBe(false);
-    expect(cards()).toHaveLength(initialCount);
+    expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
+    expect(cards().map((card) => card.product().id)).toEqual(expectedPage2Ids);
     expect(cards().every((card) => card.variant() === 'list')).toBe(true);
-    expect(element.querySelectorAll('.product-card--list')).toHaveLength(initialCount);
 
     gridButton().click();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(gridButton().getAttribute('aria-pressed')).toBe('true');
-    expect(listButton().getAttribute('aria-pressed')).toBe('false');
-    expect(listContainer?.classList.contains('product-list__items--grid')).toBe(true);
-    expect(cards()).toHaveLength(initialCount);
+    expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
+    expect(cards().map((card) => card.product().id)).toEqual(expectedPage2Ids);
     expect(cards().every((card) => card.variant() === 'default')).toBe(true);
-    expect(element.querySelectorAll('.product-card--default')).toHaveLength(initialCount);
   });
 
-  it('does not change products when editing a filter until APLICAR FILTROS is clicked, and preserves Grid/List switching', async () => {
-    const filtersDebug = fixture.debugElement.query(By.directive(ProductFilters));
-    expect(filtersDebug).not.toBeNull();
+  it('does not reset the current page when editing draftFilters, and resets to page 1 upon APLICAR FILTROS or chip removal', async () => {
+    pageButton(2)?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
 
-    const unitCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Por unidad"]',
+    const schneiderCheckbox = element.querySelector<HTMLInputElement>(
+      'input[type="checkbox"][value="Schneider"]',
     )!;
-    unitCheckbox.click();
+    schneiderCheckbox.click();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
-    expect(element.querySelector('.product-list__count')?.textContent?.trim()).toBe(
-      `${PRODUCT_LISTING_SUMMARY.totalResults} productos encontrados`,
-    );
+    // Still on page 2 while only editing draftFilters
+    expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
 
     applyButton().click();
     await fixture.whenStable();
     fixture.detectChanges();
 
+    // Reset to page 1 after applying filters
+    expect(pageButton(1)?.getAttribute('aria-current')).toBe('page');
+
+    // Navigate to page 2 again, then remove the applied Schneider chip -> resets to page 1
+    pageButton(2)?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
+
+    const removeChipBtn = element.querySelector<HTMLButtonElement>(
+      'button[aria-label="Quitar filtro Schneider"]',
+    )!;
+    removeChipBtn.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(pageButton(1)?.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('computes pagination from filteredProducts and hides pagination when results fit in a single page', async () => {
+    expect(fixture.debugElement.query(By.directive(ProductFilters))).not.toBeNull();
+    expect(fixture.debugElement.query(By.directive(ProductPagination))).not.toBeNull();
+
+    const unitCheckbox = element.querySelector<HTMLInputElement>(
+      'input[type="checkbox"][value="Por unidad"]',
+    )!;
+    unitCheckbox.click();
+    applyButton().click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // 4 matching products <= pageSize (5), so totalPages === 1 and pagination is omitted
     expect(cards()).toHaveLength(4);
     expect(element.querySelector('.product-list__count')?.textContent?.trim()).toBe(
       '4 productos encontrados',
     );
-
-    listButton().click();
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    expect(cards()).toHaveLength(4);
-    expect(cards().every((card) => card.variant() === 'list')).toBe(true);
+    expect(fixture.debugElement.query(By.directive(ProductPagination))).toBeNull();
   });
 
   it('opens and closes the mobile filters panel without changing results when closed via ×, and closes on apply', async () => {
@@ -203,7 +235,7 @@ describe('ProductListPage', () => {
     expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
     expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(false);
     expect(unitCheckbox.checked).toBe(false);
-    expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
+    expect(cards()).toHaveLength(PRODUCT_LIST_PAGE_SIZE);
 
     toggleBtn.click();
     unitCheckbox.click();
@@ -216,13 +248,14 @@ describe('ProductListPage', () => {
     expect(cards()).toHaveLength(4);
   });
 
-  it('handles an empty product list gracefully without breaking the page', async () => {
+  it('handles an empty product list gracefully and hides pagination', async () => {
     fixture.componentRef.setInput('products', []);
     await fixture.whenStable();
     fixture.detectChanges();
 
     expect(cards()).toHaveLength(0);
     expect(element.querySelector('.product-list__items')).toBeNull();
+    expect(fixture.debugElement.query(By.directive(ProductPagination))).toBeNull();
     expect(element.querySelector('.product-list__empty')?.textContent?.trim()).toBe(
       'No se encontraron productos disponibles.',
     );

@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   computed,
   effect,
   inject,
@@ -17,6 +18,7 @@ import {
   ProductFilters,
   cloneFiltersState,
 } from '../../components/product-filters/product-filters';
+import { ProductPagination } from '../../components/product-pagination/product-pagination';
 import { DEFAULT_PRICE_RANGE, INITIAL_PRODUCT_FILTERS } from '../../data/product-filters.data';
 import { PRODUCT_LISTING_ITEMS, PRODUCT_LISTING_SUMMARY } from '../../data/product-listing.data';
 import {
@@ -25,9 +27,11 @@ import {
   ProductViewMode,
 } from '../../models/product-listing.model';
 
+export const PRODUCT_LIST_PAGE_SIZE = 40;
+
 @Component({
   selector: 'app-product-list-page',
-  imports: [RouterLink, ProductCard, ProductFilters],
+  imports: [RouterLink, ProductCard, ProductFilters, ProductPagination],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,8 +47,11 @@ export class ProductListPage {
   readonly summary = input<ProductListingSummary>(PRODUCT_LISTING_SUMMARY);
 
   protected readonly filtersComponent = viewChild(ProductFilters);
+  protected readonly resultsHeader = viewChild<ElementRef<HTMLElement>>('resultsHeader');
 
+  protected readonly pageSize = PRODUCT_LIST_PAGE_SIZE;
   protected readonly viewMode = signal<ProductViewMode>('grid');
+  protected readonly currentPage = signal<number>(1);
   protected readonly appliedFilters = signal<ProductFiltersState>(
     cloneFiltersState(INITIAL_PRODUCT_FILTERS),
   );
@@ -156,6 +163,28 @@ export class ProductListPage {
     return this.sortProducts(matching, active.sortBy);
   });
 
+  protected readonly totalPages = computed<number>(() => {
+    const totalItems = this.filteredProducts().length;
+    return totalItems > 0 ? Math.ceil(totalItems / this.pageSize) : 0;
+  });
+
+  protected readonly safeCurrentPage = computed<number>(() => {
+    const total = this.totalPages();
+    if (total === 0) {
+      return 1;
+    }
+    return Math.min(Math.max(1, this.currentPage()), total);
+  });
+
+  protected readonly paginatedProducts = computed<readonly Product[]>(() => {
+    const items = this.filteredProducts();
+    if (!items.length) {
+      return [];
+    }
+    const start = (this.safeCurrentPage() - 1) * this.pageSize;
+    return items.slice(start, start + this.pageSize);
+  });
+
   protected readonly displayedTotalResults = computed<number>(() =>
     this.hasActiveCatalogFilters() ? this.filteredProducts().length : this.summary().totalResults,
   );
@@ -166,7 +195,17 @@ export class ProductListPage {
 
   protected onFiltersChange(nextFilters: ProductFiltersState): void {
     this.appliedFilters.set(cloneFiltersState(nextFilters));
+    this.currentPage.set(1);
     this.isMobileFiltersOpen.set(false);
+  }
+
+  protected onPageChange(page: number): void {
+    const total = this.totalPages();
+    if (page < 1 || page > total || page === this.safeCurrentPage()) {
+      return;
+    }
+    this.currentPage.set(page);
+    this.scrollToResultsHeader();
   }
 
   protected toggleMobileFilters(): void {
@@ -194,6 +233,21 @@ export class ProductListPage {
 
   protected onViewDetails(): void {
     // Handler local reservado para la futura navegación/contacto de proveedor.
+  }
+
+  private scrollToResultsHeader(): void {
+    const headerEl = this.resultsHeader()?.nativeElement;
+    if (!headerEl || typeof headerEl.scrollIntoView !== 'function') {
+      return;
+    }
+    const win = this.document?.defaultView;
+    const prefersReducedMotion =
+      typeof win?.matchMedia === 'function' &&
+      win.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    headerEl.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
   }
 
   private sortProducts(
