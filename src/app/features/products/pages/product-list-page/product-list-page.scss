@@ -6,7 +6,9 @@
   --inset: max(var(--gap), calc((100% - var(--max-w)) / 2));
   --pad-x: 3.75rem;
   --pad: 1.75rem;
-  --cols: 5;
+  --card-min: 11rem;
+  --cols-max: 5;
+  --col-gap: 1.25rem;
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
@@ -209,8 +211,12 @@ nav a,
   list-style: none;
 
   &--grid {
-    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-    gap: 1.5rem 1.25rem;
+    --track: max(
+      var(--card-min),
+      (100% - (var(--cols-max) - 1) * var(--col-gap)) / var(--cols-max)
+    );
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--track), 100%), 1fr));
+    gap: 1.5rem var(--col-gap);
   }
 
   &--list {
@@ -243,16 +249,9 @@ nav a,
   text-align: center;
 }
 
-@media (max-width: bp.$xl) {
-  :host {
-    --cols: 4;
-  }
-}
-
 @media (max-width: bp.$lg) {
   :host {
     --pad: 1.25rem;
-    --cols: 3;
   }
 
   .product-list__surface {
@@ -265,7 +264,6 @@ nav a,
     --gap: 0.75rem;
     --pad-x: var(--space-sm);
     --pad: 1rem;
-    --cols: 2;
   }
 
   .product-list::before {
@@ -354,7 +352,6 @@ nav a,
 @media (max-width: bp.$sm) {
   :host {
     --pad: var(--space-sm);
-    --cols: 1;
   }
 
   .product-list__panel-header {
