@@ -25,6 +25,7 @@ import {
   PurchaseCapacityFilter,
   SupplierVerificationFilter,
 } from '../../models/product-listing.model';
+import { Button } from '../../../../shared/ui/button/button';
 
 export interface ActiveFilterChip {
   readonly id: string;
@@ -49,8 +50,9 @@ export function cloneFiltersState(state: ProductFiltersState): ProductFiltersSta
 
 @Component({
   selector: 'app-product-filters',
+  imports: [Button],
   templateUrl: './product-filters.html',
-  styleUrl: './product-filters.scss',
+  styleUrls: ['./product-filters.scss', './product-filters-responsive.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductFilters {
@@ -67,6 +69,15 @@ export class ProductFilters {
   protected readonly capacityOptions: readonly ProductFilterOption<PurchaseCapacityFilter>[] =
     PURCHASE_CAPACITY_OPTIONS;
   protected readonly ratingOptions: readonly number[] = RATING_OPTIONS;
+  protected readonly originFlagCodes: Readonly<Record<string, string>> = {
+    Alemania: 'de',
+    'Estados Unidos': 'us',
+    China: 'cn',
+    Japón: 'jp',
+    'Reino Unido': 'gb',
+    España: 'es',
+    India: 'in',
+  };
 
   protected readonly committedFilters = signal<ProductFiltersState>(
     cloneFiltersState(INITIAL_PRODUCT_FILTERS),

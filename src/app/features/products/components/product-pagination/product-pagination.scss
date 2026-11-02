@@ -45,6 +45,11 @@
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
 }
 
 .product-pagination__arrow {
@@ -63,7 +68,7 @@
 
 .product-pagination__page {
   background: transparent;
-  color: #5f6477;
+  color: #4b5063;
 
   &:hover:not(&--active) {
     background: #eef0f8;

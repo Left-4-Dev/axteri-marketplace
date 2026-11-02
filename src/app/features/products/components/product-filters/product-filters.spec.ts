@@ -9,9 +9,19 @@ describe('ProductFilters', () => {
   let emittedStates: ProductFiltersState[];
 
   const applyButton = () =>
-    element.querySelector<HTMLButtonElement>('button.product-filters__apply')!;
+    element.querySelector<HTMLButtonElement>('app-button[variant="primary"] button')!;
   const clearButton = () =>
-    element.querySelector<HTMLButtonElement>('button.product-filters__clear')!;
+    element.querySelector<HTMLButtonElement>('app-button[variant="light"] button')!;
+
+  it('renders the footer actions with the shared app-button as type="button"', () => {
+    const buttons = element.querySelectorAll<HTMLButtonElement>(
+      '.product-filters__footer app-button button',
+    );
+    expect(buttons.length).toBe(2);
+    expect(Array.from(buttons).every((b) => b.type === 'button')).toBe(true);
+    expect(clearButton().textContent?.trim()).toBe('LIMPIAR');
+    expect(applyButton().textContent?.trim()).toBe('APLICAR FILTROS');
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
