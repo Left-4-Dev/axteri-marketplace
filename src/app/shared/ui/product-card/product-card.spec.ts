@@ -213,4 +213,122 @@ describe('ProductCard', () => {
       }
     });
   }
+
+  describe('list variant', () => {
+    it('accepts variant="list", applies the modifier class, and renders brand, name, and seller', async () => {
+      const fixture = TestBed.createComponent(ProductCard);
+      fixture.componentRef.setInput('variant', 'list');
+      fixture.componentRef.setInput('product', {
+        ...product,
+        seller: {
+          name: 'LDF Projects',
+          location: 'San Miguel, Lima',
+          years: 20,
+          verified: true,
+        },
+      } satisfies Product);
+      await fixture.whenStable();
+
+      const element = fixture.nativeElement as HTMLElement;
+      const article = element.querySelector('article')!;
+      expect(article.classList.contains('product-card--list')).toBe(true);
+      expect(article.classList.contains('product-card--default')).toBe(false);
+      expect(article.classList.contains('product-card--offer')).toBe(false);
+      expect(element.querySelector('.product-card__brand')?.textContent).toBe('Siemens');
+      expect(element.querySelector('.product-card__title')?.textContent).toBe('Motor industrial');
+      expect(element.querySelector('.product-card__seller-name')?.textContent).toBe('LDF Projects');
+      expect(element.querySelector('.product-card__location')?.textContent).toContain(
+        'San Miguel, Lima',
+      );
+      expect(element.querySelector('.product-card__tenure')?.textContent).toContain('20 años');
+      expect(element.querySelector('.product-card__verified')?.textContent?.trim()).toBe(
+        'Verificado',
+      );
+      expect(element.querySelector('.product-card__actions')).toBeNull();
+      expect(element.querySelector('.product-card__quick-actions')).toBeNull();
+    });
+
+    it('renders optional description, badge, and minOrderLabel only when provided', async () => {
+      const fixture = TestBed.createComponent(ProductCard);
+      fixture.componentRef.setInput('variant', 'list');
+      fixture.componentRef.setInput('product', product);
+      await fixture.whenStable();
+
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.querySelector('.product-card__description')).toBeNull();
+      expect(element.querySelector('.product-card__badge')).toBeNull();
+      expect(element.querySelector('.product-card__terms')).toBeNull();
+
+      fixture.componentRef.setInput('product', {
+        ...product,
+        description: 'Motor eléctrico trifásico de alta eficiencia industrial.',
+        badge: 'Nuevo lanzamiento',
+        minOrderLabel: 'Pedido mínimo: 3 unidades',
+        price: {
+          kind: 'fixed',
+          amount: 345,
+          previousAmount: 450,
+          currency: 'PEN',
+          unitLabel: 'Por mayor',
+          includesTax: true,
+        },
+      } satisfies Product);
+      await fixture.whenStable();
+
+      expect(element.querySelector('.product-card__description')?.textContent?.trim()).toBe(
+        'Motor eléctrico trifásico de alta eficiencia industrial.',
+      );
+      expect(element.querySelector('.product-card__badge')?.textContent?.trim()).toBe(
+        'Nuevo lanzamiento',
+      );
+      const termsText = element.querySelector('.product-card__terms')?.textContent ?? '';
+      expect(termsText).toContain('*Por mayor');
+      expect(termsText).toContain('Pedido mínimo: 3 unidades');
+      expect(termsText).toContain('Incluye IGV');
+    });
+
+    for (const { label, price, expected } of cases) {
+      it(`supports ${label} in list variant`, async () => {
+        const fixture = TestBed.createComponent(ProductCard);
+        fixture.componentRef.setInput('variant', 'list');
+        fixture.componentRef.setInput('product', { ...product, price });
+        await fixture.whenStable();
+
+        const element = fixture.nativeElement as HTMLElement;
+        for (const text of expected) {
+          expect(element.querySelector('.product-card__price')?.textContent).toContain(text);
+        }
+        if (price.kind === 'fixed' && price.previousAmount) {
+          expect(element.querySelector('.product-card__discount')?.getAttribute('aria-label')).toBe(
+            '20% de descuento',
+          );
+        }
+      });
+    }
+
+    it('emits viewDetails and requestQuote from the textual list CTAs', async () => {
+      const fixture = TestBed.createComponent(ProductCard);
+      fixture.componentRef.setInput('variant', 'list');
+      fixture.componentRef.setInput('product', product);
+      const onQuote = vi.fn();
+      const onDetails = vi.fn();
+      fixture.componentInstance.requestQuote.subscribe(onQuote);
+      fixture.componentInstance.viewDetails.subscribe(onDetails);
+      await fixture.whenStable();
+
+      const element = fixture.nativeElement as HTMLElement;
+      const ctas = element.querySelectorAll<HTMLButtonElement>(
+        '.product-card__list-actions button',
+      );
+      expect(ctas).toHaveLength(2);
+      expect(ctas[0].textContent?.trim()).toBe('Contactar proveedor');
+      expect(ctas[1].textContent?.trim()).toBe('Solicitar cotización');
+
+      ctas[0].click();
+      ctas[1].click();
+
+      expect(onDetails).toHaveBeenCalledExactlyOnceWith(product);
+      expect(onQuote).toHaveBeenCalledExactlyOnceWith(product);
+    });
+  });
 });

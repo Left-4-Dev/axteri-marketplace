@@ -31,6 +31,9 @@ export interface Product {
   readonly id: string;
   readonly name: string;
   readonly brand: string;
+  readonly description?: string;
+  readonly badge?: string;
+  readonly minOrderLabel?: string;
   readonly imageUrl?: string;
   readonly price: ProductPrice;
   readonly offer?: { readonly countdown: OfferCountdown };
@@ -38,5 +41,6 @@ export interface Product {
     readonly name: string;
     readonly location: string;
     readonly years: number;
+    readonly verified?: boolean;
   };
 }

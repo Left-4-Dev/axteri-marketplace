@@ -11,6 +11,9 @@
   gap: var(--space-sm);
   overflow-wrap: anywhere;
 
+  &__body {
+    display: contents;
+  }
   &__image {
     @include skeleton.placeholder;
     position: relative;

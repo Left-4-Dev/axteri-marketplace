@@ -2,16 +2,23 @@ import { CurrencyPipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { Product } from '../../../models/product.model';
 
+export type ProductCardVariant = 'default' | 'offer' | 'list';
+
 @Component({
   selector: 'app-product-card',
   imports: [CurrencyPipe, DecimalPipe, NgOptimizedImage],
   templateUrl: './product-card.html',
-  styleUrls: ['./product-card.scss', './product-card-offer.scss', './product-card-default.scss'],
+  styleUrls: [
+    './product-card.scss',
+    './product-card-offer.scss',
+    './product-card-default.scss',
+    './product-card-list.scss',
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCard {
   readonly product = input.required<Product>();
-  readonly variant = input<'default' | 'offer'>('default');
+  readonly variant = input<ProductCardVariant>('default');
   readonly requestQuote = output<Product>();
   readonly viewDetails = output<Product>();
 

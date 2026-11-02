@@ -1,0 +1,48 @@
+@let total = totalPages();
+@let current = activePage();
+@let items = visibleItems();
+
+@if (total > 1) {
+  <nav class="product-pagination" aria-label="Paginación de productos">
+    <button
+      type="button"
+      class="product-pagination__arrow"
+      aria-label="Página anterior"
+      [disabled]="isPrevDisabled()"
+      (click)="goToPrevious()"
+    >
+      <span aria-hidden="true">‹</span>
+    </button>
+
+    <ol class="product-pagination__list">
+      @for (item of items; track item.id) {
+        <li class="product-pagination__item">
+          @if (item.kind === 'page') {
+            <button
+              type="button"
+              class="product-pagination__page"
+              [class.product-pagination__page--active]="item.page === current"
+              [attr.aria-label]="'Ir a la página ' + item.page"
+              [attr.aria-current]="item.page === current ? 'page' : null"
+              (click)="selectPage(item.page)"
+            >
+              {{ item.page }}
+            </button>
+          } @else {
+            <span class="product-pagination__ellipsis" aria-hidden="true">…</span>
+          }
+        </li>
+      }
+    </ol>
+
+    <button
+      type="button"
+      class="product-pagination__arrow"
+      aria-label="Página siguiente"
+      [disabled]="isNextDisabled()"
+      (click)="goToNext()"
+    >
+      <span aria-hidden="true">›</span>
+    </button>
+  </nav>
+}
