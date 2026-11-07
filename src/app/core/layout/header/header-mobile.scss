@@ -3,13 +3,13 @@
 .header__menu-button {
   display: grid;
   place-items: center;
-  flex: 0 0 2.75rem;
-  inline-size: 2.75rem;
-  block-size: 2.75rem;
-  padding: 0.625rem;
+  flex: 0 0 var(--control-height);
+  inline-size: var(--control-height);
+  block-size: var(--control-height);
+  padding: var(--space-sm);
   border: 0;
   border-radius: 50%;
-  background: var(--header-location-surface);
+  background: var(--color-accent-subtle);
   cursor: pointer;
   &[hidden] {
     display: none;
@@ -22,14 +22,14 @@
   inset-block-start: 4rem;
   inset-inline: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   max-block-size: calc(100dvh - 4rem);
-  padding: 0.5rem 1.25rem 0.75rem;
+  padding: var(--space-sm) var(--space-ml) var(--space-ms);
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-radius: 0 0 1rem 1rem;
-  background: var(--header-surface);
-  box-shadow: var(--header-shadow);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
   &[hidden] {
     display: none;
   }
@@ -53,12 +53,12 @@
       inline-size: 100%;
       max-inline-size: 100%;
       min-block-size: 4rem;
-      padding: 0.625rem 1.25rem;
-      gap: 0.625rem;
+      padding: var(--space-sm) var(--space-ml);
+      gap: var(--space-sm);
       border-radius: 0;
     }
     &--scrolled &__navbar {
-      box-shadow: var(--header-shadow);
+      box-shadow: var(--shadow-overlay);
     }
     &__brand,
     &--scrolled &__brand {
@@ -79,10 +79,10 @@
     }
     &__search-button,
     &--scrolled &__search-button {
-      flex: 0 0 2.75rem;
-      inline-size: 2.75rem;
-      block-size: 2.75rem;
-      padding: 0.625rem;
+      flex: 0 0 var(--control-height);
+      inline-size: var(--control-height);
+      block-size: var(--control-height);
+      padding: var(--space-sm);
       border-radius: 50%;
     }
     &__mobile-navigation {
@@ -94,15 +94,15 @@
       align-items: center;
       justify-content: space-between;
       inline-size: 100%;
-      min-block-size: 2.75rem;
-      padding: 0.5rem 0.25rem;
+      min-block-size: var(--control-height-large);
+      padding: var(--space-sm) var(--space-xs);
       border: 0;
       background: none;
       color: inherit;
       font: inherit;
-      font-size: 0.875rem;
-      font-weight: 600;
-      line-height: 1.2;
+      font-size: var(--font-size-body-small);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-heading);
       text-align: start;
       text-decoration: none;
       text-transform: uppercase;
@@ -119,7 +119,7 @@
       display: grid;
       gap: 0;
       margin: 0;
-      padding: 0 0 0.25rem 0.5rem;
+      padding: 0 0 var(--space-xs) var(--space-sm);
       list-style: none;
       &[hidden] {
         display: none;
@@ -128,35 +128,35 @@
     &__mobile-category {
       display: flex;
       align-items: center;
-      min-block-size: 2.75rem;
-      padding: 0.375rem 0.5rem;
-      border-radius: 0.5rem;
+      min-block-size: var(--control-height-large);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
       color: inherit;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      line-height: 1.35;
+      font-size: var(--font-size-secondary);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-label);
       text-decoration: none;
       text-transform: uppercase;
       &:hover {
-        background: var(--header-search-surface);
+        background: var(--color-surface-muted);
       }
     }
     &__mobile-actions {
       display: grid;
-      gap: 0.375rem;
-      padding-block-start: 0.625rem;
-      border-block-start: 1px solid var(--header-search-surface);
+      gap: var(--space-xs);
+      padding-block-start: var(--space-sm);
+      border-block-start: 1px solid var(--color-surface-muted);
       .header__action {
         inline-size: 100%;
         max-inline-size: 100%;
         min-block-size: 3rem;
-        gap: 0.625rem;
+        gap: var(--space-sm);
       }
       .header__action-label {
         display: block;
       }
       .header__action-copy strong {
-        font-size: 0.875rem;
+        font-size: var(--font-size-body-small);
       }
     }
   }
@@ -166,11 +166,11 @@
   .header {
     &__navbar,
     &--scrolled &__navbar {
-      padding: 0.5rem 0.875rem;
-      gap: 0.5rem;
+      padding: var(--space-sm) var(--space-ms);
+      gap: var(--space-sm);
     }
     &__mobile-menu {
-      padding-inline: 0.875rem;
+      padding-inline: var(--space-ms);
     }
   }
 }

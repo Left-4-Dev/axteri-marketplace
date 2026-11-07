@@ -89,9 +89,9 @@ describe('ProductCard', () => {
     );
     expect(element.querySelector('.product-card__terms')?.textContent).toContain('Por unidad');
     expect(element.querySelector('.product-card__terms')?.textContent).toContain('Incluye IGV');
-    const infoIcon = element.querySelector<HTMLImageElement>('.product-card__info-icon');
-    expect(infoIcon?.getAttribute('src')).toBe('/assets/icons/product/info.svg');
-    expect(infoIcon?.getAttribute('alt')).toBe('');
+    const infoIcon = element.querySelector<SVGElement>('.product-card__info-icon');
+    expect(infoIcon?.getAttribute('aria-hidden')).toBe('true');
+    expect(infoIcon?.getAttribute('focusable')).toBe('false');
     expect(element.querySelector('.product-card__countdown')?.getAttribute('aria-label')).toBe(
       'Tiempo restante de ejemplo: 2 días, 5 horas, 23 minutos, 45 segundos',
     );
@@ -207,8 +207,8 @@ describe('ProductCard', () => {
         expect(element.querySelector('.product-card__terms')?.textContent).toContain(
           includesTax ? 'Incluye IGV' : 'No incluye IGV',
         );
-        expect(element.querySelector('.product-card__info-icon')?.getAttribute('src')).toBe(
-          '/assets/icons/product/info.svg',
+        expect(element.querySelector('.product-card__info-icon')?.getAttribute('aria-hidden')).toBe(
+          'true',
         );
       }
     });

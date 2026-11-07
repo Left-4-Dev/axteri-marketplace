@@ -1,11 +1,6 @@
 @use '../../../../styles/breakpoints' as bp;
 
 :host {
-  // Temporary Illustrator tokens. Below Header (10) and future global overlays.
-  --floating-surface: #fff;
-  --floating-icon-color: #9d9dfc;
-  --floating-divider: #d8d8e4;
-  --floating-shadow: 0 2px 8px rgb(53 44 105 / 20%);
   position: fixed;
   z-index: 5;
   inset-inline-end: 0;
@@ -13,23 +8,23 @@
 }
 .floating-actions {
   display: grid;
-  padding: 0.25rem;
-  border-radius: 0.75rem 0 0 0.75rem;
-  background: var(--floating-surface);
-  box-shadow: var(--floating-shadow);
+  padding: var(--space-xs);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
 }
 .floating-actions__button {
   display: grid;
   place-items: center;
-  inline-size: 3.5rem;
-  block-size: 3.5rem;
-  padding: 0.75rem;
+  inline-size: var(--control-height-large);
+  block-size: var(--control-height-large);
+  padding: var(--space-ms);
   border: 0;
   background: none;
-  color: var(--floating-icon-color);
+  color: var(--color-action);
   cursor: not-allowed;
   & + & {
-    border-block-start: 1px solid var(--floating-divider);
+    border-block-start: 1px solid var(--color-border);
   }
   &:focus-visible {
     outline-offset: -3px;
@@ -37,8 +32,8 @@
 }
 .floating-actions__icon {
   display: block;
-  inline-size: 1.75rem;
-  block-size: 1.75rem;
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
   background-color: currentColor;
   mask-repeat: no-repeat;
   mask-position: center;
@@ -56,12 +51,12 @@
 }
 @media (max-width: bp.$xl) {
   .floating-actions__button {
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
-    padding: 0.625rem;
+    inline-size: var(--control-height-large);
+    block-size: var(--control-height-large);
+    padding: var(--space-sm);
     .floating-actions__icon {
-      inline-size: 1.5rem;
-      block-size: 1.5rem;
+      inline-size: var(--icon-size-lg);
+      block-size: var(--icon-size-lg);
     }
   }
 }

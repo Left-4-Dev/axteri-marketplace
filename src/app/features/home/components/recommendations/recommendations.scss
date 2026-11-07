@@ -2,23 +2,23 @@
 
 :host {
   --recommendations-columns: 5;
-  --recommendations-gap: 1.5rem;
+  --recommendations-gap: var(--layout-card-gap);
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
 }
 
 .recommendations {
-  padding: var(--space-xl) 3.75rem;
-  background: #f2f2f2;
-  color: #303341;
+  padding: var(--layout-section-space) var(--layout-content-inset);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 
 .recommendations__title {
   margin: 0 0 var(--space-md);
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
 }
 
 .recommendations__products {
@@ -43,7 +43,6 @@
 @media (max-width: bp.$xl) {
   :host {
     --recommendations-columns: 4;
-    --recommendations-gap: 1.25rem;
   }
 }
 
@@ -56,7 +55,6 @@
 @media (max-width: bp.$md) {
   :host {
     --recommendations-columns: 2;
-    --recommendations-gap: 1rem;
   }
 
   .recommendations {
@@ -70,10 +68,6 @@
   }
 
   .recommendations {
-    padding: calc(2 * var(--space-md)) var(--space-sm);
-  }
-
-  .recommendations__title {
-    font-size: 1.0625rem;
+    padding: var(--layout-section-space) var(--layout-content-inset);
   }
 }

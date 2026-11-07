@@ -103,7 +103,7 @@
           <p class="product-card__seller-name">{{ seller.name }}</p>
           <div class="product-card__seller-details">
             <p class="product-card__location">
-              <img src="/assets/icons/header/location.svg" alt="" width="12" height="12" />
+              <span class="product-card__location-icon" aria-hidden="true"></span>
               {{ seller.location }}
             </p>
             <p class="product-card__tenure">
@@ -190,13 +190,18 @@
           @if (includesTax !== undefined) {
             <span>
               {{ includesTax ? 'Incluye IGV' : 'No incluye IGV' }}
-              <img
+              <svg
                 class="product-card__info-icon"
-                src="/assets/icons/product/info.svg"
-                alt=""
-                width="12"
-                height="12"
-              />
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle cx="8" cy="8" r="8" fill="currentColor" />
+                <g fill="var(--color-on-action)">
+                  <circle cx="8" cy="4.5" r="1.15" />
+                  <rect x="6.9" y="6.75" width="2.2" height="5.5" rx="1.1" />
+                </g>
+              </svg>
             </span>
           }
         </small>

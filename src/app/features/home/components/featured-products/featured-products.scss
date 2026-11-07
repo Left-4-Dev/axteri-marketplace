@@ -2,25 +2,25 @@
 
 :host {
   --featured-columns: 5;
-  --featured-gap: 1.5rem;
-  --featured-control-size: 2.75rem;
-  --featured-text: #303341;
+  --featured-gap: var(--layout-card-gap);
+  --featured-control-size: var(--control-height-large);
+
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
 }
 .featured-products {
-  padding-block: var(--space-xl);
-  color: var(--featured-text);
+  padding-block: var(--layout-section-space);
+  color: var(--color-text);
   background:
     linear-gradient(180deg, transparent 45%, var(--color-background) 100%),
     linear-gradient(105deg, #bce2fa, #cbd2fc 55%, #e1dafa);
 }
 .featured-products__title {
   margin: 0 calc(var(--featured-control-size) + 2 * var(--space-sm)) var(--space-md);
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
 }
 .featured-products__carousel {
   display: grid;
@@ -58,15 +58,15 @@
   inline-size: var(--featured-control-size);
   block-size: var(--featured-control-size);
   margin-block-start: clamp(6rem, 11vw, 13rem);
-  padding: 0.625rem;
+  padding: var(--space-sm);
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--featured-text);
+  color: var(--color-text);
   cursor: pointer;
   span {
-    inline-size: 1.5rem;
-    block-size: 1.5rem;
+    inline-size: var(--icon-size-lg);
+    block-size: var(--icon-size-lg);
     background: currentColor;
     mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
     transform: rotate(-90deg);
@@ -75,7 +75,7 @@
     transform: rotate(90deg);
   }
   &:disabled {
-    color: var(--color-background);
+    color: var(--color-on-action);
     cursor: default;
   }
   &:not(:disabled):active {
@@ -97,7 +97,6 @@
 @media (max-width: bp.$xl) {
   :host {
     --featured-columns: 4;
-    --featured-gap: 1.25rem;
   }
 }
 @media (max-width: bp.$lg) {
@@ -108,7 +107,6 @@
 @media (max-width: bp.$md) {
   :host {
     --featured-columns: 2;
-    --featured-gap: 1rem;
   }
   .featured-products__title,
   .featured-products__empty {
@@ -131,17 +129,11 @@
       justify-self: start;
     }
     &:disabled {
-      color: var(--color-placeholder-border);
+      color: var(--color-border);
     }
   }
 }
 @media (max-width: bp.$sm) {
-  .featured-products {
-    padding-block: calc(2 * var(--space-md));
-  }
-  .featured-products__title {
-    font-size: 1.0625rem;
-  }
   .featured-products__products {
     grid-auto-columns: min(19rem, 90%);
   }

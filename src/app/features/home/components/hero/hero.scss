@@ -1,23 +1,5 @@
 :host {
-  // Temporary tokens: final colors and shadows will come from Illustrator.
-  --hero-text: #303341;
-  --hero-on-background: #fff;
-  --hero-muted-text: #626574;
-  --hero-control-surface: #fff;
-  --hero-accent: #7379ff;
-  --hero-accent-hover: #655be6;
-  --hero-accent-text: #fff;
-  --hero-switch-surface: #777985;
-  --hero-area-surface: #d9d8f5;
-  --hero-area-gradient-start: #a0d5fd;
-  --hero-area-gradient-end: #9d98fc;
-  --hero-area-gradient: linear-gradient(
-    90deg,
-    var(--hero-area-gradient-start),
-    var(--hero-area-gradient-end)
-  );
-  --hero-divider: #fff;
-  --hero-shadow: 0 3px 9px rgb(53 44 105 / 16%);
+  --hero-area-gradient: linear-gradient(90deg, var(--color-brand-start), var(--color-brand-end));
 
   display: block;
 }
@@ -28,8 +10,9 @@
   align-items: start;
   max-inline-size: 120rem;
   margin-inline: auto;
-  padding: calc(var(--header-content-offset) + 2rem) 3.5rem clamp(2rem, 12.5vw - 10rem, 5rem);
-  color: var(--hero-text);
+  padding: calc(var(--header-content-offset) + var(--space-2lg)) 3.5rem
+    clamp(var(--space-2lg), 12.5vw - 10rem, 5rem);
+  color: var(--color-text);
   position: relative;
 }
 
@@ -48,14 +31,14 @@
 .hero__slide {
   grid-column: 2;
   min-inline-size: 0;
-  padding-block-start: clamp(3rem, 10vw - 5rem, 7rem);
+  padding-block-start: clamp(var(--space-xl), 10vw - 5rem, 7rem);
 }
 .hero__branding {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1.5rem, 2.5vw, 3.25rem);
-  color: var(--hero-on-background);
+  gap: clamp(var(--space-lg), 2.5vw, 3.25rem);
+  color: var(--color-surface);
 }
 .hero__brand-mark {
   display: block;
@@ -86,7 +69,7 @@
 .hero__divider {
   flex: 0 0 2px;
   block-size: clamp(4.5rem, 6vw, 7.125rem);
-  background: var(--hero-divider);
+  background: var(--color-surface);
 }
 .hero__industry {
   flex: 0 0 auto;
@@ -98,51 +81,51 @@
 }
 .hero__industry-name {
   display: block;
-  font-size: clamp(2.5rem, 4vw, 4.5rem);
-  font-weight: 700;
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
   line-height: 1;
   text-transform: uppercase;
 }
 .hero__description {
   max-inline-size: min(100%, 32vw, 38rem);
-  margin: 2rem auto 0;
-  color: var(--hero-on-background);
-  font-size: clamp(1rem, 1.04vw, 1.25rem);
-  font-weight: 600;
-  line-height: 1.5;
+  margin: var(--space-2lg) auto 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-body);
   text-align: center;
 }
 .hero__pagination {
   display: flex;
   justify-content: center;
-  gap: 1.25rem;
-  margin-block-start: 1.5rem;
+  gap: var(--space-ml);
+  margin-block-start: var(--space-lg);
 }
 .hero__dot {
   inline-size: 0.75rem;
   block-size: 0.75rem;
   border-radius: 50%;
-  background: var(--hero-control-surface);
+  background: var(--color-surface);
   &--active {
-    background: var(--hero-accent);
+    background: var(--color-action);
   }
 }
 .hero__areas {
   grid-column: 3;
   justify-self: end;
   inline-size: min(100%, clamp(10rem, 11.75vw, 14rem));
-  padding-inline-start: 0.5rem;
+  padding-inline-start: var(--space-sm);
 }
 .hero__areas-title {
-  margin: 0 0 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.3;
+  margin: 0 0 var(--space-md);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
   text-transform: uppercase;
 }
 .hero__areas-list {
   display: grid;
-  gap: 1.5rem;
+  gap: var(--space-lg);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -156,10 +139,10 @@
   inline-size: 100%;
   min-block-size: 6rem;
   aspect-ratio: 1.95;
-  padding: 1rem 1.5rem;
-  border-radius: 0.375rem;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-xs);
   background: transparent;
-  box-shadow: var(--hero-shadow);
+  box-shadow: var(--shadow-card);
 
   // Keep this container unisolated so both layers blend with the Hero backdrop.
   &::before,
@@ -190,7 +173,7 @@
 
   span {
     font-size: clamp(1.5rem, 2vw, 2.5rem);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     line-height: 1.1;
     text-transform: uppercase;
   }

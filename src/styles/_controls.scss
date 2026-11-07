@@ -1,0 +1,45 @@
+// Apariencia de SharedButton y de CTAs nativos que requieren su propio markup.
+@mixin button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-height);
+  padding: var(--space-sm) var(--control-padding-inline);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--color-action);
+  color: var(--color-on-action);
+  font-family: var(--font-primary);
+  font-size: var(--control-font-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-label);
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) ease;
+
+  &:hover:not(:disabled) {
+    background: var(--color-action-hover);
+  }
+  &:active:not(:disabled) {
+    background: var(--color-action-active);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+  &:disabled {
+    background: var(--color-disabled-surface);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-light {
+  background: var(--color-surface);
+  color: var(--color-accent-text);
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background: var(--color-accent-subtle);
+  }
+}

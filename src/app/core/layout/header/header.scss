@@ -6,31 +6,25 @@
 }
 
 .header {
-  --header-text: #303341; // TODO: Illustrator
-  --header-muted-text: #626574; // TODO: Illustrator
-  --header-surface: #fff; // TODO: Illustrator
-  --header-search-surface: #f5f5f7; // TODO: Illustrator
-  --header-accent: #746cff; // TODO: Illustrator
-  --header-accent-hover: #655be6; // TODO: Illustrator
-  --header-location-surface: #efedff; // TODO: Illustrator
-  --header-badge-surface: #303341; // TODO: Illustrator
-  --header-badge-text: #fff; // TODO: Illustrator
   --header-search-gradient: linear-gradient(
     100deg,
-    color-mix(in srgb, var(--header-accent) 55%, white),
-    var(--header-accent) 75%
+    color-mix(in srgb, var(--color-action) 55%, white),
+    var(--color-action) 75%
   );
-  --header-shadow: 0 3px 9px rgb(53 44 105 / 18%); // TODO: Illustrator
-  --header-search-glow: 0 0 0 6px rgb(116 108 255 / 16%); // TODO: Illustrator
+
+  --header-search-glow: 0 0 0 6px color-mix(in srgb, var(--color-brand) 16%, transparent);
 
   // Match the Hero backdrop's desktop bounds, including the scrollbar gutter.
-  --header-inset: max(1.5rem, calc((100% - 120rem) / 2 + 1.875rem));
+  --header-inset: max(
+    var(--layout-page-gap),
+    calc((100% - var(--layout-shell-max)) / 2 + 1.875rem)
+  );
   --header-hero-top: 1.875rem;
-  min-block-size: 6.875rem;
-  max-inline-size: 120rem;
+  min-block-size: 6rem;
+  max-inline-size: var(--layout-shell-max);
   margin-inline: auto;
   padding: 2.625rem 3.375rem 0;
-  color: var(--header-text);
+  color: var(--color-text);
   img {
     display: block;
     block-size: auto;
@@ -43,13 +37,13 @@
     inset-inline-start: var(--header-inset);
     display: flex;
     align-items: center;
-    gap: 1.75rem;
-    inline-size: 49.5rem;
-    min-block-size: 6.875rem;
+    gap: var(--space-lg);
+    inline-size: 42rem;
+    min-block-size: 6rem;
     max-inline-size: calc(100% - 2 * var(--header-inset));
-    padding: 1rem 1.875rem 0 1.75rem;
-    border-radius: 0 0 1rem 0;
-    background: var(--header-surface);
+    padding: var(--space-md) 1.875rem 0 var(--space-2lg);
+    border-radius: 0 0 var(--radius-md) 0;
+    background: var(--color-surface);
 
     &::before,
     &::after {
@@ -58,8 +52,8 @@
       width: 2rem;
       height: 2rem;
       background-color: transparent;
-      border-top-left-radius: 1.25rem;
-      box-shadow: -8px -8px 0 0 var(--header-surface);
+      border-top-left-radius: var(--radius-lg);
+      box-shadow: -8px -8px 0 0 var(--color-surface);
       pointer-events: none;
     }
 
@@ -77,30 +71,30 @@
   }
 
   &__brand {
-    flex: 0 0 12.5625rem;
+    flex: 0 0 10rem;
   }
   &__brand img {
     inline-size: 100%;
-    max-inline-size: 11.25rem;
+    max-inline-size: 10rem;
   }
   &__navigation {
     display: flex;
     align-items: center;
-    gap: 1.75rem;
+    gap: var(--space-lg);
   }
   &__link {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    min-block-size: 2.75rem;
+    gap: var(--space-xs);
+    min-block-size: var(--control-height-large);
     padding: 0;
     border: 0;
     background: none;
     color: inherit;
     font: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.2;
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-heading);
     letter-spacing: 0;
     translate: 0 2px;
     text-decoration: none;
@@ -123,28 +117,28 @@
     opacity: 1;
   }
   &__chevron {
-    inline-size: 0.75rem;
+    inline-size: var(--icon-size-sm);
   }
   &__search {
     display: flex;
     align-items: center;
     min-inline-size: 0;
     margin-inline-start: auto;
-    border-radius: 2rem;
+    border-radius: var(--radius-pill);
   }
   &__search-input {
     min-inline-size: 0;
     inline-size: 100%;
-    padding: 0.5rem 1rem;
+    padding: var(--space-sm) var(--space-md);
     border: 0;
-    border-radius: 2rem 0 0 2rem;
-    background: var(--header-search-surface);
-    color: var(--header-text);
+    border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+    background: var(--color-surface-muted);
+    color: var(--color-text);
     font: inherit;
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body);
     &::placeholder {
-      color: var(--header-muted-text);
+      color: var(--color-text-muted);
       opacity: 1;
     }
   }
@@ -153,27 +147,27 @@
     isolation: isolate;
     display: grid;
     place-items: center;
-    flex: 0 0 2.75rem;
-    block-size: 2.75rem;
-    padding: 0.625rem;
+    flex: 0 0 var(--control-height);
+    block-size: var(--control-height);
+    padding: var(--space-sm);
     border: 0;
     border-radius: 50%;
-    background: var(--header-accent);
+    background: var(--color-action);
     cursor: pointer;
   }
   &__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.875rem;
+    gap: var(--space-ms);
     margin-inline-start: auto;
     inline-size: max-content;
   }
   &__action {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    min-block-size: 4.125rem;
+    gap: var(--space-sm);
+    min-block-size: var(--control-height-large);
     padding: 0;
     border: 0;
     background: none;
@@ -183,36 +177,36 @@
     text-transform: uppercase;
     &--location {
       inline-size: 14.875rem;
-      padding: 0.4375rem 0.625rem;
-      border-radius: 0.625rem;
-      background: var(--header-location-surface);
+      padding: var(--space-sm) var(--space-sm);
+      border-radius: var(--radius-sm);
+      background: var(--color-accent-subtle);
     }
   }
   &__action-icon {
-    inline-size: 2.75rem;
+    inline-size: var(--control-height);
     // The circular base belongs to the control, not to the replaceable SVG.
     aspect-ratio: 1;
-    padding: 0.6875rem;
+    padding: var(--space-sm);
     border-radius: 50%;
-    background: var(--header-accent);
+    background: var(--color-action);
     flex-shrink: 0;
   }
   &__action--location &__action-icon {
-    padding: 0.5625rem;
-    background: var(--header-surface);
+    padding: var(--space-sm);
+    background: var(--color-surface);
   }
   &__orders-icon &__action-icon {
-    padding: 0.625rem;
+    padding: var(--space-sm);
   }
   &__action-copy {
     display: grid;
     translate: 0 2px;
-    font-size: 0.8125rem;
-    line-height: 1.4;
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
     white-space: nowrap;
     strong {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: var(--font-size-body-small);
+      font-weight: var(--font-weight-bold);
     }
   }
   &__action-short {
@@ -228,8 +222,8 @@
     }
   }
   &__location-chevron {
-    flex: 0 0 0.875rem;
-    inline-size: 0.875rem;
+    flex: 0 0 var(--icon-size-sm);
+    inline-size: var(--icon-size-sm);
   }
   &__orders-icon {
     position: relative;
@@ -243,10 +237,10 @@
     min-inline-size: 1.125rem;
     block-size: 1.125rem;
     padding-inline: 0.2rem;
-    border-radius: 1rem;
-    background: var(--header-badge-surface);
-    color: var(--header-badge-text);
-    font-size: 0.6875rem;
-    font-weight: 700;
+    border-radius: var(--radius-md);
+    background: var(--color-text);
+    color: var(--color-on-action);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-bold);
   }
 }

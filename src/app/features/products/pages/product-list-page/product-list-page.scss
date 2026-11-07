@@ -1,14 +1,14 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  --max-w: 116.25rem;
-  --gap: 1.5rem;
+  --max-w: var(--layout-content-max);
+  --gap: var(--layout-page-gap);
   --inset: max(var(--gap), calc((100% - var(--max-w)) / 2));
-  --pad-x: 3.75rem;
+  --pad-x: var(--layout-content-inset);
   --pad: 1.75rem;
   --card-min: 11rem;
   --cols-max: 5;
-  --col-gap: 1.25rem;
+  --col-gap: var(--layout-card-gap);
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
@@ -17,18 +17,24 @@
 .product-list {
   position: relative;
   isolation: isolate;
-  padding-block: calc(var(--header-content-offset, 6.875rem) + 1.25rem) var(--space-xl);
-  color: #303341;
+  padding-block: calc(var(--header-content-offset, 6.875rem) + var(--space-ml)) var(--space-xl);
+  color: var(--color-text);
 
   &::before {
     content: '';
     position: absolute;
     z-index: -1;
     inset: 1.875rem var(--inset) 0;
-    border-radius: 1.25rem 1.25rem 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     background:
-      linear-gradient(180deg, rgb(242 244 251 / 0%) 14rem, #f2f4fb 34rem, #f2f4fb 100%),
-      linear-gradient(90deg, #a0d5fd, #9d98fc) #e2e7f7;
+      linear-gradient(
+        180deg,
+        rgb(242 244 251 / 0%) 14rem,
+        var(--color-surface-tinted) 34rem,
+        var(--color-surface-tinted) 100%
+      ),
+      linear-gradient(90deg, var(--color-brand-start), var(--color-brand-end))
+        var(--color-surface-tinted);
     pointer-events: none;
   }
 }
@@ -41,19 +47,19 @@
 }
 
 nav {
-  margin-block-end: 0.875rem;
+  margin-block-end: var(--space-ms);
 
   ol {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.25rem 0.375rem;
+    gap: var(--space-xs) var(--space-xs);
     margin: 0;
     padding: 0;
     list-style: none;
-    color: #4f566b;
-    font-size: 0.8125rem;
-    line-height: 1.4;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
     overflow-wrap: anywhere;
   }
 
@@ -65,7 +71,7 @@ nav {
 
   li + li::before {
     content: '>';
-    margin-inline-end: 0.375rem;
+    margin-inline-end: var(--space-xs);
   }
 
   a {
@@ -79,24 +85,24 @@ nav {
 }
 
 .product-list__breadcrumb-current {
-  color: #303341;
-  font-weight: 700;
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
 }
 
 .product-list__surface {
   display: grid;
-  grid-template-columns: 20.25rem minmax(0, 1fr);
+  grid-template-columns: 17rem minmax(0, 1fr);
   min-inline-size: 0;
   padding: var(--pad);
-  border-radius: 1.25rem;
+  border-radius: var(--radius-lg);
   background: var(--color-background);
-  box-shadow: 0 10px 28px rgb(53 44 105 / 12%);
+  box-shadow: var(--shadow-panel);
 }
 
 aside {
   min-inline-size: 0;
-  padding-inline-end: 1rem;
-  border-inline-end: 1px solid #d8dce8;
+  padding-inline-end: var(--space-md);
+  border-inline-end: 1px solid var(--color-border);
 }
 
 .product-list__panel-header {
@@ -113,8 +119,8 @@ header {
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  margin-block-end: 1.5rem;
+  gap: var(--space-md);
+  margin-block-end: var(--space-lg);
 }
 
 .product-list__heading {
@@ -125,23 +131,23 @@ header {
 
 h1 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.3;
+  font-size: var(--font-size-page-title);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-label);
   text-transform: uppercase;
 }
 
 .product-list__count {
-  margin-block-start: 0.25rem;
+  margin-block-start: var(--space-xs);
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
+  font-size: var(--font-size-secondary);
 }
 
 .product-list__toolbar,
 .product-list__view-controls {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .product-list__toolbar {
@@ -151,46 +157,47 @@ h1 {
 
 .product-list__filters-toggle {
   display: none;
-  padding: 0.4375rem 0.875rem;
-  border: 1px solid #7379ff;
-  border-radius: 999px;
+  min-block-size: var(--control-height-compact);
+  padding: var(--space-sm) var(--space-ms);
+  border: 1px solid var(--color-action);
+  border-radius: var(--radius-pill);
   background: var(--color-background);
-  color: #7379ff;
-  font-size: 0.75rem;
-  font-weight: 700;
+  color: var(--color-action);
+  font-size: var(--control-font-size);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
 
   &:hover {
-    background: #f3f4ff;
+    background: var(--color-accent-subtle);
   }
 }
 
 .product-list__view-button {
   display: inline-grid;
   place-items: center;
-  inline-size: 2.25rem;
-  block-size: 2.25rem;
+  inline-size: var(--control-height-compact);
+  block-size: var(--control-height-compact);
   padding: 0;
-  border: 1px solid var(--color-placeholder-border);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   background: var(--color-background);
-  color: #a0a3b1;
+  color: var(--color-text-muted);
   cursor: pointer;
 
   svg {
-    inline-size: 1.125rem;
-    block-size: 1.125rem;
+    inline-size: var(--icon-size-md);
+    block-size: var(--icon-size-md);
   }
 
   &:hover:not(&--active) {
-    border-color: #7379ff;
-    color: #7379ff;
+    border-color: var(--color-action);
+    color: var(--color-action);
   }
 
   &--active {
-    border-color: #7379ff;
-    background: #7379ff;
-    color: var(--color-background);
+    border-color: var(--color-action);
+    background: var(--color-action);
+    color: var(--color-on-action);
   }
 }
 
@@ -216,7 +223,7 @@ nav a,
       (100% - (var(--cols-max) - 1) * var(--col-gap)) / var(--cols-max)
     );
     grid-template-columns: repeat(auto-fill, minmax(min(var(--track), 100%), 1fr));
-    gap: 1.5rem var(--col-gap);
+    gap: var(--space-lg) var(--col-gap);
   }
 
   &--list {
@@ -240,12 +247,12 @@ nav a,
   min-block-size: 12rem;
   margin: 0;
   padding: var(--space-xl) var(--space-md);
-  border: 1px dashed var(--color-placeholder-border);
-  border-radius: 1rem;
-  background: #fafbfe;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
   color: var(--color-text-muted);
-  font-size: 0.9375rem;
-  font-weight: 500;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
   text-align: center;
 }
 
@@ -255,13 +262,16 @@ nav a,
   }
 
   .product-list__surface {
-    grid-template-columns: 18.5rem minmax(0, 1fr);
+    grid-template-columns: 15rem minmax(0, 1fr);
   }
 }
 
 @media (max-width: bp.$md) {
+  .product-list:has(.product-list__sidebar--open) {
+    z-index: 30;
+  }
   :host {
-    --gap: 0.75rem;
+    --gap: var(--layout-page-gap);
     --pad-x: var(--space-sm);
     --pad: 1rem;
   }
@@ -299,33 +309,33 @@ nav a,
     flex-shrink: 0;
     align-items: center;
     justify-content: space-between;
-    padding: 0.625rem 0.875rem;
-    border-block-end: 1px solid #e6e8f0;
+    padding: var(--space-sm) var(--space-ms);
+    border-block-end: 1px solid var(--color-border);
   }
 
   .product-list__panel-title {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: var(--font-size-secondary);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-heading);
   }
 
   .product-list__panel-close {
     display: inline-grid;
     place-items: center;
-    inline-size: 1.75rem;
-    block-size: 1.75rem;
+    inline-size: var(--control-height-compact);
+    block-size: var(--control-height-compact);
     padding: 0;
-    border: 1px solid #d5d8e6;
+    border: 1px solid var(--color-border-control);
     border-radius: 50%;
     background: var(--color-background);
-    color: #303341;
-    font-size: 1rem;
+    color: var(--color-text);
+    font-size: var(--font-size-body);
     line-height: 1;
     cursor: pointer;
 
     &:hover {
-      border-color: #7379ff;
-      color: #7379ff;
+      border-color: var(--color-action);
+      color: var(--color-action);
     }
   }
 
@@ -335,8 +345,8 @@ nav a,
 
   header {
     flex-direction: column;
-    gap: 0.75rem;
-    margin-block-end: 1.25rem;
+    gap: var(--space-ms);
+    margin-block-end: var(--space-ml);
   }
 
   .product-list__toolbar {
@@ -355,16 +365,16 @@ nav a,
   }
 
   .product-list__panel-header {
-    padding: 0.5rem 0.75rem;
+    padding: var(--space-sm) var(--space-ms);
   }
 
   .product-list__panel-title {
-    font-size: 0.75rem;
+    font-size: var(--font-size-caption);
   }
 
   .product-list__panel-close {
-    inline-size: 1.5rem;
-    block-size: 1.5rem;
-    font-size: 0.9375rem;
+    inline-size: var(--control-height-compact);
+    block-size: var(--control-height-compact);
+    font-size: var(--font-size-body-small);
   }
 }

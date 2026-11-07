@@ -1,33 +1,8 @@
-@use '../../../../styles/breakpoints' as bp;
-
 :host {
-  --header-content-offset: 6.875rem;
   display: block;
   position: relative;
 }
 
-@media (max-width: bp.$xxl) {
-  :host {
-    --header-content-offset: 6rem;
-  }
-}
-
-@media (max-width: bp.$xl) {
-  :host {
-    --header-content-offset: 5.5rem;
-  }
-}
-
-@media (max-width: bp.$lg) {
-  :host {
-    --header-content-offset: 5rem;
-  }
-}
-@media (max-width: bp.$md) {
-  :host {
-    --header-content-offset: 4rem;
-  }
-}
 .main-layout {
   &__content {
     min-inline-size: 0;

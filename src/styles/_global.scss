@@ -1,5 +1,6 @@
 body {
-  min-inline-size: 20rem;
+  // The viewport may reserve a scrollbar inside a 320px window.
+  min-inline-size: 0;
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-primary);
