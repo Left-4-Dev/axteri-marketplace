@@ -96,6 +96,13 @@
   app-product-purchase-panel {
     grid-area: purchase;
   }
+  app-product-recommendations,
+  app-product-section-nav {
+    margin-block-start: var(--layout-section-space);
+  }
+  &__section-anchor {
+    scroll-margin-block-start: calc(var(--header-content-offset) + var(--space-md));
+  }
   &__status {
     margin: 0;
     font-size: var(--font-size-body-small);

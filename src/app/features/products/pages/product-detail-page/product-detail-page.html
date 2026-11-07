@@ -20,6 +20,17 @@
         <app-product-purchase-panel [detail]="item" (purchaseIntent)="onPurchaseIntent($event)" />
       </div>
       <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
+      <app-product-recommendations [products]="recommendations" />
+      <app-product-section-nav [productId]="item.id" />
+      <!-- Destinos sin contenido visual: cada sección se desarrollará en su etapa. -->
+      @for (section of sections; track section.id) {
+        <section
+          class="product-detail__section-anchor"
+          [id]="section.id"
+          [attr.aria-label]="section.label"
+          tabindex="-1"
+        ></section>
+      }
     } @else {
       <section class="product-detail__empty">
         <h1>Producto no encontrado</h1>

@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -70,9 +71,45 @@ describe('ProductDetailPage', () => {
       'Producto no encontrado',
     );
     expect(element.querySelector('app-product-purchase-panel')).toBeNull();
+    expect(element.querySelector('app-product-recommendations')).toBeNull();
+    expect(element.querySelector('app-product-section-nav')).toBeNull();
     await harness.navigateByUrl('/productos/weg-w22-3kw');
     expect(element.querySelector('app-product-detail-page h1')?.textContent).toBe(
       W22_PRODUCT_DETAIL.name,
     );
+  });
+
+  it('places recommendations and section navigation after the overview', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const overview = page.querySelector('.product-detail__overview')!;
+    const recommendations = page.querySelector('app-product-recommendations')!;
+    const nav = page.querySelector('app-product-section-nav')!;
+    expect(
+      overview.compareDocumentPosition(recommendations) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      recommendations.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(recommendations.querySelectorAll('app-product-card')).toHaveLength(6);
+  });
+
+  it('provides one empty, focusable destination for every section link', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const links = page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a');
+    expect(links).toHaveLength(6);
+    links.forEach((link) => {
+      const targets = page.querySelectorAll<HTMLElement>(link.hash);
+      expect(targets).toHaveLength(1);
+      expect(targets[0].getAttribute('aria-label')).toBe(link.textContent?.trim());
+      expect(targets[0].tabIndex).toBe(-1);
+      expect(targets[0].textContent?.trim()).toBe('');
+      expect(targets[0].children).toHaveLength(0);
+    });
+  });
+
+  it('restores the router scroll offset when leaving the detail page', async () => {
+    const setOffset = vi.spyOn(TestBed.inject(ViewportScroller), 'setOffset');
+    await harness.navigateByUrl('/productos');
+    expect(setOffset).toHaveBeenCalledWith([0, 0]);
   });
 });

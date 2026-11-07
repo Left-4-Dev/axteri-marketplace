@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-recommendations {
+  color: var(--color-text);
+
+  h2 {
+    margin: 0 0 var(--space-md);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+  }
+
+  &__grid {
+    display: grid;
+    // Mismo mínimo comercial del listado; las columnas dependen del espacio real.
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: var(--layout-card-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      min-inline-size: 0;
+    }
+  }
+}

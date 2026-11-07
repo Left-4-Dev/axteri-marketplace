@@ -1,0 +1,9 @@
+<nav class="product-section-nav" aria-label="Secciones del producto">
+  <ul role="list">
+    @for (section of sections; track section.id) {
+      <li>
+        <a [href]="productPath() + '#' + section.id">{{ section.label }}</a>
+      </li>
+    }
+  </ul>
+</nav>

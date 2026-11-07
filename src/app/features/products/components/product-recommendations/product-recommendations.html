@@ -1,0 +1,10 @@
+@if (products().length) {
+  <section class="product-recommendations" aria-labelledby="product-recommendations-title">
+    <h2 id="product-recommendations-title">Recomendados para ti</h2>
+    <ul class="product-recommendations__grid" role="list">
+      @for (product of products(); track product.id) {
+        <li><app-product-card [product]="product" variant="default" /></li>
+      }
+    </ul>
+  </section>
+}
