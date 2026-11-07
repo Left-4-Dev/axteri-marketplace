@@ -1,0 +1,146 @@
+<div class="product-reviews">
+  <h2 class="product-reviews__title">Reseñas</h2>
+
+  @if (hasReviews()) {
+    <div class="product-reviews__body">
+      <aside class="product-reviews__summary" aria-label="Resumen de calificaciones">
+        <div class="product-reviews__score-row">
+          <span class="product-reviews__average">{{ averageRating() | number: '1.1-1' }}</span>
+          <div
+            class="product-reviews__stars"
+            role="img"
+            [attr.aria-label]="
+              'Calificación promedio: ' + (averageRating() | number: '1.1-1') + ' de 5 estrellas'
+            "
+          >
+            @for (star of starScale; track star) {
+              <svg
+                class="product-reviews__star"
+                [class.product-reviews__star--filled]="star <= roundedAverage()"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="m12 1 3.4 7 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6L1 9.1 8.6 8Z"
+                />
+              </svg>
+            }
+          </div>
+          <span class="product-reviews__total">
+            ({{ totalReviews() }} {{ totalReviews() === 1 ? 'reseña' : 'reseñas' }})
+          </span>
+        </div>
+
+        <ul class="product-reviews__distribution" aria-label="Distribución por estrellas">
+          @for (row of distributionRows(); track row.stars) {
+            <li class="product-reviews__dist-row">
+              <span class="product-reviews__dist-stars">
+                <span aria-hidden="true">{{ row.stars }} ★</span>
+                <span class="product-reviews__sr-only">
+                  {{ row.stars }} {{ row.stars === 1 ? 'estrella' : 'estrellas' }}:
+                </span>
+              </span>
+              <span class="product-reviews__bar-track" aria-hidden="true">
+                <span
+                  class="product-reviews__bar-fill"
+                  [style.inline-size.%]="row.percentage"
+                ></span>
+              </span>
+              <span class="product-reviews__dist-count">
+                {{ row.count }}
+                <span class="product-reviews__sr-only">
+                  {{ row.count === 1 ? 'reseña' : 'reseñas' }},
+                </span>
+                ({{ row.percentage }}%)
+              </span>
+            </li>
+          }
+        </ul>
+      </aside>
+
+      <div class="product-reviews__list">
+        @for (review of reviews().items; track review.id) {
+          @let itemRating = clampRating(review.rating);
+          <article class="product-reviews__item">
+            <div class="product-reviews__avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-3.5 0-7.5 1.75-7.5 4.5V20h15v-1.25c0-2.75-4-4.5-7.5-4.5Z"
+                />
+              </svg>
+            </div>
+
+            <div class="product-reviews__content">
+              <div
+                class="product-reviews__stars"
+                role="img"
+                [attr.aria-label]="
+                  'Calificación: ' +
+                  itemRating +
+                  ' de 5 ' +
+                  (itemRating === 1 ? 'estrella' : 'estrellas')
+                "
+              >
+                @for (star of starScale; track star) {
+                  <svg
+                    class="product-reviews__star"
+                    [class.product-reviews__star--filled]="star <= itemRating"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="m12 1 3.4 7 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6L1 9.1 8.6 8Z"
+                    />
+                  </svg>
+                }
+              </div>
+
+              <div class="product-reviews__meta">
+                <span class="product-reviews__author">{{ review.author }}</span>
+                @if (review.location; as location) {
+                  <span class="product-reviews__sep" aria-hidden="true">|</span>
+                  <span class="product-reviews__location">{{ location }}</span>
+                }
+                @if (review.verifiedPurchase) {
+                  <span class="product-reviews__verified">Compra verificada</span>
+                }
+              </div>
+
+              @if (review.title; as title) {
+                <h3 class="product-reviews__item-title">{{ title }}</h3>
+              }
+
+              <p class="product-reviews__comment">{{ review.comment }}</p>
+
+              @if (review.images?.length) {
+                <ul class="product-reviews__images" aria-label="Imágenes adjuntas a la reseña">
+                  @for (image of review.images; track image.src) {
+                    <li class="product-reviews__image-item">
+                      <img
+                        [src]="image.src"
+                        [alt]="image.alt"
+                        width="80"
+                        height="80"
+                        loading="lazy"
+                      />
+                    </li>
+                  }
+                </ul>
+              }
+
+              <time class="product-reviews__date" [attr.datetime]="review.date">
+                {{ formatDate(review.date) }}
+              </time>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="product-reviews__empty">
+      <p>Este producto aún no tiene reseñas.</p>
+    </div>
+  }
+</div>

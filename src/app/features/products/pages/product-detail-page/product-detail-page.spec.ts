@@ -96,23 +96,13 @@ describe('ProductDetailPage', () => {
   it('provides one focusable destination for every section link', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const links = page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a');
-    const implemented = new Set([
-      '#caracteristicas',
-      '#descripcion',
-      '#documentos',
-      '#accesorios',
-      '#variaciones',
-    ]);
     expect(links).toHaveLength(6);
     links.forEach((link) => {
       const targets = page.querySelectorAll<HTMLElement>(link.hash);
       expect(targets).toHaveLength(1);
       expect(targets[0].getAttribute('aria-label')).toBe(link.textContent?.trim());
       expect(targets[0].tabIndex).toBe(-1);
-      if (!implemented.has(link.hash)) {
-        expect(targets[0].textContent?.trim()).toBe('');
-        expect(targets[0].children).toHaveLength(0);
-      }
+      expect(targets[0].children).toHaveLength(1);
     });
   });
 
@@ -132,7 +122,7 @@ describe('ProductDetailPage', () => {
     ).toHaveLength(W22_PRODUCT_DETAIL.specifications.groups.length);
   });
 
-  it('renders description and documents in their existing destinations while keeping future anchors empty', () => {
+  it('renders description and documents in their existing destinations', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const navLinks = Array.from(
       page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
@@ -166,13 +156,9 @@ describe('ProductDetailPage', () => {
     expect(documents.querySelectorAll('.product-documents__card')).toHaveLength(
       W22_PRODUCT_DETAIL.documents.length,
     );
-
-    const pendingReviews = page.querySelector('#resenas')!;
-    expect(pendingReviews.children).toHaveLength(0);
-    expect(pendingReviews.textContent?.trim()).toBe('');
   });
 
-  it('renders accessories and variants in DOM order while keeping #resenas empty', () => {
+  it('renders accessories and variants in DOM order', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const navLinks = Array.from(
       page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
@@ -187,21 +173,16 @@ describe('ProductDetailPage', () => {
 
     expect(page.querySelectorAll('[id="accesorios"]')).toHaveLength(1);
     expect(page.querySelectorAll('[id="variaciones"]')).toHaveLength(1);
-    expect(page.querySelectorAll('[id="resenas"]')).toHaveLength(1);
 
     const documents = page.querySelector('#documentos')!;
     const accessories = page.querySelector('#accesorios')!;
     const variants = page.querySelector('#variaciones')!;
-    const reviews = page.querySelector('#resenas')!;
 
     expect(
       documents.compareDocumentPosition(accessories) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
       accessories.compareDocumentPosition(variants) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(
-      variants.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
 
     expect(accessories.querySelector('app-product-accessories h2')?.textContent).toBe('Accesorios');
@@ -216,9 +197,40 @@ describe('ProductDetailPage', () => {
     expect(variants.querySelector('.product-variants__sku')?.textContent).toBe(
       W22_PRODUCT_DETAIL.sku,
     );
+  });
 
-    expect(reviews.children).toHaveLength(0);
-    expect(reviews.textContent?.trim()).toBe('');
+  it('renders reviews inside the existing #resenas destination after Variaciones without altering overview or variant state', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const navLinks = Array.from(
+      page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
+    );
+
+    expect(navLinks.find((link) => link.textContent?.trim() === 'Reseñas')?.hash).toBe('#resenas');
+    expect(page.querySelectorAll('[id="resenas"]')).toHaveLength(1);
+
+    const variants = page.querySelector('#variaciones')!;
+    const reviews = page.querySelector('#resenas')!;
+
+    expect(
+      variants.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    expect(reviews.querySelector('app-product-reviews h2')?.textContent?.trim()).toBe('Reseñas');
+    expect(reviews.querySelector('.product-reviews__average')?.textContent?.trim()).toBe('4.4');
+    expect(reviews.querySelectorAll('.product-reviews__dist-row')).toHaveLength(5);
+    expect(reviews.querySelectorAll('article.product-reviews__item')).toHaveLength(
+      W22_PRODUCT_DETAIL.reviews.items.length,
+    );
+
+    expect(
+      page
+        .querySelectorAll<HTMLButtonElement>('.product-gallery__thumbnails button')[0]
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(page.querySelector<HTMLInputElement>('#product-quantity')?.value).toBe('1');
+    expect(page.querySelector('app-product-variants .product-variants__sku')?.textContent).toBe(
+      W22_PRODUCT_DETAIL.sku,
+    );
   });
 
   it('keeps overview gallery, favorite, quantity and accessories intact when filtering or selecting variants', async () => {

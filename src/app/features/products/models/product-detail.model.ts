@@ -76,6 +76,30 @@ export interface ProductVariant {
   readonly image?: ProductImage;
 }
 
+export interface ProductRatingDistribution {
+  readonly stars: number;
+  readonly count: number;
+}
+
+export interface ProductReview {
+  readonly id: string;
+  readonly author: string;
+  readonly location?: string;
+  readonly rating: number;
+  /** Fecha en formato ISO YYYY-MM-DD como única fuente de verdad. */
+  readonly date: string;
+  readonly title?: string;
+  readonly comment: string;
+  readonly verifiedPurchase?: boolean;
+  readonly images?: readonly ProductImage[];
+}
+
+export interface ProductReviewsData {
+  readonly average: number;
+  readonly distribution: readonly ProductRatingDistribution[];
+  readonly items: readonly ProductReview[];
+}
+
 export interface ProductDetail extends Product {
   readonly sku: string;
   readonly category: string;
@@ -89,6 +113,7 @@ export interface ProductDetail extends Product {
   readonly documents: readonly ProductDocument[];
   readonly accessories: readonly Product[];
   readonly variants: readonly ProductVariant[];
+  readonly reviews: ProductReviewsData;
   readonly purchase: {
     readonly stock: number;
     readonly destination: string;

@@ -434,6 +434,75 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       deliveryEstimate: '12–15 días hábiles',
     },
   ],
+  reviews: {
+    average: 4.4,
+    distribution: [
+      { stars: 5, count: 12 },
+      { stars: 4, count: 5 },
+      { stars: 3, count: 2 },
+      { stars: 2, count: 1 },
+      { stars: 1, count: 0 },
+    ],
+    items: [
+      {
+        id: 'w22-review-1',
+        author: 'Carlos Mendoza',
+        location: 'Lima',
+        rating: 5,
+        date: '2026-09-18',
+        title: 'Buen desempeño en línea de bombeo',
+        comment:
+          'Instalado en una bomba centrífuga de planta con operación continua. Llegó bien embalado, con su placa de datos legible y montaje B3 sin contratiempos.',
+        verifiedPurchase: true,
+        images: [
+          {
+            src: '/assets/images/products/motor-side.svg',
+            alt: 'Ilustración referencial de vista lateral del motor W22 recibido',
+          },
+          {
+            src: '/assets/images/products/motor-front.svg',
+            alt: 'Ilustración referencial del eje frontal del motor W22',
+          },
+        ],
+      },
+      {
+        id: 'w22-review-2',
+        author: 'Elena Vargas',
+        location: 'Arequipa',
+        rating: 4,
+        date: '2026-08-29',
+        comment:
+          'Cumple con las medidas de carcasa 100L previstas para el reemplazo en taller. La coordinación de despacho a provincia tomó el plazo estimado.',
+        verifiedPurchase: true,
+      },
+      {
+        id: 'w22-review-3',
+        author: 'Jorge Quispe',
+        location: 'Trujillo',
+        rating: 5,
+        date: '2026-07-14',
+        comment:
+          'Buena atención comercial durante la cotización y entrega puntual. El nivel de vibración en bancada es estable desde el arranque inicial.',
+        verifiedPurchase: true,
+        images: [
+          {
+            src: '/assets/images/products/motor-rear.svg',
+            alt: 'Ilustración referencial de la cubierta trasera del ventilador W22',
+          },
+        ],
+      },
+      {
+        id: 'w22-review-4',
+        author: 'Patricia Salazar',
+        location: 'Callao',
+        rating: 4,
+        date: '2026-06-21',
+        comment:
+          'Equipo acorde a la descripción comercial para mantenimiento preventivo de faja transportadora. Recomendable confirmar stock antes de programar parada.',
+        verifiedPurchase: false,
+      },
+    ],
+  },
   purchase: {
     stock: 100,
     destination: 'Pueblo Libre, Lima',

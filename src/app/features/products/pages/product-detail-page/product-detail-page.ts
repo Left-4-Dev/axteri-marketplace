@@ -20,6 +20,7 @@ import { ProductDescription } from '../../components/product-description/product
 import { ProductDocuments } from '../../components/product-documents/product-documents';
 import { ProductAccessories } from '../../components/product-accessories/product-accessories';
 import { ProductVariants } from '../../components/product-variants/product-variants';
+import { ProductReviews } from '../../components/product-reviews/product-reviews';
 import { PRODUCT_DETAILS } from '../../data/product-detail.data';
 import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
@@ -39,6 +40,7 @@ import { ProductPurchaseIntent } from '../../models/product-detail.model';
     ProductDocuments,
     ProductAccessories,
     ProductVariants,
+    ProductReviews,
   ],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.scss',
