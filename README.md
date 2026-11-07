@@ -50,16 +50,16 @@ http://localhost:4200/
 
 ## Scripts
 
-| Comando | Descripción |
-| --- | --- |
-| `pnpm start` | Inicia el servidor de desarrollo |
-| `pnpm build` | Genera el build de producción |
-| `pnpm watch` | Ejecuta el build en modo observación |
-| `pnpm test` | Ejecuta las pruebas con Vitest |
-| `pnpm test --watch=false` | Ejecuta las pruebas una sola vez |
-| `pnpm lint` | Ejecuta ESLint |
-| `pnpm format` | Formatea el proyecto con Prettier |
-| `pnpm format:check` | Verifica el formato sin modificar archivos |
+| Comando                   | Descripción                                |
+| ------------------------- | ------------------------------------------ |
+| `pnpm start`              | Inicia el servidor de desarrollo           |
+| `pnpm build`              | Genera el build de producción              |
+| `pnpm watch`              | Ejecuta el build en modo observación       |
+| `pnpm test`               | Ejecuta las pruebas con Vitest             |
+| `pnpm test --watch=false` | Ejecuta las pruebas una sola vez           |
+| `pnpm lint`               | Ejecuta ESLint                             |
+| `pnpm format`             | Formatea el proyecto con Prettier          |
+| `pnpm format:check`       | Verifica el formato sin modificar archivos |
 
 ## Arquitectura
 
@@ -252,12 +252,12 @@ La estrategia depende del contenido e historial de la rama.
 
 ### Regla rápida
 
-| Situación | Estrategia |
-| --- | --- |
-| Rama con **1 commit** | `Squash and merge` |
-| Varios commits temporales, menores o poco relevantes | `Squash and merge` |
+| Situación                                                  | Estrategia              |
+| ---------------------------------------------------------- | ----------------------- |
+| Rama con **1 commit**                                      | `Squash and merge`      |
+| Varios commits temporales, menores o poco relevantes       | `Squash and merge`      |
 | Varios commits bien organizados que vale la pena conservar | `Create a merge commit` |
-| Integración `dev → main` | `Create a merge commit` |
+| Integración `dev → main`                                   | `Create a merge commit` |
 
 `Rebase and merge` no forma parte del flujo estándar del proyecto.
 
@@ -410,14 +410,14 @@ Los commits siguen **Conventional Commits**:
 
 Tipos principales:
 
-| Tipo | Uso |
-| --- | --- |
-| `feat` | Nueva funcionalidad |
-| `fix` | Corrección |
+| Tipo       | Uso                                 |
+| ---------- | ----------------------------------- |
+| `feat`     | Nueva funcionalidad                 |
+| `fix`      | Corrección                          |
 | `refactor` | Refactor sin cambiar comportamiento |
-| `docs` | Documentación |
-| `chore` | Configuración o mantenimiento |
-| `test` | Pruebas |
+| `docs`     | Documentación                       |
+| `chore`    | Configuración o mantenimiento       |
+| `test`     | Pruebas                             |
 
 Ejemplos de commits durante el desarrollo:
 
@@ -465,17 +465,95 @@ La estrategia del proyecto es **desktop-first**.
 
 Breakpoints oficiales:
 
-| Breakpoint | Valor |
-| --- | ---: |
-| `2xl` | `96rem` / 1536px |
-| `xl` | `80rem` / 1280px |
-| `lg` | `64rem` / 1024px |
-| `md` | `48rem` / 768px |
-| `sm` | `40rem` / 640px |
+| Breakpoint |            Valor |
+| ---------- | ---------------: |
+| `2xl`      | `96rem` / 1536px |
+| `xl`       | `80rem` / 1280px |
+| `lg`       | `64rem` / 1024px |
+| `md`       |  `48rem` / 768px |
+| `sm`       |  `40rem` / 640px |
 
 No es obligatorio utilizar todos los breakpoints en cada componente.
 
 Evita agregar breakpoints arbitrarios cuando los oficiales puedan resolver correctamente la adaptación.
+
+## Sistema visual
+
+La fuente única es [`src/styles/_tokens.scss`](src/styles/_tokens.scss), organizada por color,
+tipografía, spacing, layout, controles, iconos, radios, sombras y movimiento. Los breakpoints Sass
+están en `_breakpoints.scss`; `_global.scss` aplica el cuerpo y el foco. No crear otro archivo de tokens.
+
+**Tipografía:** Exo, con fallback `sans-serif`. Actualmente se resuelve desde las fuentes instaladas
+en el dispositivo; el repositorio no distribuye archivos de fuente. La jerarquía comercial usa estos roles:
+
+| Token `--font-size-*`       | Tamaño                | Uso                                         |
+| --------------------------- | --------------------- | ------------------------------------------- |
+| `caption`                   | 12px                  | Badges, contadores y anotaciones breves     |
+| `secondary`                 | 13px                  | Metadata, filtros, breadcrumbs y controles  |
+| `body-small` / `card-title` | 14px                  | Texto comercial / títulos de producto       |
+| `body`                      | 16px                  | Prosa y descripciones principales           |
+| `price-compact` / `price`   | 20 / 22px             | Precios en List/rangos y precios destacados |
+| `section-title`             | 20px; 18px en `sm`    | Encabezados equivalentes de Home            |
+| `page-title`                | 24px; 20px en `md`    | Título principal de Products                |
+| `display`                   | 40–72px; 32px en `sm` | Presentación principal del Hero             |
+
+Pesos: `medium` 500, `semibold` 600, `bold` 700 y `heavy` 800. Interlineados:
+`body` 1.5, `label` 1.35, `tight` 1.25 y `heading` 1.2. Los wordmarks y el mensaje de
+QualityBanner mantienen geometría tipográfica propia; no usar esos tamaños para controles.
+
+**Color:** una capa semántica, con aliases solo cuando representan roles distintos.
+
+| Rol / token `--color-*`                | Regla                                                                       |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| `brand`                                | `#7379ff`, identidad y decoración; no texto pequeño blanco sobre este fondo |
+| `action`                               | `#6254cf`, todas las acciones principales; texto `on-action` blanco         |
+| `action-hover`, `action-active`        | Derivados de `action` mezclando 12% / 20% de negro                          |
+| `accent-text`, `focus`                 | `#5146be`, enlaces/acento legible y contorno de foco                        |
+| `accent-subtle`                        | Mezcla de 12% de marca y blanco para selección/hover suave                  |
+| `background`, `surface`                | Blanco: página y superficies de contenido                                   |
+| `surface-muted`, `surface-tinted`      | `#f2f2f2` / `#f2f4fb`: secciones y paneles secundarios                      |
+| `text`, `text-secondary`, `text-muted` | `#303341` / `#595d6b` / `#626574`; precios usan `text`                      |
+| `border`, `border-control`             | `#d5d8e2` para divisores; `#858998` para límites de controles               |
+| `disabled`, `disabled-surface`         | Estados no disponibles; no inventar grises locales                          |
+| `brand-start`, `brand-end`             | Gradiente de identidad común a Home/Hero/Products                           |
+
+Mismo significado → mismo token. No fusionar un color decorativo con una acción por proximidad
+hexadecimal. Los fondos de marcas, gradientes editoriales, banderas y fotografía pueden ser locales.
+No crear tokens de feedback sin consumidores reales. Foco visible: contorno de 2px y separación de
+3px; inputs compuestos pueden aplicar el contorno al contenedor. Nunca eliminarlo sin sustitución.
+
+**Spacing:** `--space-2xs/xs/sm/ms/md/ml/lg/2lg/xl` = 2/4/8/12/16/20/24/32/48px.
+Usar `--layout-section-space` (48px; 32px en `sm`) y `--layout-card-gap` (24px; 20px en
+`xl`; 16px en `md`) para patrones compartidos. Conservar números locales solo para geometría real.
+
+**Controles e iconos:** `--control-height-compact/height/height-large` = 32/40/44px.
+El primero sirve a paginación, Grid/List e inputs de filtros; 40px a CTAs y acciones de tarjeta;
+44px a navegación/carruseles. Texto de control 13px, padding horizontal 16px. Checks/radios tienen
+glifo de 16px dentro de labels de al menos 32px; los targets independientes no deben bajar de 24px.
+`--icon-size-sm/md/lg` = 16/20/24px; logos, banderas y arte no son iconos de control.
+
+**SharedButton:** usar `app-button` para CTAs estándar (`primary` o `light`); ambas variantes comparten
+densidad. El consumidor controla posición y ancho, el botón controla apariencia. Un botón nativo
+que necesite conservar su markup puede usar los mixins existentes de `_controls.scss`, que también
+usa SharedButton. No crear overrides de color/tipografía por consumidor ni introducir una librería UI.
+
+**Radios y elevación:** `--radius-xs/sm/md/lg/pill` = 4/8/12/20px/pill. Badges → xs,
+inputs/paneles pequeños → sm, imágenes/tarjetas → md, secciones → lg; círculos conservan 50%.
+Sombras: `control` para thumbs, `card` para tarjetas, `overlay` para menús y `panel` para grandes
+superficies. Los recortes decorativos pueden conservar sombras geométricas propias.
+
+**Layout y responsive:** desktop-first con `max-width`; `2xl` 96rem, `xl` 80rem, `lg` 64rem,
+`md` 48rem y `sm` 40rem. No agregar breakpoints sin una restricción geométrica demostrable.
+Shell máximo 120rem; contenido Home 116.25rem; margen exterior 24px (12px en `md`) e inset interior
+60px (8px en `md`). Products y Footer comparten estos límites; Hero conserva su composición propia.
+El sidebar mide 17rem (15rem en `lg`) y se convierte en drawer en `md`; List mueve CTAs debajo en `lg`.
+El offset del Header, títulos y separaciones compartidas responden desde los tokens. Cambiar columnas,
+orden o geometría local sigue siendo responsabilidad del componente. No reducir texto automáticamente
+en móvil ni ocultar overflow global para tapar errores. Respetar `prefers-reduced-motion`.
+
+**Antes de crear un componente:** comprobar si existe un token adecuado para color, font-size,
+spacing, altura de control, icono, radius y shadow. Crear un valor nuevo únicamente ante una necesidad
+visual real, con consumidores y función claros; verificar los consumidores indirectos y ambas páginas.
 
 ## Diseño y assets
 
