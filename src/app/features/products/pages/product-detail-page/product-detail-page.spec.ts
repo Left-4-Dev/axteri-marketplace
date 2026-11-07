@@ -93,7 +93,7 @@ describe('ProductDetailPage', () => {
     expect(recommendations.querySelectorAll('app-product-card')).toHaveLength(6);
   });
 
-  it('provides one empty, focusable destination for every section link', () => {
+  it('provides one focusable destination for every section link', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const links = page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a');
     expect(links).toHaveLength(6);
@@ -102,9 +102,54 @@ describe('ProductDetailPage', () => {
       expect(targets).toHaveLength(1);
       expect(targets[0].getAttribute('aria-label')).toBe(link.textContent?.trim());
       expect(targets[0].tabIndex).toBe(-1);
-      expect(targets[0].textContent?.trim()).toBe('');
-      expect(targets[0].children).toHaveLength(0);
+      if (link.hash !== '#caracteristicas') {
+        expect(targets[0].textContent?.trim()).toBe('');
+        expect(targets[0].children).toHaveLength(0);
+      }
     });
+  });
+
+  it('renders the technical specifications inside the existing #caracteristicas destination', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const link = Array.from(
+      page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
+    ).find((item) => item.textContent?.trim() === 'Características')!;
+    expect(link.hash).toBe('#caracteristicas');
+    expect(page.querySelectorAll('[id="caracteristicas"]')).toHaveLength(1);
+    const target = page.querySelector('#caracteristicas')!;
+    expect(target.querySelector('app-product-specifications h2')?.textContent).toBe(
+      'Características',
+    );
+    expect(
+      target.querySelectorAll('app-product-specifications .product-specifications__group'),
+    ).toHaveLength(W22_PRODUCT_DETAIL.specifications.groups.length);
+    expect(page.querySelector('#descripcion')?.children).toHaveLength(0);
+  });
+
+  it('keeps overview state and route intact when switching specification groups', async () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    page.querySelectorAll<HTMLButtonElement>('.product-gallery__thumbnails button')[1].click();
+    page.querySelector<HTMLButtonElement>('.product-gallery__favorite')!.click();
+    page.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    await harness.fixture.whenStable();
+
+    const groupButtons = page.querySelectorAll<HTMLButtonElement>('.product-specifications__group');
+    groupButtons[2].click();
+    await harness.fixture.whenStable();
+
+    expect(groupButtons[2].getAttribute('aria-current')).toBe('true');
+    expect(page.querySelector('.product-specifications__panel h3')?.textContent).toContain(
+      W22_PRODUCT_DETAIL.specifications.groups[2].title,
+    );
+    expect(
+      page
+        .querySelectorAll<HTMLButtonElement>('.product-gallery__thumbnails button')[1]
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(page.querySelector('.product-gallery__favorite')?.getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+    expect(page.querySelector<HTMLInputElement>('#product-quantity')?.value).toBe('2');
   });
 
   it('restores the router scroll offset when leaving the detail page', async () => {

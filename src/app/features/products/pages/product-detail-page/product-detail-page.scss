@@ -97,7 +97,8 @@
     grid-area: purchase;
   }
   app-product-recommendations,
-  app-product-section-nav {
+  app-product-section-nav,
+  app-product-specifications {
     margin-block-start: var(--layout-section-space);
   }
   &__section-anchor {

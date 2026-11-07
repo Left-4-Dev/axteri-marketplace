@@ -1,0 +1,50 @@
+<div class="product-specifications">
+  <h2 class="product-specifications__title">Características</h2>
+  @if (selectedGroup(); as selected) {
+    <div class="product-specifications__body">
+      <ul class="product-specifications__groups" role="list" aria-label="Grupos de características">
+        @for (group of groups(); track group.id) {
+          <li>
+            <button
+              type="button"
+              class="product-specifications__group"
+              [class.product-specifications__group--selected]="group.id === selected.id"
+              [attr.aria-current]="group.id === selected.id ? 'true' : null"
+              aria-controls="product-specifications-panel"
+              (click)="selectGroup(group.id)"
+            >
+              <span>{{ group.code }}. {{ group.label }}</span>
+              <span class="product-specifications__count">
+                {{ group.specifications.length }}
+                <span class="product-specifications__sr-only">especificaciones</span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+      <div class="product-specifications__content">
+        <div class="product-specifications__panel" id="product-specifications-panel">
+          <h3>{{ selected.code }}. {{ selected.title }}</h3>
+          <dl class="product-specifications__list">
+            @for (specification of selected.specifications; track specification.label) {
+              <div class="product-specifications__row">
+                <dt>{{ specification.label }}</dt>
+                <dd>
+                  {{ specification.value }}
+                  @if (specification.detail) {
+                    <span class="product-specifications__detail">({{ specification.detail }})</span>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        </div>
+        @if (specifications().verification; as verification) {
+          <p class="product-specifications__verification">
+            Última verificación: {{ verification.date }} {{ verification.source }}
+          </p>
+        }
+      </div>
+    </div>
+  }
+</div>
