@@ -22,7 +22,7 @@
       <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
       <app-product-recommendations [products]="recommendations" />
       <app-product-section-nav [productId]="item.id" />
-      <!-- Solo Características tiene contenido; el resto son destinos vacíos hasta su etapa. -->
+      <!-- Características, Descripción y Documentos activos; el resto espera su etapa. -->
       @for (section of sections; track section.id) {
         <section
           class="product-detail__section-anchor"
@@ -30,8 +30,16 @@
           [attr.aria-label]="section.label"
           tabindex="-1"
         >
-          @if (section.id === 'caracteristicas') {
-            <app-product-specifications [specifications]="item.specifications" />
+          @switch (section.id) {
+            @case ('caracteristicas') {
+              <app-product-specifications [specifications]="item.specifications" />
+            }
+            @case ('descripcion') {
+              <app-product-description [description]="item.detailedDescription" />
+            }
+            @case ('documentos') {
+              <app-product-documents [documents]="item.documents" />
+            }
           }
         </section>
       }

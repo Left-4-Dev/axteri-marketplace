@@ -16,6 +16,8 @@ import { ProductPurchasePanel } from '../../components/product-purchase-panel/pr
 import { ProductRecommendations } from '../../components/product-recommendations/product-recommendations';
 import { ProductSectionNav } from '../../components/product-section-nav/product-section-nav';
 import { ProductSpecifications } from '../../components/product-specifications/product-specifications';
+import { ProductDescription } from '../../components/product-description/product-description';
+import { ProductDocuments } from '../../components/product-documents/product-documents';
 import { PRODUCT_DETAILS } from '../../data/product-detail.data';
 import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
@@ -31,6 +33,8 @@ import { ProductPurchaseIntent } from '../../models/product-detail.model';
     ProductRecommendations,
     ProductSectionNav,
     ProductSpecifications,
+    ProductDescription,
+    ProductDocuments,
   ],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.scss',

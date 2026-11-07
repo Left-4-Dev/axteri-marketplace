@@ -32,6 +32,22 @@ export interface ProductSpecificationSheet {
   readonly verification?: { readonly date: string; readonly source: string };
 }
 
+export interface ProductDescriptionContent {
+  readonly heading: string;
+  readonly paragraphs: readonly string[];
+  readonly highlightsTitle?: string;
+  readonly highlights?: readonly string[];
+}
+
+export interface ProductDocument {
+  readonly id: string;
+  readonly title: string;
+  readonly fileName: string;
+  readonly format: string;
+  readonly category: string;
+  readonly href?: string;
+}
+
 export interface ProductDetail extends Product {
   readonly sku: string;
   readonly category: string;
@@ -41,6 +57,8 @@ export interface ProductDetail extends Product {
   readonly warranty: string;
   readonly origin: string;
   readonly specifications: ProductSpecificationSheet;
+  readonly detailedDescription: ProductDescriptionContent;
+  readonly documents: readonly ProductDocument[];
   readonly purchase: {
     readonly stock: number;
     readonly destination: string;

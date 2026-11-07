@@ -122,6 +122,60 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
     ],
     verification: { date: '12 ene 2026', source: 'LDF Projects' },
   },
+  // Contenido descriptivo y documental mock coherente con la referencia y los datos de la ficha.
+  detailedDescription: {
+    heading: 'WEG W22 — Motor eléctrico industrial de alta eficiencia',
+    paragraphs: [
+      'El motor trifásico WEG W22 está diseñado para operación continua en aplicaciones industriales exigentes, combinando eficiencia energética, confiabilidad mecánica y menor costo operativo a lo largo de su vida útil.',
+      'Su carcasa de hierro fundido FC-200 proporciona rigidez estructural, buena disipación térmica y bajos niveles de vibración. El diseño totalmente cerrado con ventilación exterior (IC411 — TEFC) y protección IP55 resguarda los componentes internos frente a polvo y humedad en entornos industriales.',
+    ],
+    highlightsTitle: 'Aspectos generales de la línea W22',
+    highlights: [
+      'Construcción industrial trifásica con rotor de jaula de ardilla para servicio continuo (S1).',
+      'Eficiencia energética IE3 Premium conforme a IEC 60034-30-1.',
+      'Alimentación en baja tensión 380–415 V y operación en 50 / 60 Hz.',
+      'Sistema de enfriamiento auto-ventilado IC411 (TEFC) y grado de protección IP55.',
+      'Aislamiento térmico Clase F con elevación de temperatura Clase B para mayor margen térmico.',
+      'Compatible con accionamiento mediante variador de frecuencia (VFD) según condiciones de instalación.',
+    ],
+  },
+  documents: [
+    {
+      id: 'environmental-sheet',
+      title: 'Ficha ambiental',
+      fileName: 'Ficha ambiental.pdf',
+      format: 'PDF',
+      category: 'Pintura y corrosividad',
+    },
+    {
+      id: 'technical-datasheet',
+      title: 'Ficha técnica',
+      fileName: 'Ficha técnica.pdf',
+      format: 'PDF',
+      category: 'Catálogo técnico W22',
+    },
+    {
+      id: 'dimensional-drawing',
+      title: 'Plano dimensional',
+      fileName: 'Plano.pdf',
+      format: 'PDF',
+      category: 'Cotas carcasa IEC 100L',
+    },
+    {
+      id: 'maintenance-guide',
+      title: 'Guía de mantenimiento',
+      fileName: 'Guía de mantenimiento.pdf',
+      format: 'PDF',
+      category: 'Operación y lubricación',
+    },
+    {
+      id: 'certifications',
+      title: 'Certificaciones',
+      fileName: 'Certificaciones.pdf',
+      format: 'PDF',
+      category: 'Conformidad referencial',
+    },
+  ],
   purchase: {
     stock: 100,
     destination: 'Pueblo Libre, Lima',

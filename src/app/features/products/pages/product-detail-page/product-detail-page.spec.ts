@@ -96,13 +96,14 @@ describe('ProductDetailPage', () => {
   it('provides one focusable destination for every section link', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const links = page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a');
+    const implemented = new Set(['#caracteristicas', '#descripcion', '#documentos']);
     expect(links).toHaveLength(6);
     links.forEach((link) => {
       const targets = page.querySelectorAll<HTMLElement>(link.hash);
       expect(targets).toHaveLength(1);
       expect(targets[0].getAttribute('aria-label')).toBe(link.textContent?.trim());
       expect(targets[0].tabIndex).toBe(-1);
-      if (link.hash !== '#caracteristicas') {
+      if (!implemented.has(link.hash)) {
         expect(targets[0].textContent?.trim()).toBe('');
         expect(targets[0].children).toHaveLength(0);
       }
@@ -123,7 +124,48 @@ describe('ProductDetailPage', () => {
     expect(
       target.querySelectorAll('app-product-specifications .product-specifications__group'),
     ).toHaveLength(W22_PRODUCT_DETAIL.specifications.groups.length);
-    expect(page.querySelector('#descripcion')?.children).toHaveLength(0);
+  });
+
+  it('renders description and documents in their existing destinations while keeping future anchors empty', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const navLinks = Array.from(
+      page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
+    );
+
+    expect(navLinks.find((link) => link.textContent?.trim() === 'Descripción')?.hash).toBe(
+      '#descripcion',
+    );
+    expect(navLinks.find((link) => link.textContent?.trim() === 'Documentos')?.hash).toBe(
+      '#documentos',
+    );
+
+    expect(page.querySelectorAll('[id="descripcion"]')).toHaveLength(1);
+    expect(page.querySelectorAll('[id="documentos"]')).toHaveLength(1);
+
+    const specs = page.querySelector('#caracteristicas')!;
+    const description = page.querySelector('#descripcion')!;
+    const documents = page.querySelector('#documentos')!;
+
+    expect(
+      specs.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      description.compareDocumentPosition(documents) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    expect(description.querySelector('app-product-description h2')?.textContent).toBe(
+      'Descripción',
+    );
+    expect(documents.querySelector('app-product-documents h2')?.textContent).toBe('Documentos');
+    expect(documents.querySelectorAll('.product-documents__card')).toHaveLength(
+      W22_PRODUCT_DETAIL.documents.length,
+    );
+
+    for (const pendingId of ['#accesorios', '#variaciones', '#resenas']) {
+      const pending = page.querySelector(pendingId)!;
+      expect(pending.children).toHaveLength(0);
+      expect(pending.textContent?.trim()).toBe('');
+    }
   });
 
   it('keeps overview state and route intact when switching specification groups', async () => {

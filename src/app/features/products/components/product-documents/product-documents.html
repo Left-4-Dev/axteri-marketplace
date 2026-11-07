@@ -1,0 +1,58 @@
+<div class="product-documents">
+  <h2 class="product-documents__title">Documentos</h2>
+  @if (documents().length) {
+    <div class="product-documents__panel">
+      <ul class="product-documents__grid" role="list">
+        @for (doc of documents(); track doc.id) {
+          <li class="product-documents__card">
+            <div class="product-documents__preview" aria-hidden="true">
+              <div class="product-documents__sheet">
+                <div class="product-documents__sheet-head">
+                  <svg viewBox="0 0 20 20" focusable="false">
+                    <path
+                      d="M5 2.5h6.5L15.5 6.5v11a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M11 2.5v4h4.5M7 10h6M7 13h6M7 15.5h4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <span class="product-documents__format">{{ doc.format }}</span>
+                </div>
+                <div class="product-documents__sheet-lines">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span class="product-documents__sheet-tag">{{ doc.category }}</span>
+              </div>
+            </div>
+            <div class="product-documents__info">
+              <h3 class="product-documents__name">{{ doc.title }}</h3>
+              <p class="product-documents__file">{{ doc.fileName }}</p>
+              <p class="product-documents__meta">{{ doc.format }} · {{ doc.category }}</p>
+              @if (resolveHref(doc.href); as href) {
+                <a
+                  class="product-documents__link"
+                  [href]="href"
+                  [attr.aria-label]="'Descargar ' + doc.title + ' (' + doc.format + ')'"
+                  download
+                >
+                  Descargar {{ doc.format }}
+                </a>
+              } @else {
+                <span class="product-documents__pending">Descarga próximamente</span>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

@@ -98,7 +98,9 @@
   }
   app-product-recommendations,
   app-product-section-nav,
-  app-product-specifications {
+  app-product-specifications,
+  app-product-description,
+  app-product-documents {
     margin-block-start: var(--layout-section-space);
   }
   &__section-anchor {
