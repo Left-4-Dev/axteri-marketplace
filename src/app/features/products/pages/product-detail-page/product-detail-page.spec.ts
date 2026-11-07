@@ -96,7 +96,13 @@ describe('ProductDetailPage', () => {
   it('provides one focusable destination for every section link', () => {
     const page = element.querySelector('app-product-detail-page')!;
     const links = page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a');
-    const implemented = new Set(['#caracteristicas', '#descripcion', '#documentos']);
+    const implemented = new Set([
+      '#caracteristicas',
+      '#descripcion',
+      '#documentos',
+      '#accesorios',
+      '#variaciones',
+    ]);
     expect(links).toHaveLength(6);
     links.forEach((link) => {
       const targets = page.querySelectorAll<HTMLElement>(link.hash);
@@ -161,11 +167,94 @@ describe('ProductDetailPage', () => {
       W22_PRODUCT_DETAIL.documents.length,
     );
 
-    for (const pendingId of ['#accesorios', '#variaciones', '#resenas']) {
-      const pending = page.querySelector(pendingId)!;
-      expect(pending.children).toHaveLength(0);
-      expect(pending.textContent?.trim()).toBe('');
-    }
+    const pendingReviews = page.querySelector('#resenas')!;
+    expect(pendingReviews.children).toHaveLength(0);
+    expect(pendingReviews.textContent?.trim()).toBe('');
+  });
+
+  it('renders accessories and variants in DOM order while keeping #resenas empty', () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    const navLinks = Array.from(
+      page.querySelectorAll<HTMLAnchorElement>('app-product-section-nav a'),
+    );
+
+    expect(navLinks.find((link) => link.textContent?.trim() === 'Accesorios')?.hash).toBe(
+      '#accesorios',
+    );
+    expect(navLinks.find((link) => link.textContent?.trim() === 'Variaciones')?.hash).toBe(
+      '#variaciones',
+    );
+
+    expect(page.querySelectorAll('[id="accesorios"]')).toHaveLength(1);
+    expect(page.querySelectorAll('[id="variaciones"]')).toHaveLength(1);
+    expect(page.querySelectorAll('[id="resenas"]')).toHaveLength(1);
+
+    const documents = page.querySelector('#documentos')!;
+    const accessories = page.querySelector('#accesorios')!;
+    const variants = page.querySelector('#variaciones')!;
+    const reviews = page.querySelector('#resenas')!;
+
+    expect(
+      documents.compareDocumentPosition(accessories) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      accessories.compareDocumentPosition(variants) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      variants.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    expect(accessories.querySelector('app-product-accessories h2')?.textContent).toBe('Accesorios');
+    expect(accessories.querySelectorAll('app-product-card')).toHaveLength(
+      W22_PRODUCT_DETAIL.accessories.length,
+    );
+
+    expect(variants.querySelector('app-product-variants h2')?.textContent).toBe('Variaciones');
+    expect(variants.querySelectorAll('tbody .product-variants__row')).toHaveLength(
+      W22_PRODUCT_DETAIL.variants.length,
+    );
+    expect(variants.querySelector('.product-variants__sku')?.textContent).toBe(
+      W22_PRODUCT_DETAIL.sku,
+    );
+
+    expect(reviews.children).toHaveLength(0);
+    expect(reviews.textContent?.trim()).toBe('');
+  });
+
+  it('keeps overview gallery, favorite, quantity and accessories intact when filtering or selecting variants', async () => {
+    const page = element.querySelector('app-product-detail-page')!;
+    page.querySelectorAll<HTMLButtonElement>('.product-gallery__thumbnails button')[2].click();
+    page.querySelector<HTMLButtonElement>('.product-gallery__favorite')!.click();
+    page.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    await harness.fixture.whenStable();
+
+    const chips = Array.from(
+      page.querySelectorAll<HTMLButtonElement>('app-product-variants .product-variants__chip'),
+    );
+    chips.find((btn) => btn.textContent?.trim() === '4 Polos — ~1450 rpm')!.click();
+    await harness.fixture.whenStable();
+
+    const filteredRows = page.querySelectorAll<HTMLTableRowElement>(
+      'app-product-variants tbody .product-variants__row',
+    );
+    filteredRows[1].querySelector<HTMLButtonElement>('.product-variants__row-trigger')!.click();
+    await harness.fixture.whenStable();
+
+    expect(page.querySelector('app-product-variants .product-variants__sku')?.textContent).toBe(
+      'W22-11KW-4P-380-B3-IP55',
+    );
+    expect(
+      page
+        .querySelectorAll<HTMLButtonElement>('.product-gallery__thumbnails button')[2]
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(page.querySelector('.product-gallery__favorite')?.getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+    expect(page.querySelector<HTMLInputElement>('#product-quantity')?.value).toBe('2');
+    expect(page.querySelectorAll('app-product-accessories app-product-card')).toHaveLength(
+      W22_PRODUCT_DETAIL.accessories.length,
+    );
   });
 
   it('keeps overview state and route intact when switching specification groups', async () => {

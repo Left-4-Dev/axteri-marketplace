@@ -1,0 +1,263 @@
+<div class="product-variants">
+  <h2 class="product-variants__title">Variaciones</h2>
+  @if (variants().length) {
+    <div class="product-variants__body">
+      <div class="product-variants__catalog">
+        <p class="product-variants__intro">
+          Ajusta las características del producto en la tabla para explorar las configuraciones
+          disponibles y su referencia comercial.
+        </p>
+
+        @if (filterGroups().length) {
+          <div class="product-variants__filters" role="group" aria-label="Filtros de variaciones">
+            @for (group of filterGroups(); track group.key) {
+              <div
+                class="product-variants__filter-group"
+                role="group"
+                [attr.aria-labelledby]="'variant-filter-' + group.key"
+              >
+                <span class="product-variants__filter-label" [id]="'variant-filter-' + group.key">
+                  {{ group.label }}:
+                </span>
+                <div class="product-variants__chips">
+                  @for (option of group.options; track option) {
+                    @let isActive = selectedFilters()[group.key] === option;
+                    <button
+                      type="button"
+                      class="product-variants__chip"
+                      [class.product-variants__chip--active]="isActive"
+                      [attr.aria-pressed]="isActive"
+                      (click)="toggleFilter(group.key, option)"
+                    >
+                      {{ option }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (filteredVariants().length) {
+          <div
+            class="product-variants__table-wrapper"
+            role="region"
+            aria-label="Tabla comparativa de variaciones"
+            tabindex="0"
+          >
+            <table class="product-variants__table">
+              <thead>
+                <tr>
+                  <th scope="col">Potencia</th>
+                  <th scope="col">Marco</th>
+                  <th scope="col">Vel. (rpm)</th>
+                  <th scope="col">Torque (N·m)</th>
+                  <th scope="col">Corriente</th>
+                  <th scope="col">Rend. (%)</th>
+                  <th scope="col">FP</th>
+                  <th scope="col">Peso (kg)</th>
+                  <th scope="col">Categoría</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (variant of filteredVariants(); track variant.id) {
+                  @let isSelected = variant.id === selectedVariant()?.id;
+                  <tr
+                    class="product-variants__row"
+                    [class.product-variants__row--selected]="isSelected"
+                    (click)="selectVariant(variant.id)"
+                  >
+                    <th scope="row">
+                      <button
+                        type="button"
+                        class="product-variants__row-trigger"
+                        [attr.aria-pressed]="isSelected"
+                        [attr.aria-label]="
+                          'Seleccionar variante ' +
+                          variant.sku +
+                          ' (' +
+                          variant.attributes.power +
+                          ', ' +
+                          variant.attributes.poles +
+                          ')'
+                        "
+                        (click)="$event.stopPropagation(); selectVariant(variant.id)"
+                      >
+                        <span class="product-variants__indicator" aria-hidden="true"></span>
+                        <span>{{ variant.attributes.power }}</span>
+                      </button>
+                    </th>
+                    <td>{{ variant.attributes.frame }}</td>
+                    <td>{{ variant.attributes.speed }}</td>
+                    <td>{{ variant.attributes.torque }}</td>
+                    <td>{{ variant.attributes.current }}</td>
+                    <td>{{ variant.attributes.efficiency }}</td>
+                    <td>{{ variant.attributes.powerFactor }}</td>
+                    <td>{{ variant.attributes.weight }}</td>
+                    <td>
+                      <span class="product-variants__badge">{{ variant.category }}</span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="product-variants__empty" role="status">
+            <p>No encontramos variaciones con esta combinación.</p>
+            @if (hasActiveFilters()) {
+              <app-button variant="light" (click)="resetFilters()">Limpiar filtros</app-button>
+            }
+          </div>
+        }
+      </div>
+
+      <aside
+        class="product-variants__summary"
+        [class.product-variants__summary--active]="selectedVariant() !== null"
+        aria-label="Resumen de variante seleccionada"
+      >
+        @if (selectedVariant(); as selected) {
+          <div class="product-variants__summary-lead">
+            @let resolvedImage = selected.image ?? fallbackImage();
+            @if (resolvedImage; as img) {
+              <div class="product-variants__image">
+                <img [src]="img.src" [alt]="img.alt" width="240" height="180" loading="lazy" />
+              </div>
+            }
+            <div class="product-variants__summary-header">
+              <p class="product-variants__sku-label">SKU resultante</p>
+              <h3 class="product-variants__sku">{{ selected.sku }}</h3>
+            </div>
+          </div>
+
+          <dl class="product-variants__dl product-variants__specs">
+            <div>
+              <dt>Polos</dt>
+              <dd>{{ selected.attributes.poles }}</dd>
+            </div>
+            <div>
+              <dt>Potencia</dt>
+              <dd>
+                {{ selected.attributes.power }}
+                @if (selected.attributes.powerDetail; as detail) {
+                  <span>· {{ detail }}</span>
+                }
+              </dd>
+            </div>
+            <div>
+              <dt>Tensión</dt>
+              <dd>{{ selected.attributes.voltage }}</dd>
+            </div>
+            <div>
+              <dt>Velocidad</dt>
+              <dd>{{ selected.attributes.speed }}</dd>
+            </div>
+            <div>
+              <dt>Torque</dt>
+              <dd>{{ selected.attributes.torque }}</dd>
+            </div>
+            <div>
+              <dt>Marco IEC</dt>
+              <dd>{{ selected.attributes.frame }}</dd>
+            </div>
+            <div>
+              <dt>Peso</dt>
+              <dd>{{ selected.attributes.weight }}</dd>
+            </div>
+            <div>
+              <dt>Montaje</dt>
+              <dd>{{ selected.attributes.mounting }}</dd>
+            </div>
+            <div>
+              <dt>Protección</dt>
+              <dd>{{ selected.attributes.protection }}</dd>
+            </div>
+          </dl>
+
+          <div class="product-variants__commercial">
+            @let price = selected.price;
+            <div class="product-variants__pricing">
+              <p class="product-variants__price-label">Precio configurado</p>
+              @switch (price.kind) {
+                @case ('fixed') {
+                  <p class="product-variants__price">
+                    {{
+                      price.amount
+                        | currency
+                          : price.currency
+                          : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
+                          : '1.2-2'
+                    }}
+                  </p>
+                  @if (price.previousAmount && price.previousAmount > price.amount) {
+                    <p class="product-variants__reference">
+                      Antes:
+                      <s>{{
+                        price.previousAmount
+                          | currency
+                            : price.currency
+                            : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
+                            : '1.2-2'
+                      }}</s>
+                    </p>
+                  }
+                }
+                @case ('range') {
+                  <p class="product-variants__price product-variants__price--compact">
+                    {{
+                      price.min
+                        | currency
+                          : price.currency
+                          : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
+                          : '1.2-2'
+                    }}
+                    –
+                    {{
+                      price.max
+                        | currency
+                          : price.currency
+                          : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
+                          : '1.2-2'
+                    }}
+                  </p>
+                }
+                @case ('quote') {
+                  <p class="product-variants__price">Por cotizar</p>
+                }
+              }
+              @if (price.kind !== 'quote') {
+                <p class="product-variants__tax">
+                  {{ price.includesTax ? 'Incluye IGV' : 'IGV no incluido' }}
+                  @if (price.unitLabel) {
+                    · {{ price.unitLabel }}
+                  }
+                </p>
+              }
+            </div>
+
+            <dl class="product-variants__dl product-variants__availability">
+              <div>
+                <dt>Unidades</dt>
+                <dd>{{ selected.stock }}</dd>
+              </div>
+              <div>
+                <dt>Entrega estimada</dt>
+                <dd>{{ selected.deliveryEstimate }}</dd>
+              </div>
+            </dl>
+
+            <div class="product-variants__cta">
+              <app-button (click)="onRequestQuote(selected)">Solicitar cotización</app-button>
+            </div>
+            <p class="product-variants__status" role="status">{{ actionMessage() }}</p>
+          </div>
+        } @else {
+          <div class="product-variants__summary-empty">
+            <p>Ajusta o limpia los filtros activos para visualizar el resumen de una variante.</p>
+          </div>
+        }
+      </aside>
+    </div>
+  }
+</div>

@@ -100,7 +100,9 @@
   app-product-section-nav,
   app-product-specifications,
   app-product-description,
-  app-product-documents {
+  app-product-documents,
+  app-product-accessories,
+  app-product-variants {
     margin-block-start: var(--layout-section-space);
   }
   &__section-anchor {

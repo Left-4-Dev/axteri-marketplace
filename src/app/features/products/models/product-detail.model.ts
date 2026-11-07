@@ -1,4 +1,4 @@
-import { Product } from '../../../models/product.model';
+import { Product, ProductPrice } from '../../../models/product.model';
 
 export interface ProductImage {
   readonly src: string;
@@ -48,6 +48,34 @@ export interface ProductDocument {
   readonly href?: string;
 }
 
+export interface ProductVariantAttributes {
+  readonly polesGroup: string;
+  readonly poles: string;
+  readonly power: string;
+  readonly powerDetail?: string;
+  readonly frame: string;
+  readonly speed: string;
+  readonly torque: string;
+  readonly current: string;
+  readonly efficiency: string;
+  readonly powerFactor: string;
+  readonly weight: string;
+  readonly voltage: string;
+  readonly mounting: string;
+  readonly protection: string;
+}
+
+export interface ProductVariant {
+  readonly id: string;
+  readonly sku: string;
+  readonly category: string;
+  readonly attributes: ProductVariantAttributes;
+  readonly price: ProductPrice;
+  readonly stock: number;
+  readonly deliveryEstimate: string;
+  readonly image?: ProductImage;
+}
+
 export interface ProductDetail extends Product {
   readonly sku: string;
   readonly category: string;
@@ -59,6 +87,8 @@ export interface ProductDetail extends Product {
   readonly specifications: ProductSpecificationSheet;
   readonly detailedDescription: ProductDescriptionContent;
   readonly documents: readonly ProductDocument[];
+  readonly accessories: readonly Product[];
+  readonly variants: readonly ProductVariant[];
   readonly purchase: {
     readonly stock: number;
     readonly destination: string;

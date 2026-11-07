@@ -22,7 +22,7 @@
       <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
       <app-product-recommendations [products]="recommendations" />
       <app-product-section-nav [productId]="item.id" />
-      <!-- Características, Descripción y Documentos activos; el resto espera su etapa. -->
+      <!-- Características, Descripción, Documentos, Accesorios y Variaciones activos; Reseñas espera su etapa. -->
       @for (section of sections; track section.id) {
         <section
           class="product-detail__section-anchor"
@@ -39,6 +39,16 @@
             }
             @case ('documentos') {
               <app-product-documents [documents]="item.documents" />
+            }
+            @case ('accesorios') {
+              <app-product-accessories [accessories]="item.accessories" />
+            }
+            @case ('variaciones') {
+              <app-product-variants
+                [variants]="item.variants"
+                [initialSku]="item.sku"
+                [fallbackImage]="item.images[0]"
+              />
             }
           }
         </section>
