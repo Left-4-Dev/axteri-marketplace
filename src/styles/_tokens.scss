@@ -1,20 +1,133 @@
-// Valores provisionales: no representan la identidad visual definitiva de Axteri.
-:root {
-  --color-background: #fff;
-  --color-text: #202020;
-  --color-text-muted: #595959;
-  --color-focus: #202020;
-  --color-placeholder-surface: #f3f3f3;
-  --color-placeholder-border: #d4d4d4;
+@use 'breakpoints' as bp;
 
+// Fuente única del sistema visual. Las geometrías y el arte propios de una sección son locales.
+:root {
+  // Color: roles compartidos, sin una segunda paleta de primitivas.
+  --color-brand: #7379ff;
+  --color-action: #6254cf;
+  --color-action-hover: color-mix(in srgb, var(--color-action), black 12%);
+  --color-action-active: color-mix(in srgb, var(--color-action), black 20%);
+  --color-accent-text: #5146be;
+  --color-accent-subtle: color-mix(in srgb, var(--color-brand) 12%, white);
+  --color-focus: var(--color-accent-text);
+  --color-background: #fff;
+  --color-surface: var(--color-background);
+  --color-surface-muted: #f2f2f2;
+  --color-surface-tinted: #f2f4fb;
+  --color-text: #303341;
+  --color-text-secondary: #595d6b;
+  --color-text-inverse: #fff;
+  --color-text-muted: #626574;
+  --color-on-action: #fff;
+  --color-border: #d5d8e2;
+  --color-border-control: #858998;
+  --color-range-thumb-border: #f3f3f6;
+  --color-disabled: #a0a3b1;
+  --color-disabled-surface: #e4e7f0;
+  // Gradiente de identidad compartido por los fondos de Home, Hero y Products.
+  --color-brand-start: #a0d5fd;
+  --color-brand-end: #9d98fc;
+
+  // Tipografía: Exo, roles comerciales estables; encabezados responsive abajo.
   --font-primary: 'Exo', sans-serif;
+  --font-size-caption: 0.75rem;
+  --font-size-secondary: 0.8125rem;
+  --font-size-body-small: 0.875rem;
   --font-size-body: 1rem;
-  --font-size-heading: clamp(1.75rem, 4vw, 2.5rem);
+  --font-size-card-title: var(--font-size-body-small);
+  --font-size-price: 1.375rem;
+  --font-size-price-compact: 1.25rem;
+  --font-size-section-title: 1.25rem;
+  --font-size-page-title: 1.5rem;
+  --font-size-display: clamp(2.5rem, 4vw, 4.5rem);
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 800;
   --line-height-body: 1.5;
+  --line-height-tight: 1.25;
+  --line-height-label: 1.35;
   --line-height-heading: 1.2;
 
+  // Espaciado: conservar sm/md/xl; extender únicamente pasos usados.
+  --space-2xs: 0.125rem;
+  --space-xs: 0.25rem;
   --space-sm: 0.5rem;
+  --space-ms: 0.75rem;
   --space-md: 1rem;
+  --space-ml: 1.25rem;
+  --space-lg: 1.5rem;
+  --space-2lg: 2rem;
   --space-xl: 3rem;
-  --content-width: 72rem;
+
+  // Layout: shell exterior y contenido interior son niveles distintos.
+  --layout-shell-max: 120rem;
+  --layout-content-max: 116.25rem;
+  --layout-page-gap: var(--space-lg);
+  --layout-content-inset: 3.75rem;
+  --layout-section-space: var(--space-xl);
+  --layout-card-gap: var(--space-lg);
+  --layout-mobile-gutter: var(--space-ms);
+  --header-content-offset: 6rem;
+
+  // Controles: apariencia compacta; targets nunca inferiores a 24px.
+  --control-height-compact: 2rem;
+  --control-height: 2.5rem;
+  --control-height-large: 2.75rem;
+  --control-padding-inline: var(--space-md);
+  --control-font-size: var(--font-size-secondary);
+  --control-choice-size: 1rem;
+  --icon-size-sm: 1rem;
+  --icon-size-md: 1.25rem;
+  --icon-size-lg: 1.5rem;
+
+  // Radios, elevación y estados compartidos.
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-control: 0 1px 3px rgb(48 51 65 / 20%);
+  --shadow-card: 0 3px 9px rgb(53 44 105 / 16%);
+  --shadow-overlay: 0 6px 18px rgb(53 44 105 / 18%);
+  --shadow-panel: 0 10px 28px rgb(53 44 105 / 12%);
+  --shadow-focus: 0 0 0 2px var(--color-focus);
+  --motion-fast: 150ms;
+}
+
+@media (max-width: bp.$xl) {
+  :root {
+    --layout-card-gap: var(--space-ml);
+    --header-content-offset: 5.5rem;
+  }
+}
+
+@media (max-width: bp.$lg) {
+  :root {
+    --header-content-offset: 5rem;
+  }
+}
+
+@media (max-width: bp.$md) {
+  :root {
+    --layout-page-gap: var(--layout-mobile-gutter);
+    --layout-content-inset: var(--space-sm);
+    --layout-card-gap: var(--space-md);
+    --header-content-offset: 4rem;
+    --font-size-page-title: 1.25rem;
+  }
+}
+
+@media (max-width: bp.$sm) {
+  :root {
+    --layout-section-space: var(--space-2lg);
+    --font-size-section-title: 1.125rem;
+    --font-size-display: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+  }
 }
