@@ -1,0 +1,39 @@
+<section class="product-gallery" aria-label="Galería del producto">
+  <div class="product-gallery__thumbnails" role="group" aria-label="Seleccionar imagen">
+    @for (image of images(); track image.src; let index = $index) {
+      <button
+        type="button"
+        [attr.aria-label]="'Ver imagen ' + (index + 1) + ': ' + image.alt"
+        [attr.aria-pressed]="selectedIndex() === index"
+        (click)="selectedIndex.set(index)"
+      >
+        <img [src]="image.src" alt="" width="64" height="64" />
+      </button>
+    }
+  </div>
+  <figure class="product-gallery__main">
+    <span class="product-gallery__counter" aria-live="polite"
+      >{{ selectedIndex() + 1 }} / {{ images().length }}</span
+    >
+    <img
+      class="product-gallery__image"
+      [src]="selectedImage().src"
+      [alt]="selectedImage().alt"
+      width="600"
+      height="500"
+      fetchpriority="high"
+    />
+    <button
+      class="product-gallery__favorite"
+      type="button"
+      aria-label="Guardar en favoritos de esta vista"
+      [attr.aria-pressed]="favorite()"
+      (click)="favorite.set(!favorite())"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 20 3.8 12a5 5 0 0 1 7-7L12 6.2 13.2 5a5 5 0 0 1 7 7Z" />
+      </svg>
+    </button>
+    <figcaption>Ilustraciones provisionales · imágenes referenciales</figcaption>
+  </figure>
+</section>

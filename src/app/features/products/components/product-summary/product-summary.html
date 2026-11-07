@@ -1,0 +1,25 @@
+<section class="product-summary" aria-labelledby="summary-title">
+  <div class="product-summary__heading">
+    <h2 id="summary-title">Datos del producto</h2>
+    <span class="product-summary__brand">{{ detail().brand }}</span>
+  </div>
+  <div class="product-summary__badges">
+    <span>Garantía: {{ detail().warranty }}</span
+    ><span>Origen: {{ detail().origin }}</span>
+  </div>
+  <dl class="product-summary__highlights">
+    @for (highlight of detail().highlights; track highlight.label) {
+      <div>
+        <dt>{{ highlight.label }}</dt>
+        <dd>{{ highlight.value }}</dd>
+      </div>
+    }
+  </dl>
+  <p class="product-summary__description">{{ detail().description }}</p>
+  <h3>Aplicaciones típicas</h3>
+  <ul class="product-summary__applications">
+    @for (application of detail().applications; track application) {
+      <li>{{ application }}</li>
+    }
+  </ul>
+</section>

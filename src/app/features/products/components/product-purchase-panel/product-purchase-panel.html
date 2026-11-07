@@ -1,0 +1,114 @@
+@let item = detail();
+<aside class="purchase-panel" aria-label="Información comercial">
+  @if (item.seller; as seller) {
+    <section class="purchase-panel__seller" aria-labelledby="seller-title">
+      <span class="purchase-panel__avatar" aria-hidden="true">{{ seller.name.charAt(0) }}</span>
+      <div>
+        <h2 id="seller-title">
+          Vendido por <strong>{{ seller.name }}</strong>
+        </h2>
+        <p>{{ seller.years }} años · {{ seller.location }}</p>
+        @if (seller.verified) {
+          <span class="purchase-panel__verified">✓ Proveedor verificado</span>
+        }
+      </div>
+    </section>
+  }
+  <section class="purchase-panel__body" aria-labelledby="purchase-title">
+    <h2 id="purchase-title">Información de compra</h2>
+    <p class="purchase-panel__sku">SKU: {{ item.sku }}</p>
+    @let price = item.price;
+    <div class="purchase-panel__pricing">
+      @switch (price.kind) {
+        @case ('fixed') {
+          <p class="purchase-panel__price">
+            {{
+              price.amount
+                | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol') : '1.2-2'
+            }}
+          </p>
+          @if (price.previousAmount && price.previousAmount > price.amount) {
+            <p class="purchase-panel__reference">
+              Antes:
+              <s>{{
+                price.previousAmount
+                  | currency
+                    : price.currency
+                    : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
+                    : '1.2-2'
+              }}</s>
+            </p>
+          }
+        }
+        @case ('range') {
+          <p class="purchase-panel__price">
+            {{ price.min | currency: price.currency : 'symbol' : '1.2-2' }} –
+            {{ price.max | currency: price.currency : 'symbol' : '1.2-2' }}
+          </p>
+        }
+        @case ('quote') {
+          <p class="purchase-panel__price">Por cotizar</p>
+        }
+      }
+      @if (price.kind !== 'quote') {
+        <p>
+          {{ price.includesTax ? 'Incluye IGV' : 'IGV no incluido' }}
+          @if (price.unitLabel) {
+            · {{ price.unitLabel }}
+          }
+        </p>
+      }
+    </div>
+    <p class="purchase-panel__stock">
+      Stock referencial: <strong>{{ item.purchase.stock }} unidades</strong>
+    </p>
+    <div class="purchase-panel__quantity">
+      <label for="product-quantity">Cantidad</label>
+      <div>
+        <button
+          type="button"
+          aria-label="Disminuir cantidad"
+          [disabled]="quantity() === 1"
+          (click)="setQuantity(quantity() - 1)"
+        >
+          −</button
+        ><input
+          id="product-quantity"
+          type="number"
+          min="1"
+          step="1"
+          inputmode="numeric"
+          [value]="quantity()"
+          (change)="normalizeQuantity($event)"
+        /><button
+          type="button"
+          aria-label="Aumentar cantidad"
+          (click)="setQuantity(quantity() + 1)"
+        >
+          +
+        </button>
+      </div>
+    </div>
+    <div class="purchase-panel__actions">
+      <app-button (click)="purchaseIntent.emit({ kind: 'contact', quantity: quantity() })"
+        >Contactar proveedor</app-button
+      >
+      <app-button
+        variant="light"
+        (click)="purchaseIntent.emit({ kind: 'quote', quantity: quantity() })"
+        >Solicitar cotización</app-button
+      >
+    </div>
+    <dl class="purchase-panel__delivery">
+      <div>
+        <dt>Envío a</dt>
+        <dd>{{ item.purchase.destination }}</dd>
+      </div>
+      <div>
+        <dt>Entrega estimada</dt>
+        <dd>{{ item.purchase.deliveryEstimate }}</dd>
+      </div>
+    </dl>
+    <p class="purchase-panel__note">Disponibilidad y plazo sujetos a confirmación del proveedor.</p>
+  </section>
+</aside>

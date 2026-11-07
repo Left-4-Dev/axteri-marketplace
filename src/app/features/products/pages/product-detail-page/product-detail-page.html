@@ -1,0 +1,31 @@
+<div class="product-detail">
+  <div class="product-detail__shell">
+    <nav aria-label="Breadcrumb">
+      <ol class="product-detail__breadcrumb">
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/productos">Productos</a></li>
+        <li aria-current="page">
+          <span>{{ detail()?.name ?? 'Producto no encontrado' }}</span>
+        </li>
+      </ol>
+    </nav>
+    @if (detail(); as item) {
+      <div class="product-detail__overview">
+        <header class="product-detail__heading">
+          <p>{{ item.category }} <span aria-hidden="true">·</span> {{ item.brand }}</p>
+          <h1>{{ item.name }}</h1>
+        </header>
+        <app-product-gallery [images]="item.images" />
+        <app-product-summary [detail]="item" />
+        <app-product-purchase-panel [detail]="item" (purchaseIntent)="onPurchaseIntent($event)" />
+      </div>
+      <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
+    } @else {
+      <section class="product-detail__empty">
+        <h1>Producto no encontrado</h1>
+        <p>No tenemos una ficha disponible para este producto.</p>
+        <a routerLink="/productos">Volver a Productos</a>
+      </section>
+    }
+  </div>
+</div>
