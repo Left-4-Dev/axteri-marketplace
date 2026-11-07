@@ -6,11 +6,11 @@
     inset-inline-start: max(var(--header-inset), calc((100% - 80rem) / 2));
     inline-size: calc(100% - 2 * var(--header-inset));
     max-inline-size: min(80rem, calc(100% - 2 * var(--header-inset)));
-    gap: 1.25rem;
+    gap: var(--space-ml);
     min-block-size: 4.5rem;
-    padding: 0.5rem 1.25rem;
-    border-radius: 1rem;
-    box-shadow: var(--header-shadow);
+    padding: var(--space-sm) var(--space-ml);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-overlay);
 
     &::before,
     &::after {
@@ -21,10 +21,10 @@
     flex-basis: 10rem;
   }
   .header__navigation {
-    gap: 1.25rem;
+    gap: var(--space-ml);
   }
   .header__link {
-    font-size: 0.9375rem;
+    font-size: var(--control-font-size);
   }
   .header__search {
     flex: 1;
@@ -33,7 +33,7 @@
     background: var(--header-search-gradient);
   }
   .header__search-input {
-    block-size: 2.75rem;
+    block-size: var(--control-height);
 
     // The search container supplies the focus indicator around the whole control.
     &:focus {
@@ -41,50 +41,50 @@
     }
   }
   .header__search-button {
-    border-radius: 0 2rem 2rem 0;
+    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
     flex-basis: 3rem;
-    block-size: 2.75rem;
-    padding-inline: 0.75rem;
+    block-size: var(--control-height);
+    padding-inline: var(--space-ms);
   }
 }
 
 @media (max-width: bp.$xxl) {
   .header--scrolled {
     .header__navbar {
-      gap: 1.125rem;
+      gap: var(--space-md);
       min-block-size: 4.25rem;
     }
     .header__brand {
       flex-basis: 9.5rem;
     }
     .header__navigation {
-      gap: 1rem;
+      gap: var(--space-md);
     }
     .header__link {
-      font-size: 0.875rem;
+      font-size: var(--control-font-size);
     }
   }
   .header {
     min-block-size: 6rem;
-    padding: 2.25rem 1.5rem 0;
+    padding: 2.25rem var(--space-lg) 0;
     &__navbar {
-      gap: 1rem;
+      gap: var(--space-md);
       inline-size: 35.5rem;
       min-block-size: 5.25rem;
-      padding: 1.5rem 1rem 0;
+      padding: var(--space-lg) var(--space-md) 0;
     }
     &__brand {
       flex-basis: 9.5rem;
     }
     &__navigation {
-      gap: 1rem;
+      gap: var(--space-md);
     }
     &__link {
-      font-size: 0.875rem;
+      font-size: var(--control-font-size);
     }
     &__actions {
-      gap: 0.625rem;
-      margin-inline-end: 1rem;
+      gap: var(--space-sm);
+      margin-inline-end: var(--space-md);
     }
     &__actions &__action-copy,
     &__actions &__location-chevron {
@@ -92,24 +92,24 @@
     }
     &__actions &__action-short {
       display: block;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      line-height: 1.25;
+      font-size: var(--font-size-secondary);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
       white-space: nowrap;
     }
     &__actions &__action--location {
       inline-size: auto;
     }
     &__action-icon {
-      inline-size: 2.5rem;
+      inline-size: var(--control-height);
     }
     &__action {
       min-block-size: 3.75rem;
     }
     &__action-copy {
-      font-size: 0.8125rem;
+      font-size: var(--font-size-secondary);
       strong {
-        font-size: 0.875rem;
+        font-size: var(--font-size-body-small);
       }
     }
     &__action--location {
@@ -121,77 +121,77 @@
 @media (max-width: bp.$xl) {
   .header--scrolled {
     .header__navbar {
-      gap: 1rem;
+      gap: var(--space-md);
       min-block-size: 4rem;
-      padding-inline: 1rem;
+      padding-inline: var(--space-md);
     }
     .header__brand {
       flex-basis: clamp(8rem, 9.375vw + 2rem, 9.5rem);
     }
     .header__navigation {
-      gap: clamp(0.6875rem, 1.171875vw + 0.125rem, 1rem);
+      gap: clamp(var(--space-ms), 1.171875vw + var(--space-2xs), var(--space-md));
     }
   }
   .header {
     --header-navbar-width: clamp(31.25rem, 26.5625vw + 14.25rem, 35.5rem);
     min-block-size: 5.5rem;
-    padding: calc(var(--header-hero-top) + 0.375rem) 1.5rem 0;
+    padding: calc(var(--header-hero-top) + var(--space-xs)) var(--space-lg) 0;
     &__navbar {
-      gap: 0.75rem;
+      gap: var(--space-ms);
       inline-size: var(--header-navbar-width);
       min-block-size: 4.75rem;
-      padding: 1.5rem 0.875rem 0;
+      padding: var(--space-lg) var(--space-ms) 0;
     }
     &__brand {
       flex-basis: clamp(8rem, 9.375vw + 2rem, 9.5rem);
     }
     &__navigation {
-      gap: clamp(0.75rem, 1.5625vw - 0.25rem, 1rem);
+      gap: clamp(var(--space-ms), 1.5625vw - var(--space-xs), var(--space-md));
     }
     &__link {
-      font-size: clamp(0.8125rem, 0.390625vw + 0.5625rem, 0.875rem);
+      font-size: var(--control-font-size);
     }
     &__actions {
-      gap: 0.5rem;
+      gap: var(--space-sm);
       max-inline-size: calc(100% - var(--header-navbar-width) - 2.5rem);
     }
     &__actions &__action {
       flex: 0 0 3.25rem;
       flex-direction: column;
       justify-content: center;
-      gap: 0.375rem;
+      gap: var(--space-xs);
       inline-size: 3.25rem;
       min-block-size: 4rem;
-      padding: 0.25rem 0;
+      padding: var(--space-xs) 0;
       text-align: center;
     }
     &__actions &__action--location {
       background: none;
     }
     &__actions &__action-short {
-      font-size: 0.6875rem;
+      font-size: var(--font-size-caption);
     }
     &__action {
-      gap: 0.5rem;
+      gap: var(--space-sm);
       min-block-size: 3.5rem;
     }
     &__action-icon {
-      inline-size: 2.25rem;
-      padding: 0.5rem;
+      inline-size: var(--control-height);
+      padding: var(--space-sm);
     }
     &__action--location &__action-icon,
     &__orders-icon &__action-icon {
-      padding: 0.4375rem;
+      padding: var(--space-sm);
     }
     &__action-copy {
-      font-size: 0.75rem;
+      font-size: var(--font-size-caption);
       strong {
-        font-size: 0.8125rem;
+        font-size: var(--font-size-secondary);
       }
     }
     &__action--location {
       inline-size: 10.25rem;
-      padding: 0.375rem 0.5rem;
+      padding: var(--space-xs) var(--space-sm);
     }
   }
 }
@@ -199,39 +199,39 @@
 @media (max-width: bp.$lg) {
   .header--scrolled {
     .header__navbar {
-      gap: 0.75rem;
+      gap: var(--space-ms);
       min-block-size: 4rem;
-      padding: 0.5rem 1rem;
+      padding: var(--space-sm) var(--space-md);
     }
     .header__brand {
       flex: 0 1 7.5rem;
     }
     .header__search-button {
-      flex: 0 0 2.75rem;
-      block-size: 2.75rem;
-      padding-inline: 0.75rem;
+      flex: 0 0 var(--control-height);
+      block-size: var(--control-height);
+      padding-inline: var(--space-ms);
     }
   }
   .header {
     --header-tablet-navbar-width: clamp(28rem, 20.3125vw + 18.25rem, 31.25rem);
     --header-navbar-width: var(--header-tablet-navbar-width);
     min-block-size: 5rem;
-    padding: calc(var(--header-hero-top) + 0.375rem) 1.5rem 0;
+    padding: calc(var(--header-hero-top) + var(--space-xs)) var(--space-lg) 0;
     &__navbar {
-      gap: 0.75rem;
+      gap: var(--space-ms);
       inline-size: var(--header-tablet-navbar-width);
       min-block-size: 4.5rem;
-      padding: 1rem 0.875rem 0;
+      padding: var(--space-md) var(--space-ms) 0;
     }
     &__brand {
       flex: 0 1 clamp(7rem, 6.25vw + 4rem, 8rem);
       min-inline-size: 6rem;
     }
     &__navigation {
-      gap: clamp(0.625rem, 0.78125vw + 0.25rem, 0.75rem);
+      gap: clamp(var(--space-sm), 0.78125vw + var(--space-xs), var(--space-ms));
     }
     &__link {
-      font-size: clamp(0.78125rem, 0.1953125vw + 0.6875rem, 0.8125rem);
+      font-size: var(--control-font-size);
     }
   }
 }

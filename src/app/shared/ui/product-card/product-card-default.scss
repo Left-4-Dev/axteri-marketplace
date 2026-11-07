@@ -1,13 +1,10 @@
 .product-card--default {
-  --product-radius: 0.875rem;
-  --product-accent: #7379ff;
-  --product-accent-strong: #7379ff;
-  --product-text: #303341;
-  --product-muted: var(--color-text-muted);
+  --product-radius: var(--radius-md);
+
   padding: 0;
   border: 0;
   gap: 0;
-  color: var(--product-text);
+  color: var(--color-text);
   overflow-wrap: break-word;
 
   .product-card__visual::after {
@@ -44,16 +41,16 @@
     button {
       display: grid;
       place-items: center;
-      inline-size: 2.75rem;
-      block-size: 2.75rem;
-      padding: 0.625rem;
+      inline-size: var(--control-height);
+      block-size: var(--control-height);
+      padding: var(--space-sm);
       border: 0;
       border-radius: 50%;
-      background: var(--product-accent);
-      color: var(--color-background);
+      background: var(--color-action);
+      color: var(--color-on-action);
       cursor: pointer;
       &:active {
-        background: var(--product-accent-strong);
+        background: var(--color-action-hover);
       }
       &:focus-visible {
         outline: 2px solid var(--color-focus);
@@ -63,46 +60,43 @@
   }
   .product-card__brand {
     margin-block-start: var(--space-sm);
-    color: var(--product-muted);
-    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-body-small);
     line-height: var(--line-height-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
   }
   .product-card__title {
     min-block-size: 2.5em;
-    margin-block: 0.125rem var(--space-md);
-    font-size: 0.875rem;
-    line-height: 1.25;
-    font-weight: 600;
+    margin-block: var(--space-2xs) var(--space-md);
+    font-size: var(--font-size-card-title);
+    line-height: var(--line-height-tight);
+    font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
   }
   .product-card__seller {
     padding-inline-start: var(--space-sm);
-    border-inline-start: 2px solid var(--product-accent);
+    border-inline-start: 2px solid var(--color-action);
     margin-block-end: var(--space-md);
-    color: var(--product-muted);
-    font-size: 0.8125rem;
-    line-height: 1.3;
-    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
+    font-weight: var(--font-weight-semibold);
   }
   .product-card__seller-name {
-    color: var(--product-accent-strong);
-    font-size: 0.875rem;
-    font-weight: 700;
+    color: var(--color-accent-text);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
   }
   .product-card__seller-details {
     display: flex;
     flex-wrap: wrap;
     align-items: start;
-    gap: 0.125rem var(--space-sm);
+    gap: var(--space-2xs) var(--space-sm);
   }
   .product-card__location {
     flex: 1 1 8rem;
-    img {
-      vertical-align: -0.125rem;
-    }
   }
   .product-card__tenure {
     white-space: nowrap;
@@ -113,18 +107,18 @@
   .product-card__current-price,
   .product-card__range,
   .product-card__quote {
-    font-size: 1.375rem;
+    font-size: var(--font-size-price);
     line-height: var(--line-height-heading);
-    font-weight: 800;
+    font-weight: var(--font-weight-heavy);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.025em;
   }
   .product-card__range {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 0.25rem;
-    font-size: 1.25rem;
-    line-height: 1.32;
+    gap: 0 var(--space-xs);
+    font-size: var(--font-size-price-compact);
+    line-height: var(--line-height-label);
     span {
       white-space: nowrap;
     }
@@ -133,13 +127,13 @@
     text-transform: uppercase;
   }
   .product-card__discount {
-    background: var(--product-accent-strong);
+    background: var(--color-action);
   }
   .product-card__previous-price {
-    margin-block-start: 0.25rem;
-    color: var(--product-muted);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    margin-block-start: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-secondary);
+    font-weight: var(--font-weight-medium);
     s {
       text-decoration: none;
     }
@@ -147,6 +141,6 @@
 }
 @media (hover: hover) {
   .product-card--default .product-card__actions button:hover {
-    background: var(--product-accent-strong);
+    background: var(--color-action-hover);
   }
 }
