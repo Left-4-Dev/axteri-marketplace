@@ -1,29 +1,26 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  --categories-gap: 1.5rem;
-  --control-size: 2.75rem;
+  --categories-gap: var(--layout-card-gap);
+  --control-size: var(--control-height-large);
   --categories-image-width: 43%;
   --card-height: 10.75rem;
-  --categories-radius: 1.125rem;
-  --categories-text: #303341;
-  --categories-surface: #f2f2f2;
-  --control-muted: #a0a0a7;
-  --categories-shadow: 0 3px 14px rgb(80 73 139 / 15%);
+  --categories-radius: var(--radius-lg);
+
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
 }
 .categories {
-  padding-block: var(--space-xl);
-  background: var(--categories-surface);
-  color: var(--categories-text);
+  padding-block: var(--layout-section-space);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 .categories__title {
-  margin: 0 calc(var(--control-size) + 2 * var(--space-sm)) 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.35;
+  margin: 0 calc(var(--control-size) + 2 * var(--space-sm)) var(--space-md);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
 }
 .categories__carousel {
   display: grid;
@@ -60,7 +57,7 @@
   overflow: hidden;
   border-radius: var(--categories-radius);
   background: var(--color-background);
-  box-shadow: var(--categories-shadow);
+  box-shadow: var(--shadow-card);
 }
 .categories__image {
   display: grid;
@@ -69,9 +66,9 @@
   padding: var(--space-sm);
   overflow: hidden;
   border-radius: var(--categories-radius);
-  background: var(--color-placeholder-surface);
+  background: var(--color-surface-muted);
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--font-size-body-small);
   text-align: center;
 }
 .categories__image img {
@@ -80,10 +77,10 @@
 .categories__name {
   align-self: center;
   margin: 0;
-  padding: 1.25rem min(2rem, 1.75vw);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  line-height: 1.5;
+  padding: var(--space-ml) min(var(--space-2lg), 1.75vw);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-body);
   text-transform: uppercase;
   overflow-wrap: anywhere;
 }
@@ -93,7 +90,7 @@
   align-self: center;
   inline-size: var(--control-size);
   block-size: var(--control-size);
-  padding: 0.625rem;
+  padding: var(--space-sm);
   border: 0;
   border-radius: 50%;
   background: transparent;
@@ -101,8 +98,8 @@
   cursor: pointer;
 }
 .categories__arrow span {
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: var(--icon-size-lg);
+  block-size: var(--icon-size-lg);
   background: currentColor;
   mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
   transform: rotate(-90deg);
@@ -111,14 +108,14 @@
   transform: rotate(90deg);
 }
 .categories__arrow:disabled {
-  color: var(--control-muted);
+  color: var(--color-disabled);
   cursor: default;
 }
 .categories__arrow--previous:disabled {
   visibility: hidden;
 }
 .categories__arrow:not(:disabled):active {
-  background: var(--color-placeholder-border);
+  background: var(--color-border);
 }
 .categories__viewport:focus-visible {
   outline-offset: -2px;
@@ -126,20 +123,19 @@
 }
 @media (hover: hover) {
   .categories__arrow:not(:disabled):hover {
-    color: var(--categories-text);
-    background: var(--color-placeholder-border);
+    color: var(--color-text);
+    background: var(--color-border);
   }
 }
 @media (max-width: bp.$xl) {
   :host {
-    --categories-gap: 1.25rem;
     --categories-image-width: 36%;
     --card-height: 10rem;
   }
   .categories__name {
-    padding: 1rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.4;
+    padding: var(--space-md) var(--space-ms);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-label);
   }
 }
 @media (max-width: bp.$lg) {
@@ -177,14 +173,7 @@
 }
 @media (max-width: bp.$sm) {
   :host {
-    --categories-gap: 1rem;
     --card-height: 9rem;
-  }
-  .categories {
-    padding-block: 2rem;
-  }
-  .categories__title {
-    font-size: 1.0625rem;
   }
   .categories__list {
     grid-auto-columns: 100%;

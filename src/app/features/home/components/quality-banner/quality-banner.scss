@@ -1,7 +1,6 @@
 @use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  --qb-bg: #f2f2f2;
   --qb-radius: clamp(0.875rem, 1.75vw, 1.25rem);
   --qb-border: 0.1875rem;
   --qb-violet: #9b96fc;
@@ -9,13 +8,13 @@
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
-  color: var(--color-background);
+  color: var(--color-on-action);
   letter-spacing: 0.01em;
 }
 
 .quality-banner {
-  padding: clamp(2rem, 4vw, 4.25rem) clamp(1rem, 4.5vw, 5rem);
-  background: var(--qb-bg);
+  padding: clamp(var(--space-2lg), 4vw, 4.25rem) clamp(var(--space-md), 4.5vw, 5rem);
+  background: var(--color-surface-muted);
 }
 
 .quality-banner__frame {
@@ -62,19 +61,19 @@
   inset-block-end: 0.5rem;
   inset-inline-end: 0.625rem;
   z-index: 1;
-  padding: 0.25rem 0.625rem;
-  border-radius: 999px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-pill);
   background: rgb(15 20 26 / 62%);
   color: rgb(255 255 255 / 74%);
-  font-size: 0.75rem;
-  line-height: 1.3;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-label);
 }
 
 .quality-banner__content {
   position: relative;
   z-index: 1;
-  padding: clamp(1.5rem, 3.5vw, 3.25rem);
-  padding-inline-end: calc(var(--qb-inset) + 1rem);
+  padding: clamp(var(--space-lg), 3.5vw, 3.25rem);
+  padding-inline-end: calc(var(--qb-inset) + var(--space-md));
 }
 
 .quality-banner__title {
@@ -82,7 +81,7 @@
   gap: 0.08em;
   margin: 0;
   font-size: clamp(2rem, 4.6vw, 5.125rem);
-  font-weight: 800;
+  font-weight: var(--font-weight-heavy);
   line-height: 1.08;
 }
 
@@ -91,15 +90,15 @@
   margin-inline-start: 0.06em;
   padding: 0.04em 0.16em 0.08em;
   background: linear-gradient(90deg, #b5dffd 0%, #c6cbfe 100%);
-  color: #303341;
+  color: var(--color-text);
   line-height: 1;
 }
 
 .quality-banner__subtitle {
-  margin: clamp(0.875rem, 1.8vw, 1.75rem) 0 0;
+  margin: clamp(var(--space-ms), 1.8vw, var(--space-2lg)) 0 0;
   font-size: clamp(0.875rem, 1.4vw, 1.5625rem);
-  font-weight: 500;
-  line-height: 1.42;
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-label);
 }
 
 .quality-banner__subtitle-line {
@@ -121,7 +120,7 @@
   border: solid var(--qb-violet);
   border-width: 0 0 var(--qb-border) var(--qb-border);
   border-end-start-radius: var(--qb-radius);
-  background: var(--qb-bg);
+  background: var(--color-surface-muted);
 
   &::before,
   &::after {
@@ -133,7 +132,7 @@
     border-width: var(--qb-border) var(--qb-border) 0 0;
     border-start-end-radius: var(--qb-radius);
     box-shadow: calc(var(--qb-radius) / 2) calc(-1 * var(--qb-radius) / 2) 0
-      calc(var(--qb-radius) / 2) var(--qb-bg);
+      calc(var(--qb-radius) / 2) var(--color-surface-muted);
     pointer-events: none;
   }
 
@@ -154,7 +153,7 @@
   inline-size: var(--qb-size);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #9a96fc;
+  background: var(--qb-violet);
 }
 
 .quality-banner__pause-icon {
@@ -168,7 +167,7 @@
     content: '';
     inline-size: 34%;
     block-size: 100%;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: currentColor;
   }
 }
@@ -181,7 +180,7 @@
 
 @media (max-width: bp.$md) {
   .quality-banner {
-    padding: 2rem 1rem;
+    padding: var(--space-2lg) var(--space-md);
   }
 
   .quality-banner__surface {
@@ -199,7 +198,7 @@
   }
 
   .quality-banner {
-    padding: 1.5rem 0.75rem;
+    padding: var(--space-lg) var(--space-ms);
   }
 
   .quality-banner__surface {
@@ -207,8 +206,8 @@
   }
 
   .quality-banner__content {
-    padding: 1.25rem 1rem 2.25rem;
-    padding-inline-end: calc(var(--qb-inset) + 0.5rem);
+    padding: var(--space-ml) var(--space-md) 2.25rem;
+    padding-inline-end: calc(var(--qb-inset) + var(--space-sm));
   }
 
   .quality-banner__title {
@@ -216,7 +215,7 @@
   }
 
   .quality-banner__subtitle {
-    margin-block-start: 0.625rem;
+    margin-block-start: var(--space-sm);
     font-size: clamp(0.75rem, 3.4vw, 0.9375rem);
   }
 }

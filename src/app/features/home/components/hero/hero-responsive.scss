@@ -6,16 +6,13 @@
     padding-inline: 2.5rem;
   }
   .hero__slide {
-    padding-block-start: 3rem;
+    padding-block-start: var(--space-xl);
   }
   .hero__branding {
-    gap: 1.5rem;
+    gap: var(--space-lg);
   }
   .hero__logo {
     inline-size: clamp(10rem, 14vw, 11rem);
-  }
-  .hero__industry-name {
-    font-size: 2.75rem;
   }
   .hero__description {
     max-inline-size: 31rem;
@@ -25,14 +22,14 @@
   }
   .hero__area-card {
     min-block-size: 5rem;
-    padding: 0.75rem 1rem;
+    padding: var(--space-ms) var(--space-md);
   }
 }
 @media (max-width: bp.$lg) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.75rem;
-    padding: calc(var(--header-content-offset) + 3rem) 2.5rem 2rem;
+    gap: var(--space-2lg);
+    padding: calc(var(--header-content-offset) + var(--space-xl)) 2.5rem var(--space-2lg);
   }
   .hero__slide,
   .hero__areas {
@@ -45,78 +42,76 @@
     max-inline-size: 36rem;
   }
   .hero__branding {
-    gap: 1.25rem;
+    gap: var(--space-ml);
   }
   .hero__logo {
     inline-size: 10rem;
-  }
-  .hero__industry-name {
-    font-size: 2.5rem;
   }
   .hero__areas {
     max-inline-size: 26rem;
   }
   .hero__areas-title {
-    margin-block-end: 0.75rem;
-    font-size: 0.8125rem;
+    margin-block-end: var(--space-ms);
+    font-size: var(--font-size-secondary);
     text-align: center;
   }
   .hero__areas-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: var(--space-md);
   }
   .hero__area-card {
     justify-items: center;
     aspect-ratio: auto;
-    padding-inline: 0.75rem;
+    padding-inline: var(--space-ms);
     span {
+      // Wordmark geometry, not a commercial price or section heading.
       font-size: 1.375rem;
     }
   }
 }
 @media (max-width: bp.$md) {
   .hero {
-    gap: 1.5rem;
-    padding: calc(var(--header-content-offset) + 2rem) 2rem 1.5rem;
+    gap: var(--space-lg);
+    padding: calc(var(--header-content-offset) + var(--space-2lg)) var(--space-2lg) var(--space-lg);
   }
   .hero__slide {
     max-inline-size: 32rem;
   }
   .hero__description {
     max-inline-size: 28rem;
-    margin-block-start: 1.25rem;
-    font-size: 0.875rem;
+    margin-block-start: var(--space-ml);
+    font-size: var(--font-size-body-small);
   }
   .hero__search {
-    gap: 0.5rem;
-    margin-block-start: 1.25rem;
-    padding: 0.75rem;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-ml);
+    padding: var(--space-ms);
   }
   .hero__query {
     block-size: 4.5rem;
     min-block-size: 0;
-    font-size: 0.875rem;
+    font-size: var(--font-size-body-small);
 
     &::placeholder {
-      font-size: 0.8125rem;
-      line-height: 1.5;
+      font-size: var(--font-size-secondary);
+      line-height: var(--line-height-body);
     }
   }
   .hero__pagination {
-    gap: 1rem;
-    margin-block-start: 1rem;
+    gap: var(--space-md);
+    margin-block-start: var(--space-md);
   }
 }
 @media (max-width: bp.$sm) {
   .hero {
-    gap: 1.25rem;
-    padding: calc(var(--header-content-offset) + 1.5rem) 1.25rem 1.25rem;
+    gap: var(--space-ml);
+    padding: calc(var(--header-content-offset) + var(--space-lg)) var(--space-ml) var(--space-ml);
   }
   .hero__slide {
     max-inline-size: 28rem;
   }
   .hero__branding {
-    gap: clamp(0.75rem, 3vw, 1rem);
+    gap: clamp(var(--space-ms), 3vw, var(--space-md));
   }
   .hero__logo {
     inline-size: clamp(7.75rem, 32vw, 10rem);
@@ -127,24 +122,21 @@
   .hero__axte {
     inline-size: 3.5rem;
   }
-  .hero__industry-name {
-    font-size: 2rem;
-  }
   .hero__description {
     max-inline-size: 24rem;
-    margin-block-start: 1rem;
-    font-size: 0.8125rem;
+    margin-block-start: var(--space-md);
+    font-size: var(--font-size-secondary);
   }
   .hero__search {
     inline-size: calc(100% - 1.5rem);
-    padding: 0.625rem;
+    padding: var(--space-sm);
   }
   .hero__search-actions {
-    gap: 0.5rem;
+    gap: var(--space-sm);
   }
   .hero__ai-toggle {
-    gap: 0.375rem;
-    font-size: 0.75rem;
+    gap: var(--space-xs);
+    font-size: var(--font-size-caption);
   }
   .hero__switch-track {
     inline-size: 2.25rem;
@@ -153,17 +145,16 @@
     transform: translateX(0.75rem);
   }
   .hero__submit {
-    padding-inline: 0.75rem;
-    font-size: 0.75rem;
+    margin-inline-start: auto;
   }
   .hero__areas {
     max-inline-size: 22rem;
   }
   .hero__areas-list {
-    gap: 0.75rem;
+    gap: var(--space-ms);
   }
   .hero__area-card {
     min-block-size: 4.5rem;
-    padding: 0.625rem 0.75rem;
+    padding: var(--space-sm) var(--space-ms);
   }
 }

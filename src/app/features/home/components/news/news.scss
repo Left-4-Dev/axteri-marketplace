@@ -1,37 +1,36 @@
 ﻿@use '../../../../../styles/breakpoints' as bp;
 
 :host {
-  --news-surface: #f2f2f2;
-  --news-radius: 1.25rem;
+  --news-radius: var(--radius-lg);
   --news-notch-radius: 1rem;
   --news-notch-gap: var(--space-sm);
   --news-badge-height: 2.25rem;
   --news-content-inset: clamp(1rem, 10vw, 8rem);
   --news-cta-bottom: clamp(4rem, 9vw, 8rem);
-  --news-dot-size: 2.75rem;
+  --news-dot-size: var(--control-height-large);
   display: block;
   inline-size: 100%;
   min-inline-size: 0;
 }
 
 .news {
-  padding: var(--space-xl) 3.75rem;
-  background: var(--news-surface);
-  color: #303341;
+  padding: var(--layout-section-space) var(--layout-content-inset);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 
 .news__title {
   margin: 0 0 var(--space-md);
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
 }
 
 .news__viewport {
   position: relative;
   overflow: hidden;
   border-radius: var(--news-radius);
-  background: var(--news-surface);
+  background: var(--color-surface-muted);
 
   &:has(.news__track:focus-visible) {
     outline: 2px solid var(--color-focus);
@@ -66,7 +65,7 @@
 .news__media {
   display: grid;
   aspect-ratio: 8 / 3;
-  background: #e4e7f2;
+  background: var(--color-surface-tinted);
 
   img {
     // No cropping or distortion; artwork must reserve the shared UI safe areas.
@@ -87,7 +86,7 @@
   place-items: center;
   padding: var(--space-md);
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--font-size-body-small);
   text-align: center;
 }
 
@@ -99,7 +98,7 @@
   max-inline-size: calc(100% - 2 * var(--news-notch-radius));
   padding: 0 var(--news-notch-gap) var(--news-notch-gap) 0;
   border-end-end-radius: var(--news-notch-radius);
-  background: var(--news-surface);
+  background: var(--color-surface-muted);
 
   &::before,
   &::after {
@@ -110,7 +109,7 @@
     background: radial-gradient(
       circle at 100% 100%,
       transparent var(--news-notch-radius),
-      var(--news-surface) calc(var(--news-notch-radius) + 0.5px)
+      var(--color-surface-muted) calc(var(--news-notch-radius) + 0.5px)
     );
   }
 
@@ -129,13 +128,13 @@
   display: grid;
   place-items: center;
   min-block-size: var(--news-badge-height);
-  padding: var(--space-sm) 1.25rem;
-  border-radius: 999px;
-  background: #a4acff;
-  color: var(--color-background);
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.25;
+  padding: var(--space-sm) var(--space-ml);
+  border-radius: var(--radius-pill);
+  background: var(--color-action);
+  color: var(--color-on-action);
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
   text-align: center;
   text-transform: uppercase;
   overflow-wrap: anywhere;
@@ -176,7 +175,7 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: #7379ff;
+  color: var(--color-action);
   outline: none;
   cursor: pointer;
 
@@ -225,7 +224,7 @@
 
 @media (max-width: bp.$sm) {
   :host {
-    --news-radius: 1rem;
+    --news-radius: var(--radius-lg);
     --news-notch-radius: 0.75rem;
     --news-notch-gap: 0.375rem;
     --news-badge-height: 1.75rem;
@@ -234,13 +233,7 @@
     aspect-ratio: 4 / 3;
   }
   .news__badge {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.6875rem;
-  }
-  .news {
-    padding-block: calc(2 * var(--space-md));
-  }
-  .news__title {
-    font-size: 1.0625rem;
+    padding: var(--space-xs) var(--space-ms);
+    font-size: var(--font-size-caption);
   }
 }
