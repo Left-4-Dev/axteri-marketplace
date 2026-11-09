@@ -1,0 +1,289 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  --docs-columns: 5;
+  --docs-gap: var(--layout-card-gap);
+  --docs-control-size: var(--control-height-large);
+
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-documents {
+  --docs-inset: var(--space-lg);
+  color: var(--color-text);
+
+  &__title {
+    margin: 0 0 var(--space-md);
+    padding: var(--space-md) var(--docs-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+  }
+
+  &__panel {
+    padding: var(--docs-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  &__carousel {
+    display: grid;
+    grid-template-columns: var(--docs-control-size) minmax(0, 1fr) var(--docs-control-size);
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  &__viewport {
+    grid-column: 2;
+    min-inline-size: 0;
+    // Room for the card shadow, which would otherwise be clipped by the scroll container.
+    padding: var(--space-sm);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-sm);
+    scrollbar-width: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: -2px;
+      border-radius: var(--radius-sm);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(
+      (100% - (var(--docs-columns) - 1) * var(--docs-gap)) / var(--docs-columns)
+    );
+    gap: var(--docs-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    min-inline-size: 0;
+    scroll-snap-align: start;
+  }
+
+  &__card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-ms);
+    min-inline-size: 0;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+    color: inherit;
+    text-decoration: none;
+
+    &--link {
+      cursor: pointer;
+      transition: box-shadow var(--motion-fast) ease;
+
+      &:hover {
+        box-shadow: var(--shadow-card);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  // Fixed preview area: pages with different proportions stay contained and cards stay aligned.
+  &__preview {
+    position: relative;
+    display: flex;
+    aspect-ratio: 1;
+    min-block-size: 0;
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  &__sheet {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    inline-size: 100%;
+    padding: var(--space-ms);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-control);
+  }
+
+  &__sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    color: var(--color-accent-text);
+
+    svg {
+      flex: none;
+      inline-size: var(--icon-size-md);
+      block-size: var(--icon-size-md);
+    }
+  }
+
+  &__format {
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-xs);
+    background: var(--color-accent-subtle);
+    color: var(--color-accent-text);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-label);
+  }
+
+  &__sheet-lines {
+    display: grid;
+    gap: var(--space-xs);
+
+    span {
+      display: block;
+      block-size: var(--space-xs);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-tinted);
+
+      &:last-child {
+        inline-size: 68%;
+      }
+    }
+  }
+
+  &__sheet-tag {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-label);
+    overflow-wrap: anywhere;
+  }
+
+  &__name {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--color-text);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-label);
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  &__arrow {
+    display: grid;
+    place-items: center;
+    inline-size: var(--docs-control-size);
+    block-size: var(--docs-control-size);
+    padding: var(--space-sm);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background-color var(--motion-fast) ease;
+
+    span {
+      inline-size: var(--icon-size-lg);
+      block-size: var(--icon-size-lg);
+      background: currentColor;
+      mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
+      transform: rotate(-90deg);
+    }
+
+    &--previous {
+      grid-column: 1;
+    }
+
+    &--next {
+      grid-column: 3;
+    }
+
+    &--previous span {
+      transform: rotate(90deg);
+    }
+
+    &:not(:disabled):hover {
+      background: var(--color-surface-muted);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      color: var(--color-border);
+      cursor: default;
+    }
+
+    &[hidden] {
+      // Keep the grid track so the list never shifts when the controls are not needed.
+      display: grid;
+      visibility: hidden;
+    }
+  }
+}
+
+@media (max-width: bp.$lg) {
+  :host {
+    --docs-columns: 4;
+  }
+}
+
+@media (max-width: bp.$md) {
+  :host {
+    --docs-columns: 3;
+  }
+
+  .product-documents {
+    --docs-inset: var(--space-md);
+  }
+}
+
+@media (max-width: bp.$sm) {
+  .product-documents {
+    &__carousel {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__viewport {
+      grid-area: 1 / 1 / 2 / -1;
+    }
+
+    &__grid {
+      // Slightly under one full card so the next one peeks in as a continuity cue.
+      grid-auto-columns: min(14rem, 72%);
+    }
+
+    &__arrow {
+      &--previous {
+        grid-area: 2 / 1;
+        justify-self: end;
+      }
+
+      &--next {
+        grid-area: 2 / 2;
+        justify-self: start;
+      }
+    }
+  }
+}

@@ -1,0 +1,242 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-specifications {
+  // Inset horizontal compartido por título, encabezado del panel y filas.
+  --specs-inset: var(--space-lg);
+  color: var(--color-text);
+
+  &__title {
+    margin: 0 0 var(--space-md);
+    padding: var(--space-md) var(--specs-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+  }
+
+  &__body {
+    display: grid;
+    // El selector no debe dominar: el panel recibe el espacio restante.
+    grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+    gap: var(--layout-card-gap);
+    align-items: start;
+  }
+
+  &__groups {
+    margin: 0;
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    list-style: none;
+
+    li + li {
+      border-block-start: 1px solid var(--color-border);
+    }
+  }
+
+  &__group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    inline-size: 100%;
+    min-block-size: var(--control-height-large);
+    padding: var(--space-sm) var(--space-md);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-label);
+    text-align: start;
+    cursor: pointer;
+    transition: background-color var(--motion-fast) ease;
+
+    &:hover {
+      background: var(--color-surface-tinted);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: -2px;
+    }
+    &--selected,
+    &--selected:hover {
+      background: var(--color-accent-subtle);
+      color: var(--color-accent-text);
+      font-weight: var(--font-weight-semibold);
+      box-shadow: inset var(--space-xs) 0 0 var(--color-action);
+    }
+  }
+
+  &__count {
+    flex: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-caption);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  &__content {
+    display: grid;
+    gap: var(--space-md);
+    min-inline-size: 0;
+  }
+
+  &__panel {
+    // Los saltos de una y dos columnas dependen del ancho del panel, no del viewport.
+    container-type: inline-size;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+
+    h3 {
+      margin: 0;
+      padding: var(--space-md) var(--specs-inset);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-label);
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    // Divisor central continuo, también junto a una celda vacía.
+    background: linear-gradient(var(--color-border), var(--color-border)) center / 1px 100%
+      no-repeat;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    min-inline-size: 0;
+    padding: var(--space-ms) var(--specs-inset);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-label);
+
+    // Un último elemento impar conserva su media anchura sin dejar un hueco en el borde.
+    &:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      padding-inline-end: calc(50% + var(--specs-inset));
+    }
+
+    dt {
+      flex: 1 1 45%;
+      min-inline-size: 0;
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+      overflow-wrap: anywhere;
+    }
+
+    dd {
+      flex: 1 1 45%;
+      min-inline-size: 0;
+      margin: 0;
+      font-weight: var(--font-weight-semibold);
+      text-align: end;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__detail {
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__verification {
+    margin: 0;
+    padding: var(--space-ms) var(--specs-inset);
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-subtle);
+    color: var(--color-accent-text);
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
+  }
+}
+
+@media (max-width: bp.$lg) {
+  .product-specifications {
+    &__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    // El selector pasa a una fila con salto de línea, sin scroll horizontal.
+    &__groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding: 0;
+      background: none;
+
+      li {
+        min-inline-size: 0;
+      }
+
+      li + li {
+        border: 0;
+      }
+    }
+    &__group {
+      inline-size: auto;
+      max-inline-size: 100%;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+
+      &--selected,
+      &--selected:hover {
+        border-color: var(--color-action);
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+@media (max-width: bp.$md) {
+  .product-specifications {
+    --specs-inset: var(--space-md);
+  }
+}
+
+@container (max-width: 36rem) {
+  .product-specifications__list {
+    grid-template-columns: minmax(0, 1fr);
+    background: none;
+  }
+  .product-specifications__row:last-child:nth-child(odd) {
+    grid-column: auto;
+    padding-inline-end: var(--specs-inset);
+  }
+}
+
+@container (max-width: 22rem) {
+  .product-specifications__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2xs);
+
+    dd {
+      text-align: start;
+    }
+  }
+}

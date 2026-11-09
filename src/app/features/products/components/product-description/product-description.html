@@ -1,0 +1,43 @@
+<div class="product-description">
+  <h2 class="product-description__title">Descripción</h2>
+  <div class="product-description__body">
+    <div class="product-description__card">
+      <h3>{{ description().heading }}</h3>
+      @for (paragraph of description().paragraphs; track paragraph) {
+        <p>{{ paragraph }}</p>
+      }
+      @if (description().highlights; as highlights) {
+        @if (highlights.length) {
+          <div class="product-description__highlights">
+            <h4>{{ description().highlightsTitle ?? 'Características generales' }}</h4>
+            <ul>
+              @for (highlight of highlights; track highlight) {
+                <li>{{ highlight }}</li>
+              }
+            </ul>
+          </div>
+        }
+      }
+    </div>
+    <aside class="product-description__banner" aria-labelledby="product-consultation-title">
+      <span class="product-description__badge">IA</span>
+      <div class="product-description__banner-content">
+        <h3 id="product-consultation-title">¿Tienes alguna <span>consulta?</span></h3>
+        <p class="product-description__banner-copy">Pregúntale a nuestro asistente virtual</p>
+        <div class="product-description__cta">
+          <app-button variant="light" (click)="onConsult()">Consultar</app-button>
+        </div>
+        <p class="product-description__status" role="status">{{ consultationMessage() }}</p>
+      </div>
+      <div class="product-description__assistant-art" aria-hidden="true">
+        <img
+          appProductAsset="/assets/images/assistant/assistant-bot.webp"
+          alt=""
+          width="240"
+          height="280"
+          loading="lazy"
+        />
+      </div>
+    </aside>
+  </div>
+</div>

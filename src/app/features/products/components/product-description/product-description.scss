@@ -1,0 +1,199 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-description {
+  --desc-inset: var(--space-lg);
+  color: var(--color-text);
+
+  &__title {
+    margin: 0 0 var(--space-md);
+    padding: var(--space-md) var(--desc-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+  }
+
+  &__body {
+    display: grid;
+    // Proporción principal/lateral fiel a la referencia sin comprimir la prosa.
+    grid-template-columns: minmax(0, 1fr) minmax(16.5rem, 22rem);
+    gap: var(--layout-card-gap);
+    align-items: stretch;
+  }
+
+  &__card {
+    min-inline-size: 0;
+    padding: var(--space-lg) var(--desc-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body);
+
+    h3 {
+      margin: 0 0 var(--space-md);
+      color: var(--color-text);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-label);
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 0;
+      overflow-wrap: anywhere;
+
+      & + p {
+        margin-block-start: var(--space-md);
+      }
+    }
+  }
+
+  &__highlights {
+    margin-block-start: var(--space-md);
+    padding-block-start: var(--space-md);
+    border-block-start: 1px solid var(--color-border);
+
+    h4 {
+      margin: 0 0 var(--space-sm);
+      color: var(--color-text);
+      font-size: var(--font-size-body-small);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-label);
+      overflow-wrap: anywhere;
+    }
+
+    ul {
+      display: grid;
+      gap: var(--space-xs);
+      margin: 0;
+      padding-inline-start: var(--space-ml);
+    }
+
+    li {
+      overflow-wrap: anywhere;
+
+      &::marker {
+        color: var(--color-accent-text);
+      }
+    }
+  }
+
+  &__banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-inline-size: 0;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    // No existing token covers the pink-lavender base of the reference gradient.
+    --assistant-gradient-end: #dfbafd;
+
+    background: linear-gradient(180deg, var(--color-brand-end), var(--assistant-gradient-end));
+    // The lighter brand surfaces need the existing dark foreground for readable contrast.
+    color: var(--color-text-inverse);
+  }
+
+  &__badge {
+    align-self: flex-start;
+    padding: var(--space-2xs) var(--space-ms);
+    border-radius: var(--radius-xs);
+    background: var(--color-surface);
+    color: var(--color-accent-text);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-label);
+  }
+
+  &__banner-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-lg);
+    margin-block: var(--space-lg) calc(2 * var(--space-xl));
+    text-align: center;
+
+    h3 {
+      margin: 0;
+      font-size: var(--font-size-page-title);
+      font-weight: var(--font-weight-heavy);
+      line-height: var(--line-height-heading);
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+      span {
+        display: block;
+        font-size: 1.25em;
+      }
+    }
+  }
+
+  &__banner-copy {
+    max-inline-size: 24ch;
+    margin: 0;
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  &__cta {
+    inline-size: min(100%, 11.5rem);
+    margin-block-start: var(--space-xs);
+  }
+
+  &__assistant-art {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    inline-size: 42%;
+    max-inline-size: 9rem;
+    block-size: 7rem;
+    pointer-events: none;
+    img {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: contain;
+      object-position: left bottom;
+    }
+  }
+
+  &__status {
+    margin: 0;
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-label);
+    overflow-wrap: anywhere;
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: bp.$lg) {
+  .product-description__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: bp.$md) {
+  .product-description {
+    --desc-inset: var(--space-md);
+
+    &__card,
+    &__banner {
+      padding: var(--space-md);
+    }
+  }
+}

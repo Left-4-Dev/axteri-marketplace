@@ -1,0 +1,55 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-section-nav {
+  padding: var(--space-xs);
+  border-block: 1px solid var(--color-border);
+  background: var(--color-surface);
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--control-height-large);
+    padding: var(--space-sm);
+    border-block-end: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-decoration: none;
+    text-transform: uppercase;
+
+    &:hover,
+    &:focus-visible {
+      border-block-end-color: var(--color-action);
+      background: var(--color-accent-subtle);
+      color: var(--color-accent-text);
+    }
+  }
+}
+
+@media (max-width: bp.$lg) {
+  .product-section-nav ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: bp.$sm) {
+  .product-section-nav ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

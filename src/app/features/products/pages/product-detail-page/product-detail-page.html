@@ -1,0 +1,82 @@
+<div class="product-detail">
+  <div class="product-detail__shell">
+    <nav aria-label="Breadcrumb">
+      <ol class="product-detail__breadcrumb">
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/productos">Productos</a></li>
+        <li aria-current="page">
+          <span>{{ detail()?.name ?? 'Producto no encontrado' }}</span>
+        </li>
+      </ol>
+    </nav>
+    @if (detail(); as item) {
+      <div class="product-detail__overview">
+        <header class="product-detail__heading">
+          <div class="product-detail__badges">
+            @if (item.badge) {
+              <span class="product-detail__badge">{{ item.badge }}</span>
+            }
+            <span class="product-detail__brand">{{ item.brand }}</span>
+            @if (item.series) {
+              <span class="product-detail__series">{{ item.series }}</span>
+            }
+          </div>
+          <h1>{{ item.name }}</h1>
+        </header>
+        @if (item.seller; as seller) {
+          <app-product-seller-summary [seller]="seller" (profileRequest)="onProfileRequest()" />
+        }
+        <app-product-gallery [images]="item.images" [icons]="item.galleryIcons" />
+        <app-product-summary [detail]="item" />
+        <app-product-purchase-panel
+          [detail]="item"
+          (purchaseIntent)="onPurchaseIntent($event)"
+          (shippingAddressChangeRequest)="onShippingAddressChangeRequest()"
+        />
+      </div>
+      <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
+      <app-product-recommendations [products]="recommendations" />
+      <app-product-section-nav [productId]="item.id" />
+      <!-- Secciones de Product Detail activas sobre los anchors existentes. -->
+      @for (section of sections; track section.id) {
+        <section
+          class="product-detail__section-anchor"
+          [id]="section.id"
+          [attr.aria-label]="section.label"
+          tabindex="-1"
+        >
+          @switch (section.id) {
+            @case ('caracteristicas') {
+              <app-product-specifications [specifications]="item.specifications" />
+            }
+            @case ('descripcion') {
+              <app-product-description [description]="item.detailedDescription" />
+            }
+            @case ('documentos') {
+              <app-product-documents [documents]="item.documents" />
+            }
+            @case ('accesorios') {
+              <app-product-accessories [accessories]="item.accessories" />
+            }
+            @case ('variaciones') {
+              <app-product-variants
+                [variants]="item.variants"
+                [initialSku]="item.sku"
+                [fallbackImage]="variantFallbackImage()"
+              />
+            }
+            @case ('resenas') {
+              <app-product-reviews [reviews]="item.reviews" />
+            }
+          }
+        </section>
+      }
+    } @else {
+      <section class="product-detail__empty">
+        <h1>Producto no encontrado</h1>
+        <p>No tenemos una ficha disponible para este producto.</p>
+        <a routerLink="/productos">Volver a Productos</a>
+      </section>
+    }
+  </div>
+</div>

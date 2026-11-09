@@ -1,0 +1,45 @@
+<section class="product-summary" aria-labelledby="summary-title">
+  <h2 id="summary-title">Datos:</h2>
+  <div class="product-summary__badges">
+    <span><strong>Garantía:</strong> {{ detail().warranty }}</span>
+    <span
+      ><strong>Origen:</strong>
+      @if (detail().originFlag; as flag) {
+        <span class="product-summary__flag" aria-hidden="true">
+          <img
+            #flagAsset="productAsset"
+            [appProductAsset]="flag.src"
+            alt=""
+            width="20"
+            height="14"
+          />
+          @if (!flagAsset.loaded()) {
+            <span>{{ flag.fallback }}</span>
+          }
+        </span>
+      }
+      {{ detail().origin }}
+    </span>
+  </div>
+  <dl class="product-summary__highlights">
+    @for (highlight of overviewHighlights(); track highlight.label) {
+      <div>
+        <dt>{{ highlight.label }}</dt>
+        <dd>
+          {{ highlight.value }} <small>{{ highlight.unit }}</small>
+        </dd>
+      </div>
+    }
+  </dl>
+  <h3>Descripción:</h3>
+  <p class="product-summary__description">
+    {{ detail().description }}
+    <a [routerLink]="[]" fragment="descripcion">Leer más…</a>
+  </p>
+  <h3>Aplicaciones típicas</h3>
+  <ul class="product-summary__applications">
+    @for (application of detail().applications; track application) {
+      <li>{{ application }}</li>
+    }
+  </ul>
+</section>

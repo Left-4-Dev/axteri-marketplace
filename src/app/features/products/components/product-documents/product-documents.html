@@ -1,0 +1,116 @@
+<div class="product-documents">
+  <h2 class="product-documents__title" id="product-documents-title">Documentos</h2>
+  @if (documents().length) {
+    <div class="product-documents__panel">
+      <div class="product-documents__carousel">
+        <button
+          class="product-documents__arrow product-documents__arrow--previous"
+          type="button"
+          aria-label="Documentos anteriores"
+          aria-controls="product-documents-carousel"
+          [hidden]="!scrollable()"
+          [disabled]="!canGoBack()"
+          (click)="move(-1)"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <div
+          #viewport
+          class="product-documents__viewport"
+          id="product-documents-carousel"
+          role="region"
+          aria-roledescription="carrusel"
+          aria-labelledby="product-documents-title"
+          [attr.tabindex]="scrollable() ? 0 : null"
+          (scroll)="updateControls()"
+          (keydown)="onKeydown($event)"
+        >
+          <ul #list class="product-documents__grid" role="list">
+            @for (doc of documents(); track doc.id) {
+              <li class="product-documents__item">
+                @if (resolveHref(doc.href); as href) {
+                  <a
+                    class="product-documents__card product-documents__card--link"
+                    [href]="href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [attr.aria-label]="'Abrir ' + doc.fileName"
+                  >
+                    <ng-container *ngTemplateOutlet="card; context: { $implicit: doc }" />
+                  </a>
+                } @else {
+                  <div class="product-documents__card">
+                    <ng-container *ngTemplateOutlet="card; context: { $implicit: doc }" />
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+        <button
+          class="product-documents__arrow product-documents__arrow--next"
+          type="button"
+          aria-label="Documentos siguientes"
+          aria-controls="product-documents-carousel"
+          [hidden]="!scrollable()"
+          [disabled]="!canGoForward()"
+          (click)="move(1)"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<ng-template #card let-doc>
+  <div class="product-documents__preview">
+    @if (doc.previewImage) {
+      <img
+        #asset="productAsset"
+        class="product-documents__image"
+        [appProductAsset]="doc.previewImage"
+        [alt]="'Vista previa de ' + doc.title"
+        loading="lazy"
+        decoding="async"
+      />
+      @if (!asset.loaded()) {
+        <ng-container *ngTemplateOutlet="sheet; context: { $implicit: doc }" />
+      }
+    } @else {
+      <ng-container *ngTemplateOutlet="sheet; context: { $implicit: doc }" />
+    }
+  </div>
+  <span class="product-documents__name">{{ doc.fileName }}</span>
+</ng-template>
+
+<ng-template #sheet let-doc>
+  <div class="product-documents__sheet" aria-hidden="true">
+    <div class="product-documents__sheet-head">
+      <svg viewBox="0 0 20 20" focusable="false">
+        <path
+          d="M5 2.5h6.5L15.5 6.5v11a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        />
+        <path
+          d="M11 2.5v4h4.5M7 10h6M7 13h6M7 15.5h4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span class="product-documents__format">{{ doc.format }}</span>
+    </div>
+    <div class="product-documents__sheet-lines">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    @if (doc.category) {
+      <span class="product-documents__sheet-tag">{{ doc.category }}</span>
+    }
+  </div>
+</ng-template>

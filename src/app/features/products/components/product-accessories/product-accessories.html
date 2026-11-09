@@ -1,0 +1,19 @@
+<div class="product-accessories">
+  <h2 class="product-accessories__title">Accesorios</h2>
+  @if (accessories().length) {
+    <div class="product-accessories__panel">
+      <ul class="product-accessories__grid" role="list">
+        @for (accessory of accessories(); track accessory.id) {
+          <li class="product-accessories__item">
+            <app-product-card
+              [product]="accessory"
+              variant="default"
+              (requestQuote)="requestQuote.emit($event)"
+              (viewDetails)="viewDetails.emit($event)"
+            />
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

@@ -1,0 +1,32 @@
+﻿<section class="seller-summary" aria-labelledby="seller-title">
+  <span class="seller-summary__avatar" aria-hidden="true">
+    @if (seller().logo; as logo) {
+      <img #logoAsset="productAsset" [appProductAsset]="logo.src" alt="" width="80" height="80" />
+      @if (!logoAsset.loaded()) {
+        <span>{{ seller().name.charAt(0) }}</span>
+      }
+    } @else {
+      <span>{{ seller().name.charAt(0) }}</span>
+    }
+  </span>
+  <div class="seller-summary__content">
+    <h2 id="seller-title">
+      Vendido por <strong>{{ seller().name }}</strong>
+      @if (seller().verified) {
+        <span
+          class="seller-summary__verified"
+          title="Proveedor verificado"
+          aria-label="Proveedor verificado"
+          >✓</span
+        >
+      }
+    </h2>
+    <p>
+      @if (seller().productCount; as count) {
+        <span>+{{ count }} productos</span>
+      }
+      <span>+{{ seller().years }} años</span>
+    </p>
+    <app-button (click)="profileRequest.emit()">Perfil del proveedor</app-button>
+  </div>
+</section>

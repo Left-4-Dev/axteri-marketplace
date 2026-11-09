@@ -13,6 +13,14 @@ export const routes: Routes = [
           import('./features/home/pages/home-page/home-page').then((m) => m.HomePage),
       },
       {
+        path: 'productos/:id',
+        title: 'Detalle de producto | Axteri Marketplace',
+        loadComponent: () =>
+          import('./features/products/pages/product-detail-page/product-detail-page').then(
+            (m) => m.ProductDetailPage,
+          ),
+      },
+      {
         path: 'productos',
         title: 'Productos | Axteri Marketplace',
         loadComponent: () =>

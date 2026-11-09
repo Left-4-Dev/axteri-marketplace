@@ -1,0 +1,48 @@
+@use '../../../../../styles/breakpoints' as bp;
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.product-accessories {
+  --accessories-inset: var(--space-lg);
+  color: var(--color-text);
+
+  &__title {
+    margin: 0 0 var(--space-md);
+    padding: var(--space-md) var(--accessories-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    text-transform: uppercase;
+  }
+
+  &__panel {
+    padding: var(--accessories-inset);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  &__grid {
+    display: grid;
+    // auto-fill preserva la proporción compacta de ProductCard cuando hay pocos accesorios.
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--layout-card-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    min-inline-size: 0;
+  }
+}
+
+@media (max-width: bp.$md) {
+  .product-accessories {
+    --accessories-inset: var(--space-md);
+  }
+}
