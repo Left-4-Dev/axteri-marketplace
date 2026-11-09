@@ -13,6 +13,7 @@ import { ProductDetail, ProductPurchaseIntent } from '../../models/product-detai
 export class ProductPurchasePanel {
   readonly detail = input.required<ProductDetail>();
   readonly purchaseIntent = output<ProductPurchaseIntent>();
+  readonly shippingAddressChangeRequest = output<void>();
   protected readonly quantity = signal(1);
 
   protected setQuantity(value: number): void {

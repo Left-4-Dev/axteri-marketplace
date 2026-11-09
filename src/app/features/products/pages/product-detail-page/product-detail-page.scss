@@ -22,7 +22,7 @@
   &__shell {
     inline-size: calc(
       min(100% - 2 * var(--layout-page-gap), var(--layout-content-max)) - 2 *
-        var(--layout-content-inset)
+        (var(--layout-content-inset) + var(--space-2lg))
     );
     min-inline-size: 0;
     margin-inline: auto;
@@ -62,30 +62,56 @@
   }
   &__overview {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(18rem, 0.85fr);
-    grid-template-rows: min-content 1fr;
-    grid-template-areas: 'heading heading purchase' 'gallery summary purchase';
+    // TARGET: gallery (including thumbnails) / data / purchase = 724 / 469 / 390.
+    grid-template-columns: minmax(0, 1.54fr) minmax(0, 1fr) minmax(18rem, 0.83fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: 'heading heading seller' 'gallery summary purchase';
     gap: var(--layout-card-gap);
-    align-items: start;
+    align-items: stretch;
   }
   &__heading {
     grid-area: heading;
     padding: var(--space-md) var(--space-lg);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    p {
-      margin: 0 0 var(--space-sm);
-      color: var(--color-text-secondary);
-      font-size: var(--font-size-secondary);
-    }
+    box-shadow: var(--shadow-card);
     h1 {
       margin: 0;
       font-size: var(--font-size-page-title);
       font-weight: var(--font-weight-bold);
-      line-height: var(--line-height-tight);
+      line-height: var(--line-height-heading);
       text-transform: uppercase;
       overflow-wrap: anywhere;
     }
+  }
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-sm);
+    font-size: var(--font-size-secondary);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    span {
+      padding: var(--space-xs) var(--space-ms);
+      border-radius: var(--radius-xs);
+    }
+  }
+  &__badge {
+    background: var(--color-accent-subtle);
+    color: var(--color-accent-text);
+  }
+  &__brand {
+    background: var(--color-text);
+    color: var(--color-text-inverse);
+  }
+  &__series {
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+  }
+  app-product-seller-summary {
+    grid-area: seller;
   }
   app-product-gallery {
     grid-area: gallery;
@@ -132,16 +158,22 @@
   }
 }
 @media (max-width: bp.$xl) {
+  .product-detail__shell {
+    inline-size: calc(
+      min(100% - 2 * var(--layout-page-gap), var(--layout-content-max)) - 2 *
+        var(--layout-content-inset)
+    );
+  }
   .product-detail__overview {
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     grid-template-rows: auto;
-    grid-template-areas: 'heading heading' 'gallery summary' 'purchase purchase';
+    grid-template-areas: 'heading heading' 'gallery summary' 'seller seller' 'purchase purchase';
   }
 }
 @media (max-width: bp.$md) {
   .product-detail__overview {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'heading' 'gallery' 'summary' 'purchase';
+    grid-template-areas: 'heading' 'gallery' 'summary' 'seller' 'purchase';
   }
   .product-detail__heading {
     padding: var(--space-md);

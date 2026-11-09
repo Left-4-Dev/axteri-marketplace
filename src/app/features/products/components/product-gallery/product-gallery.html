@@ -1,13 +1,32 @@
 <section class="product-gallery" aria-label="Galería del producto">
-  <div class="product-gallery__thumbnails" role="group" aria-label="Seleccionar imagen">
-    @for (image of images(); track image.src; let index = $index) {
+  <div class="product-gallery__rail">
+    <div class="product-gallery__thumbnails" role="group" aria-label="Seleccionar imagen">
+      @for (image of images(); track image.src; let index = $index) {
+        <button
+          #thumbnail
+          type="button"
+          [attr.aria-label]="'Ver imagen ' + (index + 1) + ': ' + image.alt"
+          [attr.aria-pressed]="selectedIndex() === index"
+          (click)="selectedIndex.set(index)"
+        >
+          <img
+            [appProductAsset]="image.src"
+            [fallbackSrc]="image.fallbackSrc"
+            alt=""
+            width="92"
+            height="92"
+          />
+        </button>
+      }
+    </div>
+    @if (images().length > 1) {
       <button
+        class="product-gallery__next"
         type="button"
-        [attr.aria-label]="'Ver imagen ' + (index + 1) + ': ' + image.alt"
-        [attr.aria-pressed]="selectedIndex() === index"
-        (click)="selectedIndex.set(index)"
+        aria-label="Siguiente imagen"
+        (click)="nextImage()"
       >
-        <img [src]="image.src" alt="" width="64" height="64" />
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
       </button>
     }
   </div>
@@ -16,24 +35,130 @@
       >{{ selectedIndex() + 1 }} / {{ images().length }}</span
     >
     <img
+      #mainAsset="productAsset"
       class="product-gallery__image"
-      [src]="selectedImage().src"
+      [appProductAsset]="selectedImage().src"
+      [fallbackSrc]="selectedImage().fallbackSrc"
+      [fallbackAlt]="selectedImage().fallbackAlt"
       [alt]="selectedImage().alt"
       width="600"
       height="500"
       fetchpriority="high"
     />
-    <button
-      class="product-gallery__favorite"
-      type="button"
-      aria-label="Guardar en favoritos de esta vista"
-      [attr.aria-pressed]="favorite()"
-      (click)="favorite.set(!favorite())"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 20 3.8 12a5 5 0 0 1 7-7L12 6.2 13.2 5a5 5 0 0 1 7 7Z" />
-      </svg>
-    </button>
-    <figcaption>Ilustraciones provisionales · imágenes referenciales</figcaption>
+    <div class="product-gallery__actions">
+      <button
+        class="product-gallery__favorite"
+        type="button"
+        aria-label="Guardar en favoritos de esta vista"
+        [attr.aria-pressed]="favorite()"
+        (click)="favorite.set(!favorite())"
+      >
+        @if (icons()?.favorite; as icon) {
+          <img
+            #favoriteAsset="productAsset"
+            [appProductAsset]="icon"
+            alt=""
+            width="24"
+            height="24"
+          />
+          @if (!favoriteAsset.loaded()) {
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 20 3.8 12a5 5 0 0 1 7-7L12 6.2 13.2 5a5 5 0 0 1 7 7Z" />
+            </svg>
+          }
+        } @else {
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 20 3.8 12a5 5 0 0 1 7-7L12 6.2 13.2 5a5 5 0 0 1 7 7Z" />
+          </svg>
+        }
+      </button>
+      <button
+        #expandButton
+        class="product-gallery__expand"
+        type="button"
+        aria-label="Ampliar imagen del producto"
+        aria-haspopup="dialog"
+        (click)="openLightbox()"
+      >
+        @if (icons()?.expand; as icon) {
+          <img #expandAsset="productAsset" [appProductAsset]="icon" alt="" width="24" height="24" />
+          @if (!expandAsset.loaded()) {
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 3H3v6m0-6 6 6m6-6h6v6m0-6-6 6M3 15v6h6m-6 0 6-6m12 0v6h-6m6 0-6-6" />
+            </svg>
+          }
+        } @else {
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 3H3v6m0-6 6 6m6-6h6v6m0-6-6 6M3 15v6h6m-6 0 6-6m12 0v6h-6m6 0-6-6" />
+          </svg>
+        }
+      </button>
+    </div>
+    @if (mainAsset.usingFallback()) {
+      <figcaption>Ilustración provisional · imagen referencial</figcaption>
+    }
   </figure>
+  @if (lightboxOpen()) {
+    <dialog
+      #lightbox
+      class="product-gallery__lightbox"
+      tabindex="-1"
+      aria-label="Vista ampliada de la imagen del producto"
+      (click)="onLightboxClick($event)"
+      (keydown)="onDocumentKeydown($event)"
+      (cancel)="onLightboxCancel($event)"
+    >
+      <button
+        #lightboxClose
+        class="product-gallery__lightbox-close"
+        type="button"
+        aria-label="Cerrar vista ampliada"
+        (click)="closeLightbox()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      @if (images().length > 1) {
+        <button
+          #lightboxPrevious
+          class="product-gallery__lightbox-previous"
+          type="button"
+          aria-label="Imagen anterior"
+          [disabled]="selectedIndex() === 0"
+          (click)="showLightboxImage(-1)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="m15 6-6 6 6 6" />
+          </svg>
+        </button>
+      }
+      <figure class="product-gallery__lightbox-stage">
+        <img
+          class="product-gallery__lightbox-image"
+          [appProductAsset]="selectedImage().src"
+          [fallbackSrc]="selectedImage().fallbackSrc"
+          [fallbackAlt]="selectedImage().fallbackAlt"
+          [alt]="selectedImage().alt"
+        />
+      </figure>
+      @if (images().length > 1) {
+        <button
+          #lightboxNext
+          class="product-gallery__lightbox-next"
+          type="button"
+          aria-label="Imagen siguiente"
+          [disabled]="selectedIndex() === images().length - 1"
+          (click)="showLightboxImage(1)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="m9 6 6 6-6 6" />
+          </svg>
+        </button>
+      }
+      <span class="product-gallery__lightbox-counter" aria-live="polite"
+        >{{ selectedIndex() + 1 }} / {{ images().length }}</span
+      >
+    </dialog>
+  }
 </section>

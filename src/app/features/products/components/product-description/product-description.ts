@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
 import { ProductDescriptionContent } from '../../models/product-detail.model';
+import { ProductAsset } from '../../directives/product-asset';
 
 @Component({
   selector: 'app-product-description',
-  imports: [Button],
+  imports: [Button, ProductAsset],
   templateUrl: './product-description.html',
   styleUrl: './product-description.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

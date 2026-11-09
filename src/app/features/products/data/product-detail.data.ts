@@ -5,10 +5,11 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
   id: 'weg-w22-3kw',
   name: 'Motor eléctrico trifásico W22 jaula de ardilla, baja tensión — 380 V / 50 Hz — IP55 — Clase F — IEC 60034-30-1',
   brand: 'WEG',
+  series: 'Serie W22 · IE3 Premium Efficiency',
   category: 'Motores eléctricos industriales',
   sku: 'W22-3KW-380-B3-IP55',
   badge: 'Nuevo lanzamiento',
-  imageUrl: '/assets/images/products/motor-side.svg',
+  imageUrl: '/assets/products/motor-side.svg',
   description:
     'Motor eléctrico trifásico W22 de alta eficiencia para operación continua. Su construcción robusta permite integrarlo en equipos industriales de uso general.',
   price: {
@@ -18,30 +19,64 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
     unitLabel: 'Por unidad',
     includesTax: true,
   },
-  seller: { name: 'LDF Projects', location: 'San Miguel, Lima', years: 20, verified: true },
+  // Metadata comercial de presentación respaldada por la referencia del Overview.
+  seller: {
+    name: 'LDF Projects',
+    location: 'San Miguel, Lima',
+    years: 12,
+    productCount: 200,
+    verified: true,
+    logo: {
+      src: '/assets/sellers/ldf-projects-logo.webp',
+      alt: 'LDF Projects',
+    },
+  },
+  galleryIcons: {
+    favorite: '/assets/icons/product/favorite.svg',
+    expand: '/assets/icons/product/expand.svg',
+  },
   images: [
     {
-      src: '/assets/images/products/motor-side.svg',
-      alt: 'Ilustración provisional del motor W22, vista lateral',
+      src: '/assets/products/weg-w22/gallery/weg-w22-01.webp',
+      alt: 'Motor WEG W22, vista general',
+      fallbackSrc: '/assets/products/motor-side.svg',
+      fallbackAlt: 'Ilustración provisional del motor W22, vista lateral',
     },
     {
-      src: '/assets/images/products/motor-front.svg',
-      alt: 'Ilustración provisional del motor W22, vista del eje',
+      src: '/assets/products/weg-w22/gallery/weg-w22-02.webp',
+      alt: 'Motor WEG W22, vista del eje',
+      fallbackSrc: '/assets/products/motor-front.svg',
+      fallbackAlt: 'Ilustración provisional del motor W22, vista del eje',
     },
     {
-      src: '/assets/images/products/motor-rear.svg',
-      alt: 'Ilustración provisional del motor W22, vista del ventilador',
+      src: '/assets/products/weg-w22/gallery/weg-w22-03.webp',
+      alt: 'Motor WEG W22, vista del ventilador',
+      fallbackSrc: '/assets/products/motor-rear.svg',
+      fallbackAlt: 'Ilustración provisional del motor W22, vista del ventilador',
+    },
+    {
+      src: '/assets/products/weg-w22/gallery/weg-w22-04.webp',
+      alt: 'Motor WEG W22, vista lateral',
+      fallbackSrc: '/assets/products/motor-side.svg',
+      fallbackAlt: 'Ilustración provisional del motor W22, vista lateral',
+    },
+    {
+      src: '/assets/products/weg-w22/gallery/weg-w22-05.webp',
+      alt: 'Motor WEG W22, detalle frontal',
+      fallbackSrc: '/assets/products/motor-front.svg',
+      fallbackAlt: 'Ilustración provisional del motor W22, vista del eje',
     },
   ],
   warranty: '24 meses',
   origin: 'Brasil',
+  originFlag: { src: '/assets/icons/product/brazil.svg', fallback: '🇧🇷' },
   highlights: [
-    { label: 'Potencia', value: '3 kW' },
-    { label: 'Tensión nominal', value: '380 V' },
-    { label: 'Velocidad', value: '940 rpm' },
-    { label: 'Torque nominal', value: '30.5 N·m' },
-    { label: 'Rendimiento', value: '86 %' },
-    { label: 'Protección', value: 'IP55' },
+    { label: 'Potencia', value: '3', unit: 'kW' },
+    { label: 'Tensión nominal', value: '380', unit: 'V', overview: false },
+    { label: 'Velocidad', value: '940', unit: 'rpm' },
+    { label: 'Torque nominal', value: '30.5', unit: 'N·m' },
+    { label: 'Rendimiento', value: '86', unit: '%' },
+    { label: 'Protección', value: 'IP55', overview: false },
   ],
   applications: ['Compresores', 'Bombas de proceso', 'Extrusoras', 'Máquinas herramienta'],
   // Valores transcritos de la referencia de diseño como mock de presentación; no constituyen
@@ -146,6 +181,8 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       fileName: 'Ficha ambiental.pdf',
       format: 'PDF',
       category: 'Pintura y corrosividad',
+      href: '/assets/products/weg-w22/documents/pdf/environmental-sheet.pdf',
+      previewImage: '/assets/products/weg-w22/documents/previews/environmental-sheet.webp',
     },
     {
       id: 'technical-datasheet',
@@ -153,6 +190,8 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       fileName: 'Ficha técnica.pdf',
       format: 'PDF',
       category: 'Catálogo técnico W22',
+      href: '/assets/products/weg-w22/documents/pdf/technical-datasheet.pdf',
+      previewImage: '/assets/products/weg-w22/documents/previews/technical-datasheet.webp',
     },
     {
       id: 'dimensional-drawing',
@@ -160,6 +199,8 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       fileName: 'Plano.pdf',
       format: 'PDF',
       category: 'Cotas carcasa IEC 100L',
+      href: '/assets/products/weg-w22/documents/pdf/dimensional-drawing.pdf',
+      previewImage: '/assets/products/weg-w22/documents/previews/dimensional-drawing.webp',
     },
     {
       id: 'maintenance-guide',
@@ -167,6 +208,8 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       fileName: 'Guía de mantenimiento.pdf',
       format: 'PDF',
       category: 'Operación y lubricación',
+      href: '/assets/products/weg-w22/documents/pdf/maintenance-guide.pdf',
+      previewImage: '/assets/products/weg-w22/documents/previews/maintenance-guide.webp',
     },
     {
       id: 'certifications',
@@ -174,6 +217,8 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
       fileName: 'Certificaciones.pdf',
       format: 'PDF',
       category: 'Conformidad referencial',
+      href: '/assets/products/weg-w22/documents/pdf/certifications.pdf',
+      previewImage: '/assets/products/weg-w22/documents/previews/certifications.webp',
     },
   ],
   accessories: [
@@ -456,11 +501,11 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
         verifiedPurchase: true,
         images: [
           {
-            src: '/assets/images/products/motor-side.svg',
+            src: '/assets/products/motor-side.svg',
             alt: 'Ilustración referencial de vista lateral del motor W22 recibido',
           },
           {
-            src: '/assets/images/products/motor-front.svg',
+            src: '/assets/products/motor-front.svg',
             alt: 'Ilustración referencial del eje frontal del motor W22',
           },
         ],
@@ -486,7 +531,7 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
         verifiedPurchase: true,
         images: [
           {
-            src: '/assets/images/products/motor-rear.svg',
+            src: '/assets/products/motor-rear.svg',
             alt: 'Ilustración referencial de la cubierta trasera del ventilador W22',
           },
         ],
@@ -504,8 +549,9 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
     ],
   },
   purchase: {
+    previousAmount: 4500,
     stock: 100,
-    destination: 'Pueblo Libre, Lima',
+    destination: 'Pueblo Libre, calle Julio Rodave, Lima',
     deliveryEstimate: '08–10 días hábiles',
   },
 };

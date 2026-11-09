@@ -12,6 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductGallery } from '../../components/product-gallery/product-gallery';
 import { ProductSummary } from '../../components/product-summary/product-summary';
+import { ProductSellerSummary } from '../../components/product-seller-summary/product-seller-summary';
 import { ProductPurchasePanel } from '../../components/product-purchase-panel/product-purchase-panel';
 import { ProductRecommendations } from '../../components/product-recommendations/product-recommendations';
 import { ProductSectionNav } from '../../components/product-section-nav/product-section-nav';
@@ -32,6 +33,7 @@ import { ProductPurchaseIntent } from '../../models/product-detail.model';
     RouterLink,
     ProductGallery,
     ProductSummary,
+    ProductSellerSummary,
     ProductPurchasePanel,
     ProductRecommendations,
     ProductSectionNav,
@@ -55,6 +57,13 @@ export class ProductDetailPage {
     PRODUCT_DETAILS.find((item) => item.id === this.params().get('id')),
   );
   protected readonly purchaseMessage = signal('');
+  // Keep the existing artwork in Variants; production gallery assets belong to the Overview.
+  protected readonly variantFallbackImage = computed(() => {
+    const image = this.detail()?.images[0];
+    return image
+      ? { src: image.fallbackSrc ?? image.src, alt: image.fallbackAlt ?? image.alt }
+      : undefined;
+  });
   protected readonly recommendations = PRODUCT_DETAIL_RECOMMENDATIONS;
   protected readonly sections = PRODUCT_DETAIL_SECTIONS;
 
@@ -80,5 +89,13 @@ export class ProductDetailPage {
     this.purchaseMessage.set(
       `${action} para ${intent.quantity} unidad(es) estará disponible próximamente. No se ha enviado ninguna solicitud.`,
     );
+  }
+
+  protected onProfileRequest(): void {
+    this.purchaseMessage.set('El perfil del proveedor estará disponible próximamente.');
+  }
+
+  protected onShippingAddressChangeRequest(): void {
+    this.purchaseMessage.set('El cambio de dirección estará disponible próximamente.');
   }
 }

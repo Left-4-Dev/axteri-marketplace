@@ -1,37 +1,24 @@
 @let item = detail();
 <aside class="purchase-panel" aria-label="Información comercial">
-  @if (item.seller; as seller) {
-    <section class="purchase-panel__seller" aria-labelledby="seller-title">
-      <span class="purchase-panel__avatar" aria-hidden="true">{{ seller.name.charAt(0) }}</span>
-      <div>
-        <h2 id="seller-title">
-          Vendido por <strong>{{ seller.name }}</strong>
-        </h2>
-        <p>{{ seller.years }} años · {{ seller.location }}</p>
-        @if (seller.verified) {
-          <span class="purchase-panel__verified">✓ Proveedor verificado</span>
-        }
-      </div>
-    </section>
-  }
-  <section class="purchase-panel__body" aria-labelledby="purchase-title">
-    <h2 id="purchase-title">Información de compra</h2>
+  <section class="purchase-panel__body" aria-label="Información de compra">
     <p class="purchase-panel__sku">SKU: {{ item.sku }}</p>
     @let price = item.price;
     <div class="purchase-panel__pricing">
       @switch (price.kind) {
         @case ('fixed') {
+          @let formattedPrice =
+            price.amount
+              | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol') : '1.2-2';
           <p class="purchase-panel__price">
-            {{
-              price.amount
-                | currency: price.currency : (price.currency === 'PEN' ? 'S/ ' : 'symbol') : '1.2-2'
-            }}
+            <span>{{ formattedPrice?.slice(0, -3) }}</span
+            ><small>{{ formattedPrice?.slice(-3) }}</small>
           </p>
-          @if (price.previousAmount && price.previousAmount > price.amount) {
+          @let previousAmount = item.purchase.previousAmount ?? price.previousAmount;
+          @if (previousAmount && previousAmount > price.amount) {
             <p class="purchase-panel__reference">
               Antes:
               <s>{{
-                price.previousAmount
+                previousAmount
                   | currency
                     : price.currency
                     : (price.currency === 'PEN' ? 'S/ ' : 'symbol')
@@ -54,13 +41,13 @@
         <p>
           {{ price.includesTax ? 'Incluye IGV' : 'IGV no incluido' }}
           @if (price.unitLabel) {
-            · {{ price.unitLabel }}
+            | {{ price.unitLabel }}
           }
         </p>
       }
     </div>
     <p class="purchase-panel__stock">
-      Stock referencial: <strong>{{ item.purchase.stock }} unidades</strong>
+      Stock disponible: <strong>{{ item.purchase.stock }}</strong>
     </p>
     <div class="purchase-panel__quantity">
       <label for="product-quantity">Cantidad</label>
@@ -102,7 +89,19 @@
     <dl class="purchase-panel__delivery">
       <div>
         <dt>Envío a</dt>
-        <dd>{{ item.purchase.destination }}</dd>
+        <dd class="purchase-panel__shipping-row">
+          <span class="purchase-panel__address" [title]="item.purchase.destination">{{
+            item.purchase.destination
+          }}</span>
+          <button
+            class="purchase-panel__change-address"
+            type="button"
+            aria-label="Cambiar dirección de envío"
+            (click)="shippingAddressChangeRequest.emit()"
+          >
+            Cambiar
+          </button>
+        </dd>
       </div>
       <div>
         <dt>Entrega estimada</dt>

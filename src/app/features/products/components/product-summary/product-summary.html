@@ -1,21 +1,41 @@
 <section class="product-summary" aria-labelledby="summary-title">
-  <div class="product-summary__heading">
-    <h2 id="summary-title">Datos del producto</h2>
-    <span class="product-summary__brand">{{ detail().brand }}</span>
-  </div>
+  <h2 id="summary-title">Datos:</h2>
   <div class="product-summary__badges">
-    <span>Garantía: {{ detail().warranty }}</span
-    ><span>Origen: {{ detail().origin }}</span>
+    <span><strong>Garantía:</strong> {{ detail().warranty }}</span>
+    <span
+      ><strong>Origen:</strong>
+      @if (detail().originFlag; as flag) {
+        <span class="product-summary__flag" aria-hidden="true">
+          <img
+            #flagAsset="productAsset"
+            [appProductAsset]="flag.src"
+            alt=""
+            width="20"
+            height="14"
+          />
+          @if (!flagAsset.loaded()) {
+            <span>{{ flag.fallback }}</span>
+          }
+        </span>
+      }
+      {{ detail().origin }}
+    </span>
   </div>
   <dl class="product-summary__highlights">
-    @for (highlight of detail().highlights; track highlight.label) {
+    @for (highlight of overviewHighlights(); track highlight.label) {
       <div>
         <dt>{{ highlight.label }}</dt>
-        <dd>{{ highlight.value }}</dd>
+        <dd>
+          {{ highlight.value }} <small>{{ highlight.unit }}</small>
+        </dd>
       </div>
     }
   </dl>
-  <p class="product-summary__description">{{ detail().description }}</p>
+  <h3>Descripción:</h3>
+  <p class="product-summary__description">
+    {{ detail().description }}
+    <a [routerLink]="[]" fragment="descripcion">Leer más…</a>
+  </p>
   <h3>Aplicaciones típicas</h3>
   <ul class="product-summary__applications">
     @for (application of detail().applications; track application) {

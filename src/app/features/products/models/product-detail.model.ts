@@ -3,11 +3,15 @@ import { Product, ProductPrice } from '../../../models/product.model';
 export interface ProductImage {
   readonly src: string;
   readonly alt: string;
+  readonly fallbackSrc?: string;
+  readonly fallbackAlt?: string;
 }
 
 export interface ProductHighlight {
   readonly label: string;
   readonly value: string;
+  readonly unit?: string;
+  readonly overview?: boolean;
 }
 
 export interface ProductSpecification {
@@ -44,8 +48,11 @@ export interface ProductDocument {
   readonly title: string;
   readonly fileName: string;
   readonly format: string;
-  readonly category: string;
+  readonly category?: string;
+  /** URL of the real document. May be a local asset today or a remote URL later. */
   readonly href?: string;
+  /** Image of the document's first page. Any resolvable URL; the view never assumes `/assets`. */
+  readonly previewImage?: string;
 }
 
 export interface ProductVariantAttributes {
@@ -100,7 +107,16 @@ export interface ProductReviewsData {
   readonly items: readonly ProductReview[];
 }
 
+export interface ProductDetailSeller extends NonNullable<Product['seller']> {
+  readonly logo?: ProductImage;
+  readonly productCount?: number;
+}
+
 export interface ProductDetail extends Product {
+  readonly series?: string;
+  readonly seller?: ProductDetailSeller;
+  readonly galleryIcons?: { readonly favorite: string; readonly expand: string };
+  readonly originFlag?: { readonly src: string; readonly fallback: string };
   readonly sku: string;
   readonly category: string;
   readonly images: readonly [ProductImage, ...ProductImage[]];
@@ -115,6 +131,7 @@ export interface ProductDetail extends Product {
   readonly variants: readonly ProductVariant[];
   readonly reviews: ProductReviewsData;
   readonly purchase: {
+    readonly previousAmount?: number;
     readonly stock: number;
     readonly destination: string;
     readonly deliveryEstimate: string;

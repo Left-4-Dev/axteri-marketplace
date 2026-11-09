@@ -87,15 +87,20 @@
   }
 
   &__banner {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: var(--space-lg);
+    gap: var(--space-md);
     min-inline-size: 0;
-    padding: var(--space-lg);
+    padding: var(--space-md);
     border-radius: var(--radius-md);
-    background: linear-gradient(160deg, var(--color-action), var(--color-accent-text));
-    color: var(--color-on-action);
+    // No existing token covers the pink-lavender base of the reference gradient.
+    --assistant-gradient-end: #dfbafd;
+
+    background: linear-gradient(180deg, var(--color-brand-end), var(--assistant-gradient-end));
+    // The lighter brand surfaces need the existing dark foreground for readable contrast.
+    color: var(--color-text-inverse);
   }
 
   &__badge {
@@ -110,10 +115,12 @@
   }
 
   &__banner-content {
+    position: relative;
+    z-index: 1;
     display: grid;
     justify-items: center;
-    gap: var(--space-ms);
-    margin-block: auto;
+    gap: var(--space-lg);
+    margin-block: var(--space-lg) calc(2 * var(--space-xl));
     text-align: center;
 
     h3 {
@@ -123,12 +130,17 @@
       line-height: var(--line-height-heading);
       text-transform: uppercase;
       overflow-wrap: anywhere;
+      span {
+        display: block;
+        font-size: 1.25em;
+      }
     }
   }
 
   &__banner-copy {
+    max-inline-size: 24ch;
     margin: 0;
-    font-size: var(--font-size-secondary);
+    font-size: var(--font-size-body-small);
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-label);
     text-transform: uppercase;
@@ -138,6 +150,23 @@
   &__cta {
     inline-size: min(100%, 11.5rem);
     margin-block-start: var(--space-xs);
+  }
+
+  &__assistant-art {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    inline-size: 42%;
+    max-inline-size: 9rem;
+    block-size: 7rem;
+    pointer-events: none;
+    img {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: contain;
+      object-position: left bottom;
+    }
   }
 
   &__status {

@@ -39,16 +39,18 @@ describe('ProductDetailPage', () => {
 
   it('renders price, seller, highlights and the gallery from the typed mock', () => {
     expect(element.querySelector('.purchase-panel__price')?.textContent).toContain('S/ 4,000.00');
-    expect(element.querySelector('.purchase-panel__seller')?.textContent).toContain('LDF Projects');
-    expect(element.querySelector('.purchase-panel__verified')?.textContent).toContain(
-      'Proveedor verificado',
-    );
-    for (const highlight of W22_PRODUCT_DETAIL.highlights) {
+    expect(element.querySelector('.seller-summary')?.textContent).toContain('LDF Projects');
+    expect(
+      element.querySelector('.seller-summary__verified')?.getAttribute('aria-label'),
+    ).toContain('Proveedor verificado');
+    for (const highlight of W22_PRODUCT_DETAIL.highlights.filter(
+      (item) => item.overview !== false,
+    )) {
       expect(element.querySelector('.product-summary__highlights')?.textContent).toContain(
         highlight.value,
       );
     }
-    expect(element.querySelectorAll('.product-gallery__thumbnails button')).toHaveLength(3);
+    expect(element.querySelectorAll('.product-gallery__thumbnails button')).toHaveLength(5);
     expect(element.querySelector('.product-gallery__image')?.getAttribute('alt')).toBe(
       W22_PRODUCT_DETAIL.images[0].alt,
     );
@@ -62,6 +64,25 @@ describe('ProductDetailPage', () => {
     await harness.fixture.whenStable();
     expect(element.querySelector('.product-detail__status')?.textContent).toContain(
       'No se ha enviado ninguna solicitud',
+    );
+  });
+
+  it('acknowledges profile and shipping intentions locally and opens the gallery lightbox on expand', async () => {
+    for (const [selector, message] of [
+      ['.seller-summary button', 'El perfil del proveedor'],
+      ['.purchase-panel__change-address', 'El cambio de dirección'],
+    ]) {
+      element.querySelector<HTMLButtonElement>(selector)!.click();
+      await harness.fixture.whenStable();
+      expect(element.querySelector('[role="status"]')?.textContent).toContain(message);
+      expect(element.querySelector('dialog')).toBeNull();
+    }
+
+    element.querySelector<HTMLButtonElement>('.product-gallery__expand')!.click();
+    await harness.fixture.whenStable();
+    expect(element.querySelector('dialog.product-gallery__lightbox')).not.toBeNull();
+    expect(element.querySelector('[role="status"]')?.textContent).not.toContain(
+      'La vista ampliada',
     );
   });
 
