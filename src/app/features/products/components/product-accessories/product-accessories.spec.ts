@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { Product } from '../../../../models/product.model';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { W22_PRODUCT_DETAIL } from '../../data/product-detail.data';
@@ -18,7 +19,10 @@ describe('ProductAccessories', () => {
   }
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [ProductAccessories] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [ProductAccessories],
+      providers: [provideRouter([])],
+    }).compileComponents();
   });
 
   it('renders the section heading Accesorios', async () => {

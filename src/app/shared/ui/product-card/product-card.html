@@ -9,7 +9,11 @@
   [class.product-card--list]="isList"
 >
   <div class="product-card__visual">
-    <div class="product-card__image">
+    <a
+      class="product-card__image"
+      [routerLink]="['/productos', item.id]"
+      [attr.aria-label]="item.name"
+    >
       @if (item.imageUrl; as imageUrl) {
         <img
           [ngSrc]="imageUrl"
@@ -26,7 +30,7 @@
       } @else {
         <span class="product-card__placeholder">Imagen de producto pendiente</span>
       }
-    </div>
+    </a>
     @if (isOffer) {
       <div class="product-card__quick-actions">
         <button
@@ -90,7 +94,9 @@
       <p class="product-card__badge">{{ badge }}</p>
     }
     <p class="product-card__brand">{{ item.brand }}</p>
-    <h3 class="product-card__title">{{ item.name }}</h3>
+    <h3 class="product-card__title">
+      <a class="product-card__link" [routerLink]="['/productos', item.id]">{{ item.name }}</a>
+    </h3>
     @if (isList && item.description?.trim(); as description) {
       <p class="product-card__description">{{ description }}</p>
     }

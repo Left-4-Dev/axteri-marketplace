@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { PRODUCT_LISTING_ITEMS } from '../../data/product-listing.data';
 import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
@@ -9,7 +10,10 @@ describe('ProductRecommendations', () => {
   let fixture: ComponentFixture<ProductRecommendations>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [ProductRecommendations] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [ProductRecommendations],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(ProductRecommendations);
     fixture.componentRef.setInput('products', PRODUCT_DETAIL_RECOMMENDATIONS);
     await fixture.whenStable();

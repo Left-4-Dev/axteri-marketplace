@@ -17,9 +17,15 @@
   &__image {
     @include skeleton.placeholder;
     position: relative;
+    color: inherit;
+    text-decoration: none;
     img {
       object-fit: contain;
     }
+  }
+  &__link {
+    color: inherit;
+    text-decoration: none;
   }
   &__brand,
   &__seller,

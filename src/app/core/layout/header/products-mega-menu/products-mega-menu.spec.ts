@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ProductsMegaMenu } from './products-mega-menu';
 
 describe('ProductsMegaMenu', () => {
@@ -6,18 +7,26 @@ describe('ProductsMegaMenu', () => {
   let element: HTMLElement;
 
   beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ProductsMegaMenu],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(ProductsMegaMenu);
     element = fixture.nativeElement as HTMLElement;
     await fixture.whenStable();
   });
 
-  it('renders nine categories, seven unique subcategories and seven brand assets', () => {
+  it('renders nine categories, seven unique subcategory links to /productos and seven brand assets', () => {
     expect(element.querySelectorAll('[role="tab"]')).toHaveLength(9);
-    const labels = [...element.querySelectorAll('.products-menu__subcategory')].map((node) =>
-      node.textContent?.trim(),
+    const subcategoryLinks = element.querySelectorAll<HTMLAnchorElement>(
+      '.products-menu__subcategory',
     );
+    const labels = [...subcategoryLinks].map((node) => node.textContent?.trim());
     expect(labels).toHaveLength(7);
     expect(new Set(labels).size).toBe(7);
+    subcategoryLinks.forEach((link) => {
+      expect(link.getAttribute('href')).toBe('/productos');
+    });
     expect(element.querySelectorAll('.products-menu__brand-logo')).toHaveLength(7);
     expect(element.querySelectorAll('[role="tab"][tabindex="0"]')).toHaveLength(1);
   });

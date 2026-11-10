@@ -25,7 +25,7 @@ describe('Header', () => {
     );
     await TestBed.configureTestingModule({
       imports: [Header],
-      providers: [provideRouter([])],
+      providers: [provideRouter([{ path: 'productos', children: [] }])],
     }).compileComponents();
     fixture = TestBed.createComponent(Header);
     element = fixture.nativeElement as HTMLElement;
@@ -108,8 +108,8 @@ describe('Header', () => {
     expect(desktopMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
   });
 
-  function productsTrigger(): HTMLButtonElement {
-    return element.querySelector<HTMLButtonElement>('#header-products-trigger')!;
+  function productsTrigger(): HTMLAnchorElement {
+    return element.querySelector<HTMLAnchorElement>('#header-products-trigger')!;
   }
 
   function productsPanel(): HTMLElement {
@@ -129,44 +129,37 @@ describe('Header', () => {
     await fixture.whenStable();
   }
 
-  it('exposes the controlled panel on hover without a navigation link', async () => {
+  it('links the brand logo to / and Products trigger to /productos while exposing the controlled panel on hover', async () => {
+    const brandLink = element.querySelector<HTMLAnchorElement>('.header__brand')!;
+    expect(brandLink.getAttribute('href')).toBe('/');
     expect(productsPanel().hidden).toBe(true);
     expect(productsTrigger().getAttribute('aria-expanded')).toBe('false');
-    expect(productsTrigger().tagName).toBe('BUTTON');
-    expect(productsTrigger().type).toBe('button');
-    expect(productsTrigger().hasAttribute('href')).toBe(false);
+    expect(productsTrigger().tagName).toBe('A');
+    expect(productsTrigger().getAttribute('href')).toBe('/productos');
     await openProducts();
     expect(productsPanel().hidden).toBe(false);
     expect(productsTrigger().getAttribute('aria-expanded')).toBe('true');
     expect(productsTrigger().getAttribute('aria-controls')).toBe(productsPanel().id);
   });
 
-  it('opens on touch activation and stays open after focus and click', async () => {
-    const hash = window.location.hash;
+  it('opens on focus and closes the mega-menu when clicking the Products link or a mega-menu option', async () => {
     const trigger = productsTrigger();
     trigger.dispatchEvent(Object.assign(new Event('pointerenter'), { pointerType: 'touch' }));
     await fixture.whenStable();
     expect(productsPanel().hidden).toBe(true);
     trigger.focus();
-    trigger.click();
     await fixture.whenStable();
     expect(productsPanel().hidden).toBe(false);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
-    expect(window.location.hash).toBe(hash);
-    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-    await fixture.whenStable();
-    expect(productsPanel().hidden).toBe(true);
-    // Reopening must also work when the trigger already holds focus.
     trigger.click();
     await fixture.whenStable();
-    expect(productsPanel().hidden).toBe(false);
-  });
+    expect(productsPanel().hidden).toBe(true);
 
-  it('keeps the hovered panel open when the trigger is clicked', async () => {
     await openProducts();
-    productsTrigger().click();
-    await fixture.whenStable();
     expect(productsPanel().hidden).toBe(false);
+    productsPanel().querySelector<HTMLAnchorElement>('.products-menu__subcategory')!.click();
+    await fixture.whenStable();
+    expect(productsPanel().hidden).toBe(true);
   });
 
   it('allows crossing from the trigger to the panel and closes after leaving both', async () => {
@@ -280,9 +273,13 @@ describe('Header', () => {
     await fixture.whenStable();
     expect(productsDisclosure.getAttribute('aria-expanded')).toBe('true');
     expect(productsList.hidden).toBe(false);
-    expect(productsList.querySelectorAll('.header__mobile-category')).toHaveLength(
-      PRODUCT_MENU_CATEGORIES.length,
+    const mobileCategories = productsList.querySelectorAll<HTMLAnchorElement>(
+      '.header__mobile-category',
     );
+    expect(mobileCategories).toHaveLength(PRODUCT_MENU_CATEGORIES.length);
+    mobileCategories.forEach((link) => {
+      expect(link.getAttribute('href')).toBe('/productos');
+    });
 
     desktopMedia.matches = true;
     desktopMedia.addEventListener.mock.calls[0][1]();

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Product, ProductPrice } from '../../../models/product.model';
 import { ProductCard } from './product-card';
 
@@ -11,7 +12,10 @@ const product: Product = {
 
 describe('ProductCard', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [ProductCard] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [ProductCard],
+      providers: [provideRouter([])],
+    }).compileComponents();
   });
 
   const cases: { label: string; price: ProductPrice; expected: readonly string[] }[] = [
@@ -235,7 +239,9 @@ describe('ProductCard', () => {
       expect(article.classList.contains('product-card--default')).toBe(false);
       expect(article.classList.contains('product-card--offer')).toBe(false);
       expect(element.querySelector('.product-card__brand')?.textContent).toBe('Siemens');
-      expect(element.querySelector('.product-card__title')?.textContent).toBe('Motor industrial');
+      expect(element.querySelector('.product-card__title')?.textContent?.trim()).toBe(
+        'Motor industrial',
+      );
       expect(element.querySelector('.product-card__seller-name')?.textContent).toBe('LDF Projects');
       expect(element.querySelector('.product-card__location')?.textContent).toContain(
         'San Miguel, Lima',
@@ -330,5 +336,23 @@ describe('ProductCard', () => {
       expect(onDetails).toHaveBeenCalledExactlyOnceWith(product);
       expect(onQuote).toHaveBeenCalledExactlyOnceWith(product);
     });
+  });
+
+  it('links both the product image and title to /productos/:id without nesting action buttons inside links', async () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', { ...product, id: 'weg-w22-3kw' });
+    await fixture.whenStable();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const imageLink = element.querySelector<HTMLAnchorElement>('a.product-card__image');
+    const titleLink = element.querySelector<HTMLAnchorElement>(
+      '.product-card__title a.product-card__link',
+    );
+
+    expect(imageLink?.getAttribute('href')).toBe('/productos/weg-w22-3kw');
+    expect(imageLink?.getAttribute('aria-label')).toBe(product.name);
+    expect(titleLink?.getAttribute('href')).toBe('/productos/weg-w22-3kw');
+    expect(titleLink?.textContent?.trim()).toBe(product.name);
+    expect(element.querySelectorAll('a button')).toHaveLength(0);
   });
 });

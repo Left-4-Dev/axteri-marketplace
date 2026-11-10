@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { RECOMMENDED_PRODUCTS } from '../../data/home-products.data';
 import { Recommendations } from './recommendations';
@@ -18,7 +19,10 @@ describe('Recommendations', () => {
     element.querySelector<HTMLButtonElement>('.recommendations__more button');
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [Recommendations] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [Recommendations],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(Recommendations);
     fixture.componentRef.setInput('products', RECOMMENDED_PRODUCTS);
     await fixture.whenStable();

@@ -1,12 +1,13 @@
 import { CurrencyPipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Product } from '../../../models/product.model';
 
 export type ProductCardVariant = 'default' | 'offer' | 'list';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CurrencyPipe, DecimalPipe, NgOptimizedImage],
+  imports: [CurrencyPipe, DecimalPipe, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
   styleUrls: [
     './product-card.scss',

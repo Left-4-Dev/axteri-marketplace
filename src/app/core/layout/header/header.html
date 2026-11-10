@@ -6,11 +6,11 @@
       /></span>
     </a>
     <nav class="header__navigation" aria-label="Navegación principal">
-      <button
+      <a
         #productsTrigger
         class="header__link"
         id="header-products-trigger"
-        type="button"
+        routerLink="/productos"
         [attr.aria-expanded]="productsMenuAvailable() ? productsMenuOpen() : null"
         [attr.aria-controls]="productsMenuAvailable() ? 'header-products-menu' : null"
         (pointerenter)="openProductsMenu($event)"
@@ -18,11 +18,11 @@
         (focus)="openProductsMenu()"
         (focusout)="onProductsFocusOut($event)"
         (keydown.arrowdown)="enterProductsMenu($event)"
-        (click)="openProductsMenu()"
+        (click)="closeProductsMenu()"
       >
         Productos
         <span class="header__icon header__chevron" aria-hidden="true"></span>
-      </button>
+      </a>
       <app-products-mega-menu
         id="header-products-menu"
         [hidden]="!productsMenuOpen()"
@@ -32,6 +32,7 @@
         (pointerenter)="cancelProductsClose()"
         (pointerleave)="scheduleProductsClose()"
         (focusout)="onProductsFocusOut($event)"
+        (navigate)="closeProductsMenu()"
       />
       @for (link of navigationLinks; track link.id) {
         @if (link.routerLink) {
@@ -116,12 +117,7 @@
       >
         @for (category of productCategories; track category.id) {
           <li>
-            <a
-              class="header__mobile-category"
-              routerLink="/"
-              fragment="featured-products"
-              (click)="closeMobileMenu()"
-            >
+            <a class="header__mobile-category" routerLink="/productos" (click)="closeMobileMenu()">
               {{ category.name }}
             </a>
           </li>

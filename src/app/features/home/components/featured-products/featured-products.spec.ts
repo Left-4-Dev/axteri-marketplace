@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { FEATURED_PRODUCTS } from '../../data/home-products.data';
 import { FeaturedProducts } from './featured-products';
@@ -27,7 +28,10 @@ describe('FeaturedProducts', () => {
     );
     matchMedia.mockReturnValue({ matches: false });
     vi.stubGlobal('matchMedia', matchMedia);
-    await TestBed.configureTestingModule({ imports: [FeaturedProducts] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [FeaturedProducts],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(FeaturedProducts);
     fixture.componentRef.setInput('products', FEATURED_PRODUCTS);
     await fixture.whenStable();
@@ -97,7 +101,10 @@ describe('FeaturedProducts', () => {
       expect(button.getAttribute('aria-controls')).toBe(viewport.id);
       expect(button.disabled).toBe(true);
     }
-    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('section > a, .featured-products__carousel > a')).toBeNull();
+    expect(element.querySelectorAll('app-product-card a[href^="/productos/"]')).toHaveLength(
+      FEATURED_PRODUCTS.length * 2,
+    );
   });
 
   it('moves forward and backward and updates arrow availability from actual scroll position', async () => {

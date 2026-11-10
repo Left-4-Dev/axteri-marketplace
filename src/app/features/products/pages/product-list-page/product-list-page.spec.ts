@@ -110,10 +110,14 @@ describe('ProductListPage', () => {
     expect(items[2]?.classList.contains('product-list__breadcrumb-current')).toBe(true);
   });
 
-  it('uses pageSize = 40 by default and hides the paginator when total products fit in one page', () => {
+  it('uses pageSize = 40 by default, hides the paginator when total products fit in one page, and links cards to /productos/:id', () => {
     expect(PRODUCT_LIST_PAGE_SIZE).toBe(40);
     expect(cards()).toHaveLength(PRODUCT_LISTING_ITEMS.length);
     expect(fixture.debugElement.query(By.directive(ProductPagination))).toBeNull();
+    const w22Links = element.querySelectorAll<HTMLAnchorElement>(
+      'a[href="/productos/weg-w22-3kw"]',
+    );
+    expect(w22Links).toHaveLength(2);
   });
 
   it('renders only pageSize products on page 1 and displays the next slice on page 2 without duplicates when products exceed 40', async () => {
@@ -263,8 +267,8 @@ describe('ProductListPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    // Only schneider-w22-motor-1 (fixed 345, Por mayor, verified, Schneider) matches <= 1000
-    expect(cards().map((card) => card.product().id)).toEqual(['schneider-w22-motor-1']);
+    // Only weg-w22-3kw (fixed 345, Por mayor, verified, Schneider) matches <= 1000
+    expect(cards().map((card) => card.product().id)).toEqual(['weg-w22-3kw']);
 
     clearButton().click();
     applyButton().click();
