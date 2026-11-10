@@ -12,11 +12,12 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Category } from '../../models/home-content.model';
 
 @Component({
   selector: 'app-categories',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, RouterLink],
   templateUrl: './categories.html',
   styleUrl: './categories.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

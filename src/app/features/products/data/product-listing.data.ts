@@ -99,7 +99,7 @@ export const PRODUCT_LISTING_ITEMS: readonly Product[] = [
     seller: verifiedLimaSeller,
   },
   {
-    id: 'schneider-w22-motor-1',
+    id: 'weg-w22-3kw',
     brand: 'Schneider',
     name: 'Motor eléctrico trifásico W22 jaula de ardilla • baja tensión • 380 V / 50 Hz',
     description: sampleDescription,

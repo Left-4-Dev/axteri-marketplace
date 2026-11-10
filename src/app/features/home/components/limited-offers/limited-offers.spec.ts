@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { LIMITED_OFFERS } from '../../data/home-products.data';
 import { LimitedOffers } from './limited-offers';
@@ -27,7 +28,10 @@ describe('LimitedOffers', () => {
     );
     matchMedia.mockReturnValue({ matches: false });
     vi.stubGlobal('matchMedia', matchMedia);
-    await TestBed.configureTestingModule({ imports: [LimitedOffers] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [LimitedOffers],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(LimitedOffers);
     fixture.componentRef.setInput('products', LIMITED_OFFERS);
     await fixture.whenStable();
@@ -94,7 +98,10 @@ describe('LimitedOffers', () => {
     }
     expect(element.querySelector('.limited-offers__more, section > button')).toBeNull();
     expect(element.textContent).not.toContain('MÁS OFERTAS');
-    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('section > a, .limited-offers__carousel > a')).toBeNull();
+    expect(element.querySelectorAll('app-product-card a[href^="/productos/"]')).toHaveLength(
+      LIMITED_OFFERS.length * 2,
+    );
   });
 
   it('keeps all ten offers in the carousel without a CTA, regardless of viewport overflow', async () => {
@@ -112,7 +119,11 @@ describe('LimitedOffers', () => {
     );
     expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
     expect(next.disabled).toBe(false);
-    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
+    expect(
+      element.querySelector(
+        '.limited-offers__more, section > button, section > a, .limited-offers__carousel > a',
+      ),
+    ).toBeNull();
 
     next.click();
     await fixture.whenStable();
@@ -122,7 +133,11 @@ describe('LimitedOffers', () => {
     expect(viewport.scrollLeft).toBe(viewport.scrollWidth - viewport.clientWidth);
     expect(next.disabled).toBe(true);
     expect(viewport.querySelectorAll('app-product-card')).toHaveLength(10);
-    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
+    expect(
+      element.querySelector(
+        '.limited-offers__more, section > button, section > a, .limited-offers__carousel > a',
+      ),
+    ).toBeNull();
 
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     viewport.scrollLeft = 0;
@@ -130,7 +145,11 @@ describe('LimitedOffers', () => {
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
     expect(next.disabled).toBe(true);
-    expect(element.querySelector('.limited-offers__more, section > button, a')).toBeNull();
+    expect(
+      element.querySelector(
+        '.limited-offers__more, section > button, section > a, .limited-offers__carousel > a',
+      ),
+    ).toBeNull();
   });
 
   it('moves forward and backward and updates arrow availability from actual scroll position', async () => {

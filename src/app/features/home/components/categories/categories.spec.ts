@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { HOME_CATEGORIES } from '../../data/home-content.data';
 import { Category } from '../../models/home-content.model';
 import { Categories } from './categories';
@@ -26,7 +27,10 @@ describe('Categories', () => {
     );
     matchMedia.mockReturnValue({ matches: false });
     vi.stubGlobal('matchMedia', matchMedia);
-    await TestBed.configureTestingModule({ imports: [Categories] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [Categories],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(Categories);
     fixture.componentRef.setInput('categories', HOME_CATEGORIES);
     await fixture.whenStable();
@@ -61,14 +65,18 @@ describe('Categories', () => {
     await fixture.whenStable();
   }
 
-  it('renders the heading and all existing typed categories in their original order', () => {
+  it('renders the heading and all existing typed categories in their original order with links to /productos', () => {
     expect(element.querySelector('h2')?.textContent).toBe('CATEGORÍAS');
     expect(fixture.componentInstance.categories()).toBe(HOME_CATEGORIES);
     expect(element.querySelectorAll('article')).toHaveLength(HOME_CATEGORIES.length);
     expect(Array.from(element.querySelectorAll('h3'), (heading) => heading.textContent)).toEqual(
       HOME_CATEGORIES.map((category) => category.name),
     );
-    expect(element.querySelector('a')).toBeNull();
+    const links = element.querySelectorAll<HTMLAnchorElement>('a.categories__link');
+    expect(links).toHaveLength(HOME_CATEGORIES.length);
+    links.forEach((link) => {
+      expect(link.getAttribute('href')).toBe('/productos');
+    });
     expect(element.querySelector('article')?.hasAttribute('tabindex')).toBe(false);
   });
 

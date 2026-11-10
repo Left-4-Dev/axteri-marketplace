@@ -1,12 +1,25 @@
-import { Component, computed, ElementRef, signal, viewChild, viewChildren } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  output,
+  signal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { PRODUCT_MENU_CATEGORIES, RECOMMENDED_PRODUCT_BRANDS } from '../data/products-menu.data';
 
 @Component({
   selector: 'app-products-mega-menu',
+  imports: [RouterLink],
   templateUrl: './products-mega-menu.html',
   styleUrls: ['./products-mega-menu.scss', './products-mega-menu-responsive.scss'],
 })
 export class ProductsMegaMenu {
+  readonly navigate = output<void>();
+
   protected readonly categories = PRODUCT_MENU_CATEGORIES;
   protected readonly brands = RECOMMENDED_PRODUCT_BRANDS;
   protected readonly activeCategoryId = signal(this.categories[0].id);
@@ -18,6 +31,7 @@ export class ProductsMegaMenu {
     const split = Math.ceil(items.length / 2);
     return [items.slice(0, split), items.slice(split)];
   });
+  private readonly router = inject(Router);
   private readonly categoryButtons = viewChildren<ElementRef<HTMLButtonElement>>('categoryButton');
   private readonly contentPanel = viewChild.required<ElementRef<HTMLElement>>('contentPanel');
 
@@ -28,6 +42,12 @@ export class ProductsMegaMenu {
 
   protected selectCategory(id: string): void {
     this.activeCategoryId.set(id);
+  }
+
+  protected activateCategory(id: string): void {
+    this.selectCategory(id);
+    this.navigate.emit();
+    void this.router.navigateByUrl('/productos');
   }
 
   protected onCategoryKeydown(event: KeyboardEvent, index: number): void {

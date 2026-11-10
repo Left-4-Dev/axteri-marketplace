@@ -18,7 +18,7 @@
         [tabIndex]="activeCategoryId() === category.id ? 0 : -1"
         (pointerenter)="selectCategory(category.id)"
         (focus)="selectCategory(category.id)"
-        (click)="selectCategory(category.id)"
+        (click)="activateCategory(category.id)"
         (keydown)="onCategoryKeydown($event, index)"
       >
         {{ category.name }}
@@ -62,9 +62,13 @@
           >
             @for (subcategory of column; track subcategory) {
               <li>
-                <button class="products-menu__subcategory" type="button" aria-disabled="true">
+                <a
+                  class="products-menu__subcategory"
+                  routerLink="/productos"
+                  (click)="navigate.emit()"
+                >
                   {{ subcategory }}
-                </button>
+                </a>
               </li>
             }
           </ul>
