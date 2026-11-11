@@ -27,9 +27,17 @@
 
     <div class="seller-hero__card">
       <div class="seller-hero__heading">
-        <div>
+        <div class="seller-hero__name">
           <h1 id="seller-profile-title">{{ seller().name }}</h1>
           <p class="seller-hero__sector">{{ seller().sector }}</p>
+          <ul class="seller-hero__stats" aria-label="Trayectoria del proveedor">
+            <li>
+              <strong>+{{ seller().productCount | number: '1.0-0' }}</strong> productos
+            </li>
+            <li>
+              <strong>+{{ seller().years | number: '1.0-0' }}</strong> años
+            </li>
+          </ul>
         </div>
         @if (locationLabel(); as location) {
           <p class="seller-hero__location">
@@ -69,15 +77,6 @@
             }
           </ul>
         </div>
-
-        <ul class="seller-hero__stats" aria-label="Trayectoria del proveedor">
-          <li>
-            <strong>+{{ seller().productCount | number: '1.0-0' }}</strong> productos
-          </li>
-          <li>
-            <strong>+{{ seller().years | number: '1.0-0' }}</strong> años
-          </li>
-        </ul>
       </div>
 
       <div class="seller-hero__actions">

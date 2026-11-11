@@ -1,18 +1,31 @@
+@use '../../../../../styles/breakpoints' as bp;
+
 :host {
   display: block;
   min-inline-size: 0;
 }
 
 .seller-profile {
+  // As in Home/Products: backdrop behind the Header, content clearance counted once.
+  // 1.875rem matches the Header's desktop cutout; it is artwork geometry, not spacing.
+  --seller-cover-top: 1.875rem;
+  --seller-header-clearance: calc(var(--header-content-offset) + var(--space-ml));
+
+  display: grid;
+  grid-template-columns: var(--layout-content-inset) minmax(0, 1fr) var(--layout-content-inset);
   inline-size: calc(100% - 2 * var(--layout-page-gap));
   max-inline-size: var(--layout-content-max);
   margin-inline: auto;
-  padding-block: var(--space-2lg) var(--layout-section-space);
-  padding-inline: var(--layout-content-inset);
+  padding-block-end: var(--layout-section-space);
   overflow-wrap: anywhere;
 
-  &__hero {
-    margin-inline: calc(-1 * var(--layout-content-inset));
+  > * {
+    grid-column: 2;
+    min-inline-size: 0;
+  }
+
+  > .seller-profile__hero {
+    grid-column: 1 / -1;
   }
 
   &__status {
@@ -25,7 +38,7 @@
   }
 
   &__empty {
-    padding-block-start: var(--header-content-offset);
+    padding-block-start: var(--seller-header-clearance);
   }
 
   h1 {
@@ -54,5 +67,11 @@
   &__section {
     margin-block-start: var(--layout-section-space);
     scroll-margin-block-start: calc(var(--header-content-offset) + var(--space-md));
+  }
+}
+@media (max-width: bp.$md) {
+  .seller-profile {
+    // Home and Listing also remove the desktop cutout below the mobile Header.
+    --seller-cover-top: 0rem;
   }
 }
