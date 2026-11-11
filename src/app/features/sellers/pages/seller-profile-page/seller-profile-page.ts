@@ -2,11 +2,15 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } fr
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SellerProfileHero } from '../../components/seller-profile-hero/seller-profile-hero';
+import { SellerSectionNav } from '../../components/seller-section-nav/seller-section-nav';
+import { SellerProducts } from '../../components/seller-products/seller-products';
+import { SellerBrands } from '../../components/seller-brands/seller-brands';
+import { SELLER_PRODUCTS } from '../../data/seller-products.data';
 import { SELLER_PROFILES } from '../../data/seller-profile.data';
 
 @Component({
   selector: 'app-seller-profile-page',
-  imports: [RouterLink, SellerProfileHero],
+  imports: [RouterLink, SellerProfileHero, SellerSectionNav, SellerProducts, SellerBrands],
   templateUrl: './seller-profile-page.html',
   styleUrl: './seller-profile-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +28,7 @@ export class SellerProfilePage {
     source: this.seller,
     computation: () => '',
   });
+  protected readonly products = computed(() => SELLER_PRODUCTS[this.seller()?.id ?? ''] ?? []);
 
   protected readonly sections = [
     { id: 'productos', label: 'Productos' },

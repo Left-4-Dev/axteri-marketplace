@@ -5,7 +5,7 @@ import { SellerProfile } from '../models/seller-profile.model';
 export const LDF_PROJECTS_SELLER: SellerProfile = {
   id: 'ldf-projects',
   name: 'LDF Projects',
-  logo: '/assets/sellers/ldf-projects-logo.webp',
+  logo: '/assets/sellers/ldf-projects/logo.webp',
   coverImage: '/assets/sellers/ldf-projects/cover.webp',
   sector: 'Eléctrico',
   verified: true,
@@ -17,9 +17,16 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     'Contenido de ejemplo para preparar la presentación de productos y servicios del proveedor.',
   ],
   brands: [
-    { id: 'schneider-electric', name: 'Schneider Electric' },
-    { id: 'siemens', name: 'Siemens' },
-    { id: '3m', name: '3M' },
+    {
+      id: 'schneider-electric',
+      name: 'Schneider Electric',
+      logo: '/assets/brands/schneider-electric.svg',
+    },
+    { id: 'honeywell', name: 'Honeywell', logo: '/assets/brands/honeywell.svg' },
+    { id: 'indeco', name: 'Indeco', logo: '/assets/brands/indeco.svg' },
+    { id: 'sarel', name: 'Sarel', logo: '/assets/brands/sarel.svg' },
+    { id: 'siemens', name: 'Siemens', logo: '/assets/brands/siemens.svg' },
+    { id: '3m', name: '3M', logo: '/assets/brands/3m.svg' },
   ],
   certifications: [{ id: 'development-example', name: 'Certificación de ejemplo (desarrollo)' }],
   // Gallery and certification images will be supplied when real assets are added.

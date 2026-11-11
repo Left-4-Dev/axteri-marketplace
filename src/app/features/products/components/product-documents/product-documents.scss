@@ -39,6 +39,7 @@
 
   &__viewport {
     grid-column: 2;
+    grid-row: 1;
     min-inline-size: 0;
     // Room for the card shadow, which would otherwise be clipped by the scroll container.
     padding: var(--space-sm);
@@ -47,6 +48,9 @@
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--space-sm);
     scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     &:focus-visible {
       outline: 2px solid var(--color-focus);
@@ -211,10 +215,12 @@
 
     &--previous {
       grid-column: 1;
+      grid-row: 1;
     }
 
     &--next {
       grid-column: 3;
+      grid-row: 1;
     }
 
     &--previous span {
@@ -236,9 +242,7 @@
     }
 
     &[hidden] {
-      // Keep the grid track so the list never shifts when the controls are not needed.
-      display: grid;
-      visibility: hidden;
+      display: none;
     }
   }
 }

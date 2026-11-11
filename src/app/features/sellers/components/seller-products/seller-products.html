@@ -1,0 +1,11 @@
+<div class="seller-products">
+  <h2 id="productos-title" class="seller-products__title">Productos</h2>
+  <ul class="seller-products__grid">
+    @for (product of products(); track product.id) {
+      <li class="seller-products__item"><app-product-card [product]="product" /></li>
+    }
+  </ul>
+  <div class="seller-products__footer">
+    <a class="seller-products__more" routerLink="/productos">Ver más</a>
+  </div>
+</div>

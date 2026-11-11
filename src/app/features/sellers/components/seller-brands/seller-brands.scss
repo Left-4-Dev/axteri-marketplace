@@ -1,0 +1,100 @@
+@use '../../../../../styles/breakpoints' as bp;
+@use '../../../../../styles/controls';
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.seller-brands {
+  padding: var(--space-2lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+
+  &__title {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--font-size-section-title);
+    text-transform: uppercase;
+  }
+
+  &__rail {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  &__list {
+    display: flex;
+    flex: 1;
+    gap: var(--space-2lg);
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--space-sm);
+    overflow-x: auto;
+    list-style: none;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--space-sm);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+  }
+
+  &__item {
+    // Logo slots keep mixed wordmarks legible without imposing an image aspect ratio.
+    flex: 1 0 8rem;
+    display: grid;
+    place-items: center;
+    min-block-size: 4rem;
+    scroll-snap-align: start;
+  }
+
+  &__logo {
+    grid-area: 1 / 1;
+    inline-size: auto;
+    block-size: auto;
+    max-inline-size: min(100%, 10rem);
+    max-block-size: 3rem;
+    object-fit: contain;
+  }
+
+  &__arrow {
+    @include controls.button;
+    @include controls.button-light;
+    flex: none;
+    padding: 0;
+    inline-size: var(--control-height-large);
+    min-block-size: var(--control-height-large);
+
+    span {
+      inline-size: var(--icon-size-lg);
+      block-size: var(--icon-size-lg);
+      background: currentColor;
+      mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
+      transform: rotate(-90deg);
+    }
+
+    &--previous {
+      span {
+        transform: rotate(90deg);
+      }
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: bp.$md) {
+  .seller-brands {
+    padding: var(--space-md);
+  }
+}

@@ -100,6 +100,7 @@ describe('FeaturedProducts', () => {
       expect(button.tagName).toBe('BUTTON');
       expect(button.getAttribute('aria-controls')).toBe(viewport.id);
       expect(button.disabled).toBe(true);
+      expect(button.hidden).toBe(true);
     }
     expect(element.querySelector('section > a, .featured-products__carousel > a')).toBeNull();
     expect(element.querySelectorAll('app-product-card a[href^="/productos/"]')).toHaveLength(
@@ -111,16 +112,20 @@ describe('FeaturedProducts', () => {
     await setScrollable();
     expect(viewport.tabIndex).toBe(0);
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
     next.click();
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBeGreaterThan(0);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     expect(viewport.scrollBy).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }));
     previous.click();
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBe(0);
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
   });
 
   it('supports arrows, Home and End with reduced-motion scrolling', async () => {
@@ -135,10 +140,13 @@ describe('FeaturedProducts', () => {
     key('ArrowLeft');
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     key('End');
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     const end = viewport.scrollLeft;
     next.click();
     key('ArrowRight');
@@ -149,7 +157,9 @@ describe('FeaturedProducts', () => {
     key('Home');
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
   });
 
   it('updates on native scroll and resize, and disconnects its observer', async () => {
@@ -158,12 +168,15 @@ describe('FeaturedProducts', () => {
     viewport.dispatchEvent(new Event('scroll'));
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     viewport.scrollLeft = 0;
     resize();
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     fixture.destroy();
     expect(disconnect).toHaveBeenCalledOnce();
   });
@@ -173,7 +186,9 @@ describe('FeaturedProducts', () => {
     await fixture.whenStable();
     expect(element.querySelector('app-product-card')).toBeNull();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(viewport.hasAttribute('tabindex')).toBe(false);
     expect(element.textContent).toContain('No hay productos destacados disponibles.');
   });

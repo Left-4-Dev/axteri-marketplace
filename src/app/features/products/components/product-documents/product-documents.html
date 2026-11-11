@@ -8,7 +8,7 @@
           type="button"
           aria-label="Documentos anteriores"
           aria-controls="product-documents-carousel"
-          [hidden]="!scrollable()"
+          [hidden]="!canGoBack()"
           [disabled]="!canGoBack()"
           (click)="move(-1)"
         >
@@ -22,7 +22,6 @@
           aria-roledescription="carrusel"
           aria-labelledby="product-documents-title"
           [attr.tabindex]="scrollable() ? 0 : null"
-          (scroll)="updateControls()"
           (keydown)="onKeydown($event)"
         >
           <ul #list class="product-documents__grid" role="list">
@@ -52,7 +51,7 @@
           type="button"
           aria-label="Documentos siguientes"
           aria-controls="product-documents-carousel"
-          [hidden]="!scrollable()"
+          [hidden]="!canGoForward()"
           [disabled]="!canGoForward()"
           (click)="move(1)"
         >

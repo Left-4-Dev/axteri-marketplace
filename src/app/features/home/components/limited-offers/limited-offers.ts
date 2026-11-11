@@ -1,16 +1,13 @@
 import {
-  afterNextRender,
-  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   DOCUMENT,
   ElementRef,
   inject,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
+import { horizontalScrollState } from '../../../../shared/utils/horizontal-scroll-state';
 import { Product } from '../../../../models/product.model';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 
@@ -23,35 +20,17 @@ import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 })
 export class LimitedOffers {
   readonly products = input.required<readonly Product[]>();
-  protected readonly canGoBack = signal(false);
-  protected readonly canGoForward = signal(false);
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>('viewport');
   private readonly document = inject(DOCUMENT);
-  private readonly destroyRef = inject(DestroyRef);
-
-  constructor() {
-    afterRenderEffect({
-      read: () => {
-        this.products();
-        this.updateControls();
-      },
-    });
-    afterNextRender(() => {
-      if (typeof ResizeObserver === 'undefined') return;
-      const observer = new ResizeObserver(() => this.updateControls());
-      observer.observe(this.viewport().nativeElement);
-      this.destroyRef.onDestroy(() => observer.disconnect());
-    });
-  }
-
-  protected updateControls(): void {
-    const viewport = this.viewport().nativeElement;
-    const end = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-    this.canGoBack.set(viewport.scrollLeft > 1);
-    this.canGoForward.set(viewport.scrollLeft < end - 1);
-  }
+  private readonly scrollState = horizontalScrollState(
+    () => this.viewport()?.nativeElement,
+    () => this.products(),
+  );
+  protected readonly canGoBack = this.scrollState.canScrollPrev;
+  protected readonly canGoForward = this.scrollState.canScrollNext;
 
   protected move(direction: -1 | 1): void {
+    if (direction === -1 ? !this.canGoBack() : !this.canGoForward()) return;
     const viewport = this.viewport().nativeElement;
     const first = viewport.querySelector('li');
     const list = viewport.querySelector('ul');

@@ -6,6 +6,7 @@
       type="button"
       aria-label="Categorías anteriores"
       aria-controls="categories-viewport"
+      [hidden]="!canGoBack()"
       [disabled]="!canGoBack()"
       (click)="move(-1)"
     >
@@ -18,7 +19,6 @@
       role="region"
       aria-labelledby="categories-title"
       [attr.tabindex]="canGoBack() || canGoForward() ? 0 : null"
-      (scroll)="updateControls()"
       (keydown)="onKeydown($event)"
     >
       <ul #list class="categories__list" role="list">
@@ -50,6 +50,7 @@
       type="button"
       aria-label="Categorías siguientes"
       aria-controls="categories-viewport"
+      [hidden]="!canGoForward()"
       [disabled]="!canGoForward()"
       (click)="move(1)"
     >

@@ -4,6 +4,9 @@ import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
 import { SellerProfileHero } from '../../components/seller-profile-hero/seller-profile-hero';
+import { SellerProducts } from '../../components/seller-products/seller-products';
+import { SellerBrands } from '../../components/seller-brands/seller-brands';
+import { SELLER_PRODUCTS } from '../../data/seller-products.data';
 import { LDF_PROJECTS_SELLER } from '../../data/seller-profile.data';
 import { SellerProfilePage } from './seller-profile-page';
 
@@ -48,7 +51,7 @@ describe('SellerProfilePage', () => {
     expect(Array.from(shell.children).map((child) => child.tagName)).toEqual([
       'APP-SELLER-PROFILE-HERO',
       'P',
-      'NAV',
+      'APP-SELLER-SECTION-NAV',
       'SECTION',
       'SECTION',
       'SECTION',
@@ -72,9 +75,19 @@ describe('SellerProfilePage', () => {
       'Certificaciones',
       'Ubicación',
     ]);
+    const products: SellerProducts = harness.fixture.debugElement.query(
+      By.directive(SellerProducts),
+    ).componentInstance;
+    const brands: SellerBrands = harness.fixture.debugElement.query(
+      By.directive(SellerBrands),
+    ).componentInstance;
+    expect(products.products()).toBe(SELLER_PRODUCTS['ldf-projects']);
+    expect(brands.brands()).toBe(LDF_PROJECTS_SELLER.brands);
+    expect(shell.querySelector('#productos app-seller-products')).not.toBeNull();
+    expect(shell.querySelector('#marcas app-seller-brands')).not.toBeNull();
   });
 
-  it('provides a unique labelled destination for each router fragment link', async () => {
+  it('provides a unique labelled destination for each native fragment link', () => {
     const page = element.querySelector('app-seller-profile-page')!;
     const links = page.querySelectorAll<HTMLAnchorElement>('nav a');
     expect(links).toHaveLength(6);
@@ -84,11 +97,8 @@ describe('SellerProfilePage', () => {
       expect(targets).toHaveLength(1);
       expect(targets[0].tabIndex).toBe(-1);
       expect(targets[0].querySelector('h2')?.id).toBe(targets[0].getAttribute('aria-labelledby'));
-      expect(targets[0].textContent?.trim()).toBe(link.textContent?.trim());
+      expect(targets[0].querySelector('h2')?.textContent?.trim()).toBe(link.textContent?.trim());
     });
-    links[2].click();
-    await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe('/proveedores/ldf-projects#perfil');
   });
 
   it('reacts to id changes and restores the profile after an unknown seller', async () => {

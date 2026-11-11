@@ -6,6 +6,7 @@
       type="button"
       aria-label="Ofertas anteriores"
       aria-controls="limited-offers-carousel"
+      [hidden]="!canGoBack()"
       [disabled]="!canGoBack()"
       (click)="move(-1)"
     >
@@ -19,7 +20,6 @@
       aria-roledescription="carrusel"
       aria-label="Productos en oferta"
       tabindex="0"
-      (scroll)="updateControls()"
       (keydown)="onKeydown($event)"
     >
       <ul class="limited-offers__products">
@@ -35,6 +35,7 @@
       type="button"
       aria-label="Ofertas siguientes"
       aria-controls="limited-offers-carousel"
+      [hidden]="!canGoForward()"
       [disabled]="!canGoForward()"
       (click)="move(1)"
     >

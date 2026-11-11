@@ -28,6 +28,8 @@
   gap: var(--offers-control-gap);
 }
 .limited-offers__viewport {
+  grid-column: 2;
+  grid-row: 1;
   min-inline-size: 0;
   padding: var(--space-sm);
   overflow-x: auto;
@@ -135,5 +137,25 @@
 @media (max-width: bp.$sm) {
   .limited-offers__products {
     grid-auto-columns: min(19rem, 85%);
+  }
+}
+
+.limited-offers__arrow[hidden] {
+  display: none;
+}
+.limited-offers__arrow--previous {
+  grid-column: 1;
+  grid-row: 1;
+}
+.limited-offers__arrow--next {
+  grid-column: 3;
+  grid-row: 1;
+}
+@media (max-width: bp.$md) {
+  .limited-offers__arrow--previous {
+    grid-area: 2 / 1;
+  }
+  .limited-offers__arrow--next {
+    grid-area: 2 / 2;
   }
 }

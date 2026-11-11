@@ -1,0 +1,14 @@
+<nav class="seller-section-nav" aria-label="Secciones del proveedor">
+  <ul class="seller-section-nav__list">
+    @for (section of sections(); track section.id) {
+      <li class="seller-section-nav__item">
+        <a
+          class="seller-section-nav__link"
+          [href]="profilePath() + '#' + section.id"
+          (click)="navigate($event, section.id)"
+          >{{ section.label }}</a
+        >
+      </li>
+    }
+  </ul>
+</nav>

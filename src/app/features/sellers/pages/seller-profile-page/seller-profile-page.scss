@@ -58,15 +58,16 @@
   }
 
   &__nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm) var(--space-lg);
     margin-block-start: var(--space-lg);
   }
 
   &__section {
     margin-block-start: var(--layout-section-space);
     scroll-margin-block-start: calc(var(--header-content-offset) + var(--space-md));
+
+    &--implemented {
+      margin-block-start: var(--space-lg);
+    }
   }
 }
 @media (max-width: bp.$md) {

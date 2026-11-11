@@ -116,6 +116,7 @@ describe('Categories', () => {
       expect(button.getAttribute('aria-controls')).toBe(viewport.id);
       expect(button.querySelector('span')?.getAttribute('aria-hidden')).toBe('true');
       expect(button.disabled).toBe(true);
+      expect(button.hidden).toBe(true);
     }
   });
 
@@ -123,15 +124,19 @@ describe('Categories', () => {
     await setScrollable();
     expect(viewport.tabIndex).toBe(0);
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
     next.click();
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBeGreaterThan(0);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     expect(viewport.scrollBy).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }));
     next.click();
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     const end = viewport.scrollLeft;
     next.click();
     expect(viewport.scrollLeft).toBe(end);
@@ -141,6 +146,7 @@ describe('Categories', () => {
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBe(0);
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
   });
 
   it('supports keyboard navigation and respects reduced motion', async () => {
@@ -167,13 +173,17 @@ describe('Categories', () => {
     viewport.dispatchEvent(new Event('scroll'));
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     viewport.scrollLeft = 0;
     resize();
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(viewport.hasAttribute('tabindex')).toBe(false);
     fixture.destroy();
     expect(disconnect).toHaveBeenCalledOnce();
@@ -187,6 +197,8 @@ describe('Categories', () => {
     await fixture.whenStable();
     expect(element.querySelector('article')).toBeNull();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
   });
 });
