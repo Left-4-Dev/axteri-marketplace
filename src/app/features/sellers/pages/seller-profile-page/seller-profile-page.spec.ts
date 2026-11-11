@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
+import { SellerProfileHero } from '../../components/seller-profile-hero/seller-profile-hero';
 import { LDF_PROJECTS_SELLER } from '../../data/seller-profile.data';
 import { SellerProfilePage } from './seller-profile-page';
 
@@ -34,6 +35,10 @@ describe('SellerProfilePage', () => {
     const seller = pageInstance()['seller']();
     expect(seller).toBe(LDF_PROJECTS_SELLER);
     expect(seller?.id).toBe('ldf-projects');
+    const hero: SellerProfileHero = harness.fixture.debugElement.query(
+      By.directive(SellerProfileHero),
+    ).componentInstance;
+    expect(hero.seller()).toBe(seller);
     expect(element.querySelector('app-seller-profile-page h1')?.textContent).toBe(seller?.name);
     expect(element.querySelector('.seller-profile__hero')?.textContent).toContain('San Miguel');
   });
@@ -41,7 +46,8 @@ describe('SellerProfilePage', () => {
   it('places the hero, navigation and six section destinations in the expected order', () => {
     const shell = element.querySelector('.seller-profile')!;
     expect(Array.from(shell.children).map((child) => child.tagName)).toEqual([
-      'HEADER',
+      'APP-SELLER-PROFILE-HERO',
+      'P',
       'NAV',
       'SECTION',
       'SECTION',
@@ -94,10 +100,28 @@ describe('SellerProfilePage', () => {
       'Proveedor no encontrado',
     );
     expect(element.querySelector('.seller-profile__nav')).toBeNull();
+    expect(element.querySelector('app-seller-profile-hero')).toBeNull();
     expect(element.querySelectorAll('.seller-profile__section')).toHaveLength(0);
     await harness.navigateByUrl('/proveedores/ldf-projects');
     expect(pageInstance()['seller']()).toBe(LDF_PROJECTS_SELLER);
     expect(element.querySelectorAll('.seller-profile__section')).toHaveLength(6);
+  });
+
+  it('acknowledges hero actions locally and clears the message when the seller changes', async () => {
+    const buttons = element.querySelectorAll<HTMLButtonElement>('app-seller-profile-hero button');
+    buttons[0].click();
+    await harness.fixture.whenStable();
+    expect(element.querySelector('[role="status"]')?.textContent).toContain(
+      'No se ha enviado ninguna solicitud.',
+    );
+    buttons[1].click();
+    await harness.fixture.whenStable();
+    expect(element.querySelector('[role="status"]')?.textContent).toContain(
+      'La opción de compartir este perfil estará disponible próximamente.',
+    );
+    await harness.navigateByUrl('/proveedores/unknown');
+    await harness.navigateByUrl('/proveedores/ldf-projects');
+    expect(element.querySelector('[role="status"]')?.textContent).toBe('');
   });
 
   it('handles a direct unknown URL and returns to products through the router', async () => {

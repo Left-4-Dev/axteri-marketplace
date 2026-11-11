@@ -1,10 +1,12 @@
 <div class="seller-profile">
   @if (seller(); as item) {
-    <header class="seller-profile__hero">
-      <p>Perfil del proveedor</p>
-      <h1>{{ item.name }}</h1>
-      <p>{{ item.sector }} · {{ item.location.district }}, {{ item.location.city }}</p>
-    </header>
+    <app-seller-profile-hero
+      class="seller-profile__hero"
+      [seller]="item"
+      (contactRequest)="onContactRequest()"
+      (shareRequest)="onShareRequest()"
+    />
+    <p class="seller-profile__status" role="status">{{ actionMessage() }}</p>
 
     <nav class="seller-profile__nav" aria-label="Secciones del proveedor">
       @for (section of sections; track section.id) {

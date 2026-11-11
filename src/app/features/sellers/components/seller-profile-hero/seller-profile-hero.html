@@ -1,0 +1,89 @@
+<header class="seller-hero" aria-labelledby="seller-profile-title">
+  <div class="seller-hero__cover" aria-hidden="true">
+    @if (seller().coverImage; as cover) {
+      <img [appProductAsset]="cover" alt="" fetchpriority="high" />
+    }
+  </div>
+
+  <div class="seller-hero__identity">
+    <div class="seller-hero__logo">
+      <img
+        #logoAsset="productAsset"
+        [appProductAsset]="seller().logo"
+        [alt]="'Logo de ' + seller().name"
+        width="272"
+        height="272"
+      />
+      @if (!logoAsset.loaded()) {
+        <span
+          class="seller-hero__logo-fallback"
+          role="img"
+          [attr.aria-label]="'Logo de ' + seller().name"
+        >
+          {{ seller().name.charAt(0) }}
+        </span>
+      }
+    </div>
+
+    <div class="seller-hero__card">
+      <div class="seller-hero__heading">
+        <div>
+          <h1 id="seller-profile-title">{{ seller().name }}</h1>
+          <p class="seller-hero__sector">{{ seller().sector }}</p>
+        </div>
+        @if (locationLabel(); as location) {
+          <p class="seller-hero__location">
+            <img
+              appProductAsset="/assets/icons/header/location.svg"
+              alt=""
+              width="20"
+              height="20"
+            />
+            <span>{{ location }}</span>
+          </p>
+        }
+      </div>
+
+      <div class="seller-hero__details">
+        <div class="seller-hero__labels">
+          @if (seller().verified) {
+            <span class="seller-hero__verified" aria-label="Proveedor verificado">
+              <span class="seller-hero__verified-icon" aria-hidden="true">
+                <img
+                  #verifiedAsset="productAsset"
+                  appProductAsset="/assets/icons/seller/verified.svg"
+                  alt=""
+                  width="16"
+                  height="16"
+                />
+                @if (!verifiedAsset.loaded()) {
+                  <span>✓</span>
+                }
+              </span>
+              Verificado
+            </span>
+          }
+          <ul class="seller-hero__tags" aria-label="Especialidades del proveedor">
+            @for (tag of seller().tags; track $index) {
+              <li>{{ tag }}</li>
+            }
+          </ul>
+        </div>
+
+        <ul class="seller-hero__stats" aria-label="Trayectoria del proveedor">
+          <li>
+            <strong>+{{ seller().productCount | number: '1.0-0' }}</strong> productos
+          </li>
+          <li>
+            <strong>+{{ seller().years | number: '1.0-0' }}</strong> años
+          </li>
+        </ul>
+      </div>
+
+      <div class="seller-hero__actions">
+        <app-button (click)="contactRequest.emit()">Contactarnos</app-button>
+        <app-button variant="light" (click)="shareRequest.emit()">Compartir</app-button>
+      </div>
+    </div>
+  </div>
+</header>

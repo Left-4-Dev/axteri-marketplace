@@ -6,6 +6,7 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
   id: 'ldf-projects',
   name: 'LDF Projects',
   logo: '/assets/sellers/ldf-projects-logo.webp',
+  coverImage: '/assets/sellers/ldf-projects/cover.webp',
   sector: 'Eléctrico',
   verified: true,
   productCount: 200,
@@ -21,7 +22,7 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     { id: '3m', name: '3M' },
   ],
   certifications: [{ id: 'development-example', name: 'Certificación de ejemplo (desarrollo)' }],
-  // Cover, gallery and certification images will be supplied when real assets are added.
+  // Gallery and certification images will be supplied when real assets are added.
   gallery: [],
   information: {
     supplierType: 'Distribuidor (ejemplo de desarrollo)',

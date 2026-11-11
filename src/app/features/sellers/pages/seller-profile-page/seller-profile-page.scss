@@ -7,9 +7,26 @@
   inline-size: calc(100% - 2 * var(--layout-page-gap));
   max-inline-size: var(--layout-content-max);
   margin-inline: auto;
-  padding-block: calc(var(--header-content-offset) + var(--space-lg)) var(--layout-section-space);
+  padding-block: var(--space-2lg) var(--layout-section-space);
   padding-inline: var(--layout-content-inset);
   overflow-wrap: anywhere;
+
+  &__hero {
+    margin-inline: calc(-1 * var(--layout-content-inset));
+  }
+
+  &__status {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+
+    &:not(:empty) {
+      margin-block-start: var(--space-md);
+    }
+  }
+
+  &__empty {
+    padding-block-start: var(--header-content-offset);
+  }
 
   h1 {
     font-size: var(--font-size-page-title);
