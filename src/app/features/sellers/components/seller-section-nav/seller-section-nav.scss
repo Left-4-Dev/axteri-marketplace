@@ -5,9 +5,14 @@
 
 .seller-section-nav {
   overflow-x: auto;
+  scrollbar-width: none;
   border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &__list {
     display: flex;
