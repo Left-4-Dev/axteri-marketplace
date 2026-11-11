@@ -18,7 +18,7 @@
       <section
         class="seller-profile__section"
         [class.seller-profile__section--implemented]="
-          section.id === 'productos' || section.id === 'marcas'
+          section.id !== 'certificaciones' && section.id !== 'ubicacion'
         "
         [id]="section.id"
         [attr.aria-labelledby]="section.id + '-title'"
@@ -30,6 +30,12 @@
           }
           @case ('marcas') {
             <app-seller-brands [brands]="item.brands" />
+          }
+          @case ('perfil') {
+            <app-seller-about [seller]="item" />
+          }
+          @case ('informacion') {
+            <app-seller-information [seller]="item" />
           }
           @default {
             <h2 [id]="section.id + '-title'">{{ section.label }}</h2>

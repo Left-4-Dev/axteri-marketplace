@@ -48,6 +48,8 @@ describe('SellerProfilePage', () => {
 
   it('places the hero, navigation and six section destinations in the expected order', () => {
     const shell = element.querySelector('.seller-profile')!;
+    expect(shell.querySelector('#perfil app-seller-about')).not.toBeNull();
+    expect(shell.querySelector('#informacion app-seller-information')).not.toBeNull();
     expect(Array.from(shell.children).map((child) => child.tagName)).toEqual([
       'APP-SELLER-PROFILE-HERO',
       'P',

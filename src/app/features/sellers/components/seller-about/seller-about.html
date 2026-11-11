@@ -1,0 +1,23 @@
+<div class="seller-about">
+  <h2 id="perfil-title" class="seller-about__title">Perfil</h2>
+  @for (paragraph of seller().description; track $index) {
+    <p class="seller-about__paragraph">{{ paragraph }}</p>
+  }
+  @if (seller().gallery.length) {
+    <ul class="seller-about__gallery" tabindex="0" aria-label="Galería del proveedor">
+      @for (source of seller().gallery; track $index) {
+        <li class="seller-about__image">
+          <img
+            #asset="productAsset"
+            [appProductAsset]="source"
+            [alt]="'Imagen ' + ($index + 1) + ' de ' + seller().name"
+            loading="lazy"
+          />
+          @if (!asset.loaded()) {
+            <span class="seller-about__fallback">Imagen del proveedor pendiente</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -30,7 +30,12 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
   ],
   certifications: [{ id: 'development-example', name: 'Certificación de ejemplo (desarrollo)' }],
   // Gallery and certification images will be supplied when real assets are added.
-  gallery: [],
+  gallery: [
+    '/assets/sellers/ldf-projects/gallery/ldf-projects-01.webp',
+    '/assets/sellers/ldf-projects/gallery/ldf-projects-02.webp',
+    '/assets/sellers/ldf-projects/gallery/ldf-projects-03.webp',
+    '/assets/sellers/ldf-projects/gallery/ldf-projects-04.webp',
+  ],
   information: {
     supplierType: 'Distribuidor (ejemplo de desarrollo)',
     businessHours: [],

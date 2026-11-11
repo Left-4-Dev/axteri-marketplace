@@ -1,0 +1,60 @@
+@use '../../../../../styles/breakpoints' as bp;
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+.seller-information {
+  padding: var(--space-2lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body);
+  &__title {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--font-size-section-title);
+    text-transform: uppercase;
+  }
+}
+@media (max-width: bp.$md) {
+  .seller-information {
+    padding: var(--space-md);
+  }
+}
+
+.seller-information {
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+  &__entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    background: var(--color-surface-muted);
+    dt,
+    dd {
+      margin: 0;
+      padding: var(--space-md);
+      overflow-wrap: anywhere;
+    }
+    dt {
+      font-size: var(--font-size-secondary);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      background: var(--color-surface-tinted);
+    }
+  }
+}
+@media (max-width: bp.$md) {
+  .seller-information__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: bp.$sm) {
+  .seller-information__entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

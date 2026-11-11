@@ -1,3 +1,5 @@
+import { SellerAbout } from '../../components/seller-about/seller-about';
+import { SellerInformation } from '../../components/seller-information/seller-information';
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -10,7 +12,15 @@ import { SELLER_PROFILES } from '../../data/seller-profile.data';
 
 @Component({
   selector: 'app-seller-profile-page',
-  imports: [RouterLink, SellerProfileHero, SellerSectionNav, SellerProducts, SellerBrands],
+  imports: [
+    SellerAbout,
+    SellerInformation,
+    RouterLink,
+    SellerProfileHero,
+    SellerSectionNav,
+    SellerProducts,
+    SellerBrands,
+  ],
   templateUrl: './seller-profile-page.html',
   styleUrl: './seller-profile-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

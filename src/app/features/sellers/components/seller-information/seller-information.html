@@ -1,0 +1,11 @@
+<div class="seller-information">
+  <h2 id="informacion-title" class="seller-information__title">Información</h2>
+  <dl class="seller-information__list">
+    @for (entry of entries(); track entry.label) {
+      <div class="seller-information__entry">
+        <dt>{{ entry.label }}</dt>
+        <dd>{{ entry.value }}</dd>
+      </div>
+    }
+  </dl>
+</div>
