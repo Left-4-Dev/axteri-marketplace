@@ -1,0 +1,33 @@
+<div class="seller-profile">
+  @if (seller(); as item) {
+    <header class="seller-profile__hero">
+      <p>Perfil del proveedor</p>
+      <h1>{{ item.name }}</h1>
+      <p>{{ item.sector }} · {{ item.location.district }}, {{ item.location.city }}</p>
+    </header>
+
+    <nav class="seller-profile__nav" aria-label="Secciones del proveedor">
+      @for (section of sections; track section.id) {
+        <a [routerLink]="['/proveedores', item.id]" [fragment]="section.id">{{ section.label }}</a>
+      }
+    </nav>
+
+    <!-- Structural destinations only; section content will be implemented in later stages. -->
+    @for (section of sections; track section.id) {
+      <section
+        class="seller-profile__section"
+        [id]="section.id"
+        [attr.aria-labelledby]="section.id + '-title'"
+        tabindex="-1"
+      >
+        <h2 [id]="section.id + '-title'">{{ section.label }}</h2>
+      </section>
+    }
+  } @else {
+    <section class="seller-profile__empty" aria-labelledby="seller-not-found-title">
+      <h1 id="seller-not-found-title">Proveedor no encontrado</h1>
+      <p>No tenemos una ficha disponible para este proveedor.</p>
+      <a routerLink="/productos">Volver a productos</a>
+    </section>
+  }
+</div>

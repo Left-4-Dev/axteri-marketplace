@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.seller-profile {
+  inline-size: calc(100% - 2 * var(--layout-page-gap));
+  max-inline-size: var(--layout-content-max);
+  margin-inline: auto;
+  padding-block: calc(var(--header-content-offset) + var(--space-lg)) var(--layout-section-space);
+  padding-inline: var(--layout-content-inset);
+  overflow-wrap: anywhere;
+
+  h1 {
+    font-size: var(--font-size-page-title);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-section-title);
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--control-height-compact);
+    color: var(--color-accent-text);
+  }
+
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    margin-block-start: var(--space-lg);
+  }
+
+  &__section {
+    margin-block-start: var(--layout-section-space);
+    scroll-margin-block-start: calc(var(--header-content-offset) + var(--space-md));
+  }
+}
