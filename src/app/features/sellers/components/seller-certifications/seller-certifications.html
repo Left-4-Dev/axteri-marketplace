@@ -1,0 +1,58 @@
+<div class="seller-certifications">
+  <h2 id="certificaciones-title">Certificaciones</h2>
+  <div class="seller-certifications__rail">
+    <button
+      class="seller-certifications__arrow seller-certifications__arrow--previous"
+      type="button"
+      aria-label="Certificaciones anteriores"
+      aria-controls="seller-certifications-gallery"
+      [hidden]="!canPrevious()"
+      [disabled]="!canPrevious()"
+      (click)="scroll(-1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+    <ul
+      #viewport
+      id="seller-certifications-gallery"
+      class="seller-certifications__gallery"
+      tabindex="0"
+      aria-label="Certificaciones del proveedor"
+    >
+      @for (certification of certifications(); track certification.id) {
+        <li class="seller-certifications__item">
+          <div class="seller-certifications__media">
+            @if (certification.image; as source) {
+              <img
+                #asset="productAsset"
+                [appProductAsset]="source"
+                [alt]="certification.name"
+                loading="lazy"
+              />
+              @if (!asset.loaded()) {
+                <span class="seller-certifications__fallback">Imagen no disponible</span>
+              }
+            } @else {
+              <span class="seller-certifications__fallback">Imagen no disponible</span>
+            }
+          </div>
+          <p [title]="certification.name">{{ certification.name }}</p>
+        </li>
+      }
+    </ul>
+    <button
+      class="seller-certifications__arrow"
+      type="button"
+      aria-label="Certificaciones siguientes"
+      aria-controls="seller-certifications-gallery"
+      [hidden]="!canNext()"
+      [disabled]="!canNext()"
+      (click)="scroll(1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+  @if (!certifications().length) {
+    <p>No hay certificaciones disponibles.</p>
+  }
+</div>

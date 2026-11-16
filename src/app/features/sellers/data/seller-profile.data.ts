@@ -28,7 +28,34 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     { id: 'siemens', name: 'Siemens', logo: '/assets/brands/siemens.svg' },
     { id: '3m', name: '3M', logo: '/assets/brands/3m.svg' },
   ],
-  certifications: [{ id: 'development-example', name: 'Certificación de ejemplo (desarrollo)' }],
+  // Development examples matching the target; not verified certifications.
+  certifications: [
+    {
+      id: 'iso-9001-2015',
+      name: 'ISO 9001:2015',
+      image: '/assets/sellers/ldf-projects/certifications/iso-9001-2015.webp',
+    },
+    {
+      id: 'iso-45001-2018',
+      name: 'ISO 45001:2018',
+      image: '/assets/sellers/ldf-projects/certifications/iso-45001-2018.webp',
+    },
+    {
+      id: 'iso-37001',
+      name: 'ISO 37001',
+      image: '/assets/sellers/ldf-projects/certifications/iso-37001.webp',
+    },
+    {
+      id: 'scc-accredited',
+      name: 'SCC Accredited',
+      image: '/assets/sellers/ldf-projects/certifications/scc-accredited.webp',
+    },
+    {
+      id: 'qfs-management',
+      name: 'QFS Management',
+      image: '/assets/sellers/ldf-projects/certifications/qfs-management.webp',
+    },
+  ],
   // Gallery and certification images will be supplied when real assets are added.
   gallery: [
     '/assets/sellers/ldf-projects/gallery/ldf-projects-01.webp',
@@ -47,6 +74,8 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     country: 'Perú',
     city: 'Lima',
     district: 'San Miguel',
+    address: 'Chaquilchaca 270, Lima 15088',
+    coordinates: { latitude: -12.0701228, longitude: -77.0969605 },
   },
 };
 

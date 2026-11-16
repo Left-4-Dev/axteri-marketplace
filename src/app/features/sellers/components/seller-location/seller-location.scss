@@ -1,0 +1,65 @@
+@use '../../../../../styles/breakpoints' as bp;
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+.seller-location {
+  padding: var(--space-2lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  h2 {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--font-size-section-title);
+    text-transform: uppercase;
+  }
+  &__map {
+    position: relative;
+    block-size: clamp(16rem, 28vw, 25rem);
+    overflow: hidden;
+    border: 2px solid var(--color-brand);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
+  }
+  &__canvas {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  &__status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    text-align: center;
+    color: var(--color-text-secondary);
+    background: var(--color-surface-muted);
+    p {
+      margin: 0;
+      max-inline-size: 32rem;
+    }
+  }
+  &__icon {
+    inline-size: var(--control-height-large);
+    block-size: var(--control-height-large);
+    background: var(--color-brand);
+    mask: url('/assets/icons/header/location.svg') center / contain no-repeat;
+  }
+  &__address {
+    margin: var(--space-lg) 0 0;
+    line-height: var(--line-height-body);
+  }
+  &__demo {
+    margin: var(--space-md) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-secondary);
+  }
+}
+@media (max-width: bp.$md) {
+  .seller-location {
+    padding: var(--space-md);
+  }
+}

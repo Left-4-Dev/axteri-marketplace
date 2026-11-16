@@ -16,10 +16,7 @@
 
     @for (section of sections; track section.id) {
       <section
-        class="seller-profile__section"
-        [class.seller-profile__section--implemented]="
-          section.id !== 'certificaciones' && section.id !== 'ubicacion'
-        "
+        class="seller-profile__section seller-profile__section--implemented"
         [id]="section.id"
         [attr.aria-labelledby]="section.id + '-title'"
         tabindex="-1"
@@ -37,8 +34,11 @@
           @case ('informacion') {
             <app-seller-information [seller]="item" />
           }
-          @default {
-            <h2 [id]="section.id + '-title'">{{ section.label }}</h2>
+          @case ('certificaciones') {
+            <app-seller-certifications [certifications]="item.certifications" />
+          }
+          @case ('ubicacion') {
+            <app-seller-location [location]="item.location" [sellerName]="item.name" />
           }
         }
       </section>

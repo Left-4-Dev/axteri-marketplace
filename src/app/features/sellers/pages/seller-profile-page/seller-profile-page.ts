@@ -1,4 +1,6 @@
 import { SellerAbout } from '../../components/seller-about/seller-about';
+import { SellerCertifications } from '../../components/seller-certifications/seller-certifications';
+import { SellerLocation } from '../../components/seller-location/seller-location';
 import { SellerInformation } from '../../components/seller-information/seller-information';
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,6 +16,8 @@ import { SELLER_PROFILES } from '../../data/seller-profile.data';
   selector: 'app-seller-profile-page',
   imports: [
     SellerAbout,
+    SellerCertifications,
+    SellerLocation,
     SellerInformation,
     RouterLink,
     SellerProfileHero,
