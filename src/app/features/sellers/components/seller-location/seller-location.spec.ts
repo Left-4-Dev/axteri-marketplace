@@ -26,6 +26,7 @@ describe('SellerLocation', () => {
   const clearInstanceListeners = vi.fn();
   let marker: { map: object | null };
   const api = {
+    ControlPosition: { TOP_LEFT: 1, LEFT_CENTER: 4, LEFT_BOTTOM: 6 },
     Map: class {
       unbindAll = unbindAll;
       constructor(...args: unknown[]) {
@@ -95,7 +96,7 @@ describe('SellerLocation', () => {
       expect.any(HTMLElement),
       expect.objectContaining({
         center: { lat: -12.0701228, lng: -77.0969605 },
-        zoom: 19,
+        zoom: 15,
         zoomControl: true,
       }),
     );

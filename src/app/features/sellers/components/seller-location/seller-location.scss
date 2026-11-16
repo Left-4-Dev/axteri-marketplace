@@ -13,11 +13,69 @@
     font-size: var(--font-size-section-title);
     text-transform: uppercase;
   }
+  &__map-shell {
+    --corner-size: 5.5rem;
+    --badge-size: 3rem;
+    position: relative;
+    border: 2px solid var(--color-brand);
+    border-radius: var(--radius-lg);
+  }
+  &__badge {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: -2px;
+    inset-inline-end: -2px;
+    display: grid;
+    place-items: center;
+    inline-size: var(--corner-size);
+    block-size: var(--corner-size);
+    border-inline-start: 2px solid var(--color-brand);
+    border-block-end: 2px solid var(--color-brand);
+    border-end-start-radius: var(--radius-lg);
+    background: var(--color-surface);
+    pointer-events: none;
+
+    // ProductCard's radial joins, reflected into the target's upper-right cutout.
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      inline-size: var(--radius-lg);
+      block-size: var(--radius-lg);
+      background: radial-gradient(
+        circle at 0 100%,
+        transparent calc(var(--radius-lg) - 2px),
+        var(--color-brand) calc(var(--radius-lg) - 2px),
+        var(--color-brand) var(--radius-lg),
+        var(--color-surface) var(--radius-lg)
+      );
+    }
+    &::before {
+      inset-inline-end: 100%;
+      inset-block-start: 0;
+    }
+    &::after {
+      inset-inline-end: 0;
+      inset-block-start: 100%;
+    }
+  }
+  &__badge-disc {
+    display: grid;
+    place-items: center;
+    inline-size: var(--badge-size);
+    block-size: var(--badge-size);
+    border-radius: var(--radius-pill);
+    background: var(--color-brand);
+    .seller-location__icon {
+      inline-size: var(--icon-size-lg);
+      block-size: var(--icon-size-lg);
+      background: var(--color-on-action);
+    }
+  }
   &__map {
     position: relative;
-    block-size: clamp(16rem, 28vw, 25rem);
+    block-size: clamp(14rem, 20vw, 18rem);
     overflow: hidden;
-    border: 2px solid var(--color-brand);
     border-radius: var(--radius-lg);
     background: var(--color-surface-muted);
   }
@@ -49,7 +107,7 @@
     mask: url('/assets/icons/header/location.svg') center / contain no-repeat;
   }
   &__address {
-    margin: var(--space-lg) 0 0;
+    margin: var(--space-ms) 0 0;
     line-height: var(--line-height-body);
   }
   &__demo {
@@ -61,5 +119,13 @@
 @media (max-width: bp.$md) {
   .seller-location {
     padding: var(--space-md);
+    &__map-shell {
+      --corner-size: 4rem;
+      --badge-size: var(--control-height-compact);
+    }
+    &__badge .seller-location__icon {
+      inline-size: var(--icon-size-sm);
+      block-size: var(--icon-size-sm);
+    }
   }
 }

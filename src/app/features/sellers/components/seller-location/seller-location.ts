@@ -82,15 +82,23 @@ export class SellerLocation {
           this.demo.set(!coordinates);
           api = await this.loader.load(config);
           if (cancelled) return;
-          map = new api.Map(container, {
+          // Keep this presentation-only API typing local; the loader is unchanged.
+          const { ControlPosition } = api as MapsApi & {
+            ControlPosition: { TOP_LEFT: number; LEFT_CENTER: number; LEFT_BOTTOM: number };
+          };
+          const options = {
             center,
             zoom: 15,
             mapId: config.mapId || 'DEMO_MAP_ID',
             zoomControl: true,
             fullscreenControl: true,
+            fullscreenControlOptions: { position: ControlPosition.TOP_LEFT },
+            zoomControlOptions: { position: ControlPosition.LEFT_BOTTOM },
+            cameraControlOptions: { position: ControlPosition.LEFT_CENTER },
             streetViewControl: false,
             mapTypeControl: false,
-          });
+          };
+          map = new api.Map(container, options);
           marker = new api.marker.AdvancedMarkerElement({
             map,
             position: center,
