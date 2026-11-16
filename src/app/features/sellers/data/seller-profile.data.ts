@@ -37,8 +37,11 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     '/assets/sellers/ldf-projects/gallery/ldf-projects-04.webp',
   ],
   information: {
-    supplierType: 'Distribuidor (ejemplo de desarrollo)',
-    businessHours: [],
+    supplierType: 'Importador',
+    taxId: '20516921529',
+    foundedOn: '01 - 07 - 2014',
+    employeeCount: 6,
+    businessHours: ['L - V de 9 am a 7 pm', 'S de 9 am a 1 pm'],
   },
   location: {
     country: 'Perú',
