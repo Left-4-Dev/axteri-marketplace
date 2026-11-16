@@ -6,6 +6,7 @@
       type="button"
       aria-label="Productos destacados anteriores"
       aria-controls="featured-products-carousel"
+      [hidden]="!canGoBack()"
       [disabled]="!canGoBack()"
       (click)="move(-1)"
     >
@@ -19,7 +20,6 @@
       aria-roledescription="carrusel"
       aria-labelledby="featured-products-title"
       [attr.tabindex]="canGoBack() || canGoForward() ? 0 : null"
-      (scroll)="updateControls()"
       (keydown)="onKeydown($event)"
     >
       <ul #list class="featured-products__products" role="list">
@@ -35,6 +35,7 @@
       type="button"
       aria-label="Productos destacados siguientes"
       aria-controls="featured-products-carousel"
+      [hidden]="!canGoForward()"
       [disabled]="!canGoForward()"
       (click)="move(1)"
     >

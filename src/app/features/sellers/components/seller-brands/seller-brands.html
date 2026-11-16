@@ -1,0 +1,42 @@
+<div class="seller-brands">
+  <h2 id="marcas-title" class="seller-brands__title">Marcas</h2>
+  <div class="seller-brands__rail">
+    <button
+      class="seller-brands__arrow seller-brands__arrow--previous"
+      type="button"
+      aria-label="Marcas anteriores"
+      aria-controls="seller-brands-list"
+      [hidden]="!canPrevious()"
+      [disabled]="!canPrevious()"
+      (click)="scroll(-1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+    <ul
+      #viewport
+      id="seller-brands-list"
+      class="seller-brands__list"
+      tabindex="0"
+      aria-label="Marcas del proveedor"
+    >
+      @for (brand of brands(); track brand.id) {
+        <li class="seller-brands__item" [attr.aria-label]="brand.name">
+          @if (brand.logo) {
+            <img class="seller-brands__logo" [appProductAsset]="brand.logo" [alt]="brand.name" />
+          }
+        </li>
+      }
+    </ul>
+    <button
+      class="seller-brands__arrow seller-brands__arrow--next"
+      type="button"
+      aria-label="Marcas siguientes"
+      aria-controls="seller-brands-list"
+      [hidden]="!canNext()"
+      [disabled]="!canNext()"
+      (click)="scroll(1)"
+    >
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+</div>

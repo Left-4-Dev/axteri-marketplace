@@ -1,0 +1,137 @@
+<div class="seller-about">
+  <h2 id="perfil-title" class="seller-about__title">Perfil</h2>
+  @for (paragraph of seller().description; track $index) {
+    <p class="seller-about__paragraph">{{ paragraph }}</p>
+  }
+  @if (seller().gallery.length) {
+    <div class="seller-about__rail">
+      <button
+        class="seller-about__arrow seller-about__arrow--previous"
+        type="button"
+        aria-label="Imágenes anteriores"
+        aria-controls="seller-about-gallery"
+        [hidden]="!canPrevious()"
+        [disabled]="!canPrevious()"
+        (click)="scroll(-1)"
+      >
+        <span aria-hidden="true"></span>
+      </button>
+
+      <ul
+        #viewport
+        id="seller-about-gallery"
+        class="seller-about__gallery"
+        tabindex="0"
+        aria-label="Galería del proveedor"
+      >
+        @for (source of seller().gallery; track $index) {
+          <li class="seller-about__item">
+            <div class="seller-about__card">
+              <div class="seller-about__image-wrapper">
+                <img
+                  #asset="productAsset"
+                  class="seller-about__image"
+                  [appProductAsset]="source"
+                  [alt]="'Imagen ' + ($index + 1) + ' de ' + seller().name"
+                  loading="lazy"
+                />
+                @if (!asset.loaded()) {
+                  <span class="seller-about__fallback">Imagen del proveedor pendiente</span>
+                }
+              </div>
+              <div class="seller-about__action">
+                <button
+                  #expandButton
+                  class="seller-about__expand"
+                  type="button"
+                  [attr.aria-label]="'Ampliar imagen ' + ($index + 1) + ' de ' + seller().name"
+                  (click)="openLightbox($index)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path
+                      d="M9 3H3v6m0-6 6 6m6-6h6v6m0-6-6 6M3 15v6h6m-6 0 6-6m12 0v6h-6m6 0-6-6"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <button
+        class="seller-about__arrow seller-about__arrow--next"
+        type="button"
+        aria-label="Imágenes siguientes"
+        aria-controls="seller-about-gallery"
+        [hidden]="!canNext()"
+        [disabled]="!canNext()"
+        (click)="scroll(1)"
+      >
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  }
+
+  @if (lightboxOpen()) {
+    <dialog
+      #lightbox
+      class="seller-about__lightbox"
+      tabindex="-1"
+      aria-label="Vista ampliada de la imagen del proveedor"
+      (click)="onLightboxClick($event)"
+      (keydown)="onDocumentKeydown($event)"
+      (cancel)="onLightboxCancel($event)"
+    >
+      <button
+        #lightboxClose
+        class="seller-about__lightbox-close"
+        type="button"
+        aria-label="Cerrar vista ampliada"
+        (click)="closeLightbox()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      @if (seller().gallery.length > 1) {
+        <button
+          #lightboxPrevious
+          class="seller-about__lightbox-previous"
+          type="button"
+          aria-label="Imagen anterior"
+          [disabled]="selectedIndex() === 0"
+          (click)="showLightboxImage(-1)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="m15 6-6 6 6 6" />
+          </svg>
+        </button>
+      }
+      <figure class="seller-about__lightbox-stage">
+        <img
+          class="seller-about__lightbox-image"
+          [appProductAsset]="selectedImage()"
+          [alt]="'Imagen ' + (selectedIndex() + 1) + ' de ' + seller().name"
+        />
+      </figure>
+      @if (seller().gallery.length > 1) {
+        <button
+          #lightboxNext
+          class="seller-about__lightbox-next"
+          type="button"
+          aria-label="Imagen siguiente"
+          [disabled]="selectedIndex() === seller().gallery.length - 1"
+          (click)="showLightboxImage(1)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="m9 6 6 6-6 6" />
+          </svg>
+        </button>
+      }
+      <span class="seller-about__lightbox-counter" aria-live="polite"
+        >{{ selectedIndex() + 1 }} / {{ seller().gallery.length }}</span
+      >
+    </dialog>
+  }
+</div>

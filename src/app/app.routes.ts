@@ -6,6 +6,14 @@ export const routes: Routes = [
     loadComponent: () => import('./core/layout/main-layout/main-layout').then((m) => m.MainLayout),
     children: [
       {
+        path: 'proveedores/:id',
+        title: 'Perfil del proveedor | Axteri Marketplace',
+        loadComponent: () =>
+          import('./features/sellers/pages/seller-profile-page/seller-profile-page').then(
+            (m) => m.SellerProfilePage,
+          ),
+      },
+      {
         path: '',
         pathMatch: 'full',
         title: 'Axteri Marketplace',

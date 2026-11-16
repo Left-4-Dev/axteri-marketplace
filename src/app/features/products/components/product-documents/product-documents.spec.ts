@@ -189,9 +189,10 @@ describe('ProductDocuments', () => {
       const viewport = mockScroll({ scrollWidth: 1600, clientWidth: 800, scrollLeft: 0 }, scrollBy);
       await fixture.whenStable();
 
-      expect(previous().hidden).toBe(false);
+      expect(previous().hidden).toBe(true);
       expect(previous().disabled).toBe(true);
       expect(next().disabled).toBe(false);
+      expect(next().hidden).toBe(false);
       expect(viewport.getAttribute('tabindex')).toBe('0');
 
       next().click();
@@ -200,7 +201,9 @@ describe('ProductDocuments', () => {
       mockScroll({ scrollWidth: 1600, clientWidth: 800, scrollLeft: 800 }, scrollBy);
       await fixture.whenStable();
       expect(previous().disabled).toBe(false);
+      expect(previous().hidden).toBe(false);
       expect(next().disabled).toBe(true);
+      expect(next().hidden).toBe(true);
 
       previous().click();
       const [lastCall] = scrollBy.mock.calls.slice(-1);

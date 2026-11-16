@@ -1,0 +1,23 @@
+<div class="seller-information">
+  <h2 id="informacion-title" class="seller-information__title">Información</h2>
+  <dl class="seller-information__table">
+    @for (row of rows(); track row.first.label) {
+      <div class="seller-information__row">
+        <dt class="seller-information__label">{{ row.first.label }}</dt>
+        <dd class="seller-information__value">
+          @for (val of row.first.values; track val) {
+            <div>{{ val }}</div>
+          }
+        </dd>
+        @if (row.second; as second) {
+          <dt class="seller-information__label">{{ second.label }}</dt>
+          <dd class="seller-information__value">
+            @for (val of second.values; track val) {
+              <div>{{ val }}</div>
+            }
+          </dd>
+        }
+      </div>
+    }
+  </dl>
+</div>

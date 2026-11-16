@@ -1,0 +1,131 @@
+@use '../../../../../styles/breakpoints' as bp;
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+.seller-location {
+  padding: var(--space-2lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  h2 {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--font-size-section-title);
+    text-transform: uppercase;
+  }
+  &__map-shell {
+    --corner-size: 5.5rem;
+    --badge-size: 3rem;
+    position: relative;
+    border: 2px solid var(--color-brand);
+    border-radius: var(--radius-lg);
+  }
+  &__badge {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: -2px;
+    inset-inline-end: -2px;
+    display: grid;
+    place-items: center;
+    inline-size: var(--corner-size);
+    block-size: var(--corner-size);
+    border-inline-start: 2px solid var(--color-brand);
+    border-block-end: 2px solid var(--color-brand);
+    border-end-start-radius: var(--radius-lg);
+    background: var(--color-surface);
+    pointer-events: none;
+
+    // ProductCard's radial joins, reflected into the target's upper-right cutout.
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      inline-size: var(--radius-lg);
+      block-size: var(--radius-lg);
+      background: radial-gradient(
+        circle at 0 100%,
+        transparent calc(var(--radius-lg) - 2px),
+        var(--color-brand) calc(var(--radius-lg) - 2px),
+        var(--color-brand) var(--radius-lg),
+        var(--color-surface) var(--radius-lg)
+      );
+    }
+    &::before {
+      inset-inline-end: 100%;
+      inset-block-start: 0;
+    }
+    &::after {
+      inset-inline-end: 0;
+      inset-block-start: 100%;
+    }
+  }
+  &__badge-disc {
+    display: grid;
+    place-items: center;
+    inline-size: var(--badge-size);
+    block-size: var(--badge-size);
+    border-radius: var(--radius-pill);
+    background: var(--color-brand);
+    .seller-location__icon {
+      inline-size: var(--icon-size-lg);
+      block-size: var(--icon-size-lg);
+      background: var(--color-on-action);
+    }
+  }
+  &__map {
+    position: relative;
+    block-size: clamp(14rem, 20vw, 18rem);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
+  }
+  &__canvas {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  &__status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    text-align: center;
+    color: var(--color-text-secondary);
+    background: var(--color-surface-muted);
+    p {
+      margin: 0;
+      max-inline-size: 32rem;
+    }
+  }
+  &__icon {
+    inline-size: var(--control-height-large);
+    block-size: var(--control-height-large);
+    background: var(--color-brand);
+    mask: url('/assets/icons/header/location.svg') center / contain no-repeat;
+  }
+  &__address {
+    margin: var(--space-ms) 0 0;
+    line-height: var(--line-height-body);
+  }
+  &__demo {
+    margin: var(--space-md) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-secondary);
+  }
+}
+@media (max-width: bp.$md) {
+  .seller-location {
+    padding: var(--space-md);
+    &__map-shell {
+      --corner-size: 4rem;
+      --badge-size: var(--control-height-compact);
+    }
+    &__badge .seller-location__icon {
+      inline-size: var(--icon-size-sm);
+      block-size: var(--icon-size-sm);
+    }
+  }
+}

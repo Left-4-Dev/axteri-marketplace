@@ -1,18 +1,15 @@
 import { NgTemplateOutlet } from '@angular/common';
 import {
-  afterNextRender,
-  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   DOCUMENT,
   ElementRef,
   inject,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
+import { horizontalScrollState } from '../../../../shared/utils/horizontal-scroll-state';
 import { ProductAsset } from '../../directives/product-asset';
 import { ProductDocument } from '../../models/product-detail.model';
 
@@ -26,31 +23,16 @@ import { ProductDocument } from '../../models/product-detail.model';
 export class ProductDocuments {
   readonly documents = input.required<readonly ProductDocument[]>();
 
-  protected readonly canGoBack = signal(false);
-  protected readonly canGoForward = signal(false);
-  protected readonly scrollable = computed(() => this.canGoBack() || this.canGoForward());
   private readonly viewport = viewChild<ElementRef<HTMLDivElement>>('viewport');
   private readonly list = viewChild<ElementRef<HTMLUListElement>>('list');
   private readonly document = inject(DOCUMENT);
-  private readonly destroyRef = inject(DestroyRef);
-
-  constructor() {
-    afterRenderEffect({
-      read: () => {
-        this.documents();
-        this.updateControls();
-      },
-    });
-    afterNextRender(() => {
-      const viewport = this.viewport();
-      if (typeof ResizeObserver === 'undefined' || !viewport) return;
-      const observer = new ResizeObserver(() => this.updateControls());
-      observer.observe(viewport.nativeElement);
-      const list = this.list();
-      if (list) observer.observe(list.nativeElement);
-      this.destroyRef.onDestroy(() => observer.disconnect());
-    });
-  }
+  private readonly scrollState = horizontalScrollState(
+    () => this.viewport()?.nativeElement,
+    () => this.documents(),
+  );
+  protected readonly canGoBack = this.scrollState.canScrollPrev;
+  protected readonly canGoForward = this.scrollState.canScrollNext;
+  protected readonly scrollable = computed(() => this.canGoBack() || this.canGoForward());
 
   // Evita presentar enlaces engañosos (#, vacíos o javascript:) cuando no existe archivo real.
   protected resolveHref(href: string | undefined): string | null {
@@ -59,15 +41,6 @@ export class ProductDocuments {
       return null;
     }
     return trimmed;
-  }
-
-  protected updateControls(): void {
-    const viewport = this.viewport()?.nativeElement;
-    if (!viewport) return;
-    const end = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-    // Allow for fractional layout/scroll rounding at either edge.
-    this.canGoBack.set(end > 1 && viewport.scrollLeft > 1);
-    this.canGoForward.set(viewport.scrollLeft < end - 1);
   }
 
   protected move(direction: -1 | 1): void {

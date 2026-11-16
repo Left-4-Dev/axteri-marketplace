@@ -3,6 +3,8 @@
 # Compiled output
 /dist
 /tmp
+# Local browser Maps configuration (public at runtime, not versioned).
+/public/config/google-maps.local.json
 /out-tsc
 /bazel-out
 

@@ -1,0 +1,35 @@
+<div class="seller-location">
+  <h2 id="ubicacion-title">Ubicación</h2>
+  <div class="seller-location__map-shell">
+    <div class="seller-location__badge" aria-hidden="true">
+      <span class="seller-location__badge-disc"><span class="seller-location__icon"></span></span>
+    </div>
+    <div class="seller-location__map" [attr.aria-busy]="status() === 'loading'">
+      <div
+        #canvas
+        class="seller-location__canvas"
+        [hidden]="status() === 'unavailable'"
+        role="region"
+        aria-label="Mapa de ubicación"
+      ></div>
+      @if (status() !== 'ready') {
+        <div class="seller-location__status" role="status">
+          <span class="seller-location__icon" aria-hidden="true"></span>
+          @if (status() === 'loading') {
+            <p>Cargando mapa…</p>
+          } @else {
+            <p>
+              Mapa no disponible. La ubicación está pendiente de configuración o no se pudo cargar.
+            </p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  @if (demo() && status() === 'ready') {
+    <p class="seller-location__demo">
+      Mapa de demostración: el punto no representa la ubicación confirmada del proveedor.
+    </p>
+  }
+  <p class="seller-location__address">{{ address() }}</p>
+</div>

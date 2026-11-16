@@ -1,0 +1,72 @@
+@use '../../../../../styles/breakpoints' as bp;
+@use '../../../../../styles/controls';
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.seller-products {
+  padding: var(--space-2lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+
+  &__title {
+    margin: 0 0 var(--space-lg);
+    font-size: var(--font-size-section-title);
+    text-transform: uppercase;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--layout-card-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    min-inline-size: 0;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    margin-block-start: var(--space-lg);
+  }
+
+  &__more {
+    @include controls.button;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: bp.$xl) {
+  .seller-products__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: bp.$lg) {
+  .seller-products__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: bp.$md) {
+  .seller-products {
+    padding: var(--space-md);
+
+    &__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+@media (max-width: bp.$sm) {
+  .seller-products__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

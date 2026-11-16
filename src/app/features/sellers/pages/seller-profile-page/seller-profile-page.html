@@ -1,0 +1,53 @@
+<div class="seller-profile">
+  @if (seller(); as item) {
+    <app-seller-profile-hero
+      class="seller-profile__hero"
+      [seller]="item"
+      (contactRequest)="onContactRequest()"
+      (shareRequest)="onShareRequest()"
+    />
+    <p class="seller-profile__status" role="status">{{ actionMessage() }}</p>
+
+    <app-seller-section-nav
+      class="seller-profile__nav"
+      [sections]="sections"
+      [profilePath]="'/proveedores/' + item.id"
+    />
+
+    @for (section of sections; track section.id) {
+      <section
+        class="seller-profile__section seller-profile__section--implemented"
+        [id]="section.id"
+        [attr.aria-labelledby]="section.id + '-title'"
+        tabindex="-1"
+      >
+        @switch (section.id) {
+          @case ('productos') {
+            <app-seller-products [products]="products()" />
+          }
+          @case ('marcas') {
+            <app-seller-brands [brands]="item.brands" />
+          }
+          @case ('perfil') {
+            <app-seller-about [seller]="item" />
+          }
+          @case ('informacion') {
+            <app-seller-information [seller]="item" />
+          }
+          @case ('certificaciones') {
+            <app-seller-certifications [certifications]="item.certifications" />
+          }
+          @case ('ubicacion') {
+            <app-seller-location [location]="item.location" [sellerName]="item.name" />
+          }
+        }
+      </section>
+    }
+  } @else {
+    <section class="seller-profile__empty" aria-labelledby="seller-not-found-title">
+      <h1 id="seller-not-found-title">Proveedor no encontrado</h1>
+      <p>No tenemos una ficha disponible para este proveedor.</p>
+      <a routerLink="/productos">Volver a productos</a>
+    </section>
+  }
+</div>

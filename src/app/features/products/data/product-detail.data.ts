@@ -27,7 +27,7 @@ export const W22_PRODUCT_DETAIL: ProductDetail = {
     productCount: 200,
     verified: true,
     logo: {
-      src: '/assets/sellers/ldf-projects-logo.webp',
+      src: '/assets/sellers/ldf-projects/logo.webp',
       alt: 'LDF Projects',
     },
   },

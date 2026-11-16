@@ -95,6 +95,7 @@ describe('LimitedOffers', () => {
       expect(button.tagName).toBe('BUTTON');
       expect(button.getAttribute('aria-controls')).toBe(viewport.id);
       expect(button.disabled).toBe(true);
+      expect(button.hidden).toBe(true);
     }
     expect(element.querySelector('.limited-offers__more, section > button')).toBeNull();
     expect(element.textContent).not.toContain('MÁS OFERTAS');
@@ -119,6 +120,7 @@ describe('LimitedOffers', () => {
     );
     expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
     expect(
       element.querySelector(
         '.limited-offers__more, section > button, section > a, .limited-offers__carousel > a',
@@ -132,6 +134,7 @@ describe('LimitedOffers', () => {
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBe(viewport.scrollWidth - viewport.clientWidth);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(viewport.querySelectorAll('app-product-card')).toHaveLength(10);
     expect(
       element.querySelector(
@@ -144,7 +147,9 @@ describe('LimitedOffers', () => {
     resize();
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(
       element.querySelector(
         '.limited-offers__more, section > button, section > a, .limited-offers__carousel > a',
@@ -155,16 +160,20 @@ describe('LimitedOffers', () => {
   it('moves forward and backward and updates arrow availability from actual scroll position', async () => {
     await setScrollable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
     next.click();
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBeGreaterThan(0);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     expect(viewport.scrollBy).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }));
     previous.click();
     await fixture.whenStable();
     expect(viewport.scrollLeft).toBe(0);
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
   });
 
   it('supports arrows, Home and End with reduced-motion scrolling', async () => {
@@ -179,14 +188,19 @@ describe('LimitedOffers', () => {
     key('ArrowLeft');
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     key('End');
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     expect(previous.disabled).toBe(false);
+    expect(previous.hidden).toBe(false);
     key('Home');
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(false);
+    expect(next.hidden).toBe(false);
   });
 
   it('updates on native scroll and resize, and disconnects its observer', async () => {
@@ -195,12 +209,15 @@ describe('LimitedOffers', () => {
     viewport.dispatchEvent(new Event('scroll'));
     await fixture.whenStable();
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     viewport.scrollLeft = 0;
     resize();
     await fixture.whenStable();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
     fixture.destroy();
     expect(disconnect).toHaveBeenCalledOnce();
   });
@@ -210,6 +227,8 @@ describe('LimitedOffers', () => {
     await fixture.whenStable();
     expect(element.querySelector('app-product-card')).toBeNull();
     expect(previous.disabled).toBe(true);
+    expect(previous.hidden).toBe(true);
     expect(next.disabled).toBe(true);
+    expect(next.hidden).toBe(true);
   });
 });
