@@ -1,0 +1,76 @@
+.auth-layout__artwork,
+.auth-layout__artwork-image,
+.auth-layout__orb,
+.auth-layout__stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.auth-layout__artwork-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0;
+
+  &--visible {
+    opacity: 1;
+  }
+}
+
+// One coordinate space paints both the tab and body. The mask only defines their silhouette.
+.auth-layout__artwork {
+  overflow: hidden;
+  border-radius: var(--tab-radius) 0 var(--radius-lg) var(--radius-lg);
+  background: linear-gradient(105deg, #b8dcfe 0%, #96b6fc 36%, #9296fa 70%, #b2a9ff 100%);
+  mask:
+    linear-gradient(#000 0 0) left top / calc(var(--tab-width) - var(--tab-radius)) 100%,
+    linear-gradient(#000 0 0) left bottom / var(--tab-width) calc(100% - var(--tab-radius)),
+    radial-gradient(
+        circle at left bottom,
+        #000 calc(var(--tab-radius) - 0.5px),
+        transparent var(--tab-radius)
+      )
+      calc(var(--tab-width) - var(--tab-radius)) top / var(--tab-radius) var(--tab-radius),
+    linear-gradient(#000 0 0) left bottom / 100% calc(100% - var(--tab-height) - var(--radius-lg)),
+    linear-gradient(#000 0 0) left bottom / calc(100% - var(--radius-lg))
+      calc(100% - var(--tab-height)),
+    radial-gradient(
+        circle at left var(--radius-lg),
+        #000 calc(var(--radius-lg) - 0.5px),
+        transparent var(--radius-lg)
+      )
+      right var(--tab-height) / var(--radius-lg) calc(var(--radius-lg) + 1px),
+    radial-gradient(
+        circle at right top,
+        transparent calc(var(--tab-curve) - 0.5px),
+        #000 var(--tab-curve)
+      )
+      var(--tab-width) calc(var(--tab-height) - var(--tab-curve)) / var(--tab-curve)
+      var(--tab-curve);
+  mask-repeat: no-repeat;
+  // The corner tile overlaps the body by 1px; its circle center/radius stay unchanged.
+  // This avoids a rasterization seam where fractional mask edges otherwise only touch.
+}
+
+.auth-layout__orb {
+  background: radial-gradient(
+    ellipse 52% 48% at 51% 43%,
+    rgb(235 248 255 / 65%) 0%,
+    rgb(211 234 255 / 28%) 30%,
+    transparent 90%
+  );
+}
+
+.auth-layout__stars {
+  opacity: 0.5;
+  background-image:
+    radial-gradient(1px 1px at 18% 12%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 33% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 62% 18%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 82% 38%, #fff, transparent),
+    radial-gradient(1px 1px at 28% 48%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 74% 68%, #fff, transparent),
+    radial-gradient(1px 1px at 15% 76%, #fff, transparent),
+    radial-gradient(1px 1px at 88% 84%, #fff, transparent);
+}

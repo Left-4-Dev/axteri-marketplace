@@ -1,0 +1,177 @@
+<section class="auth-login">
+  @if (viewMode() === 'login') {
+    <header class="auth-login__header">
+      <h1 class="auth-login__title">{{ config().heading }}</h1>
+      <p class="auth-login__subtitle">{{ config().subtitle }}</p>
+    </header>
+
+    <app-auth-social-buttons [disabled]="loading()" (selectProvider)="onSocialSignIn($event)" />
+
+    <form class="auth-login__form" [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" novalidate>
+      <div class="auth-login__field">
+        <label class="auth-login__label" for="auth-login-identifier">
+          {{ config().identifierLabel }}
+        </label>
+        <input
+          id="auth-login-identifier"
+          class="auth-login__input"
+          [type]="config().identifierInputType"
+          formControlName="identifier"
+          [placeholder]="config().identifierPlaceholder"
+          [attr.autocomplete]="config().identifierInputType === 'email' ? 'email' : 'username'"
+          [attr.aria-invalid]="
+            loginForm.controls.identifier.touched && loginForm.controls.identifier.invalid
+          "
+        />
+      </div>
+
+      <div class="auth-login__field">
+        <label class="auth-login__label" for="auth-login-password">CONTRASEÑA</label>
+        <input
+          id="auth-login-password"
+          class="auth-login__input"
+          type="password"
+          formControlName="password"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+          [attr.aria-invalid]="
+            loginForm.controls.password.touched && loginForm.controls.password.invalid
+          "
+        />
+        @if (errorMessage()) {
+          <p class="auth-login__error" role="alert">{{ errorMessage() }}</p>
+        }
+      </div>
+
+      <!--
+        Approved decision: "Recuérdame" is intentionally omitted at this stage.
+        Session persistence and expiration will be managed via Clerk session configuration / backend policy.
+      -->
+      <div class="auth-login__actions-row">
+        <button
+          class="auth-login__forgot-link"
+          type="button"
+          [disabled]="loading()"
+          (click)="openForgotPassword()"
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
+
+      <div class="auth-login__submit-row">
+        <button class="auth-login__submit" type="submit" [disabled]="loading()">
+          INICIAR SESIÓN
+        </button>
+      </div>
+    </form>
+  } @else if (viewMode() === 'reset-request') {
+    <header class="auth-login__header">
+      <h1 class="auth-login__title auth-login__title--compact">RECUPERA TU CONTRASEÑA</h1>
+      <p class="auth-login__subtitle">
+        Ingresa tu {{ config().identifierLabel.toLowerCase() }} y te enviaremos un código de
+        verificación mediante Clerk.
+      </p>
+    </header>
+
+    <form
+      class="auth-login__form"
+      [formGroup]="resetRequestForm"
+      (ngSubmit)="onSubmitResetRequest()"
+      novalidate
+    >
+      <div class="auth-login__field">
+        <label class="auth-login__label" for="auth-reset-identifier">
+          {{ config().identifierLabel }}
+        </label>
+        <input
+          id="auth-reset-identifier"
+          class="auth-login__input"
+          [type]="config().identifierInputType"
+          formControlName="identifier"
+          [placeholder]="config().identifierPlaceholder"
+        />
+        @if (errorMessage()) {
+          <p class="auth-login__error" role="alert">{{ errorMessage() }}</p>
+        }
+      </div>
+
+      <div class="auth-login__actions-row">
+        <button
+          class="auth-login__forgot-link"
+          type="button"
+          [disabled]="loading()"
+          (click)="returnToLogin()"
+        >
+          Volver al inicio de sesión
+        </button>
+      </div>
+
+      <div class="auth-login__submit-row">
+        <button class="auth-login__submit" type="submit" [disabled]="loading()">
+          ENVIAR CÓDIGO
+        </button>
+      </div>
+    </form>
+  } @else {
+    <header class="auth-login__header">
+      <h1 class="auth-login__title auth-login__title--compact">NUEVA CONTRASEÑA</h1>
+      <p class="auth-login__subtitle">
+        Ingresa el código recibido en tu correo y define tu nueva contraseña.
+      </p>
+    </header>
+
+    @if (infoMessage()) {
+      <p class="auth-login__info" role="status">{{ infoMessage() }}</p>
+    }
+
+    <form
+      class="auth-login__form"
+      [formGroup]="resetConfirmForm"
+      (ngSubmit)="onSubmitResetConfirm()"
+      novalidate
+    >
+      <div class="auth-login__field">
+        <label class="auth-login__label" for="auth-reset-code">CÓDIGO DE VERIFICACIÓN</label>
+        <input
+          id="auth-reset-code"
+          class="auth-login__input"
+          type="text"
+          inputmode="numeric"
+          formControlName="code"
+          placeholder="Código de 6 dígitos"
+          autocomplete="one-time-code"
+        />
+      </div>
+
+      <div class="auth-login__field">
+        <label class="auth-login__label" for="auth-reset-new-password">NUEVA CONTRASEÑA</label>
+        <input
+          id="auth-reset-new-password"
+          class="auth-login__input"
+          type="password"
+          formControlName="newPassword"
+          placeholder="Mínimo 8 caracteres"
+          autocomplete="new-password"
+        />
+        @if (errorMessage()) {
+          <p class="auth-login__error" role="alert">{{ errorMessage() }}</p>
+        }
+      </div>
+
+      <div class="auth-login__actions-row">
+        <button
+          class="auth-login__forgot-link"
+          type="button"
+          [disabled]="loading()"
+          (click)="returnToLogin()"
+        >
+          Volver al inicio de sesión
+        </button>
+      </div>
+
+      <div class="auth-login__submit-row">
+        <button class="auth-login__submit" type="submit" [disabled]="loading()">RESTABLECER</button>
+      </div>
+    </form>
+  }
+</section>

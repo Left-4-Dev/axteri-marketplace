@@ -1,0 +1,343 @@
+<app-auth-layout
+  tabLabel="REGISTRO"
+  [panelVariant]="panelVariant()"
+  [features]="step3Features"
+  [topAction]="topAction()"
+  [topActionMobileOnly]="currentStep() > 1"
+>
+  <section class="provider-register">
+    <app-auth-stepper [currentStep]="currentStep()" />
+
+    @switch (currentStep()) {
+      @case (1) {
+        <div class="provider-register__step" data-step="1">
+          <header class="provider-register__header">
+            <h1 class="provider-register__title provider-register__title--display">
+              VENDE EN AXTERI
+            </h1>
+            <p class="provider-register__subtitle">
+              Exhibe tus productos y accede a múltiples beneficios.
+            </p>
+          </header>
+
+          <app-auth-social-buttons
+            [disabled]="loading()"
+            (selectProvider)="onSocialRegister($event)"
+          />
+
+          <form
+            class="provider-register__form"
+            [formGroup]="step1Form"
+            (ngSubmit)="onSubmitStep1()"
+            novalidate
+          >
+            <div class="provider-register__field">
+              <label class="provider-register__label" for="provider-register-phone">
+                NÚMERO DE LA EMPRESA
+              </label>
+              <p class="provider-register__hint">
+                Tu información será tratada de forma confidencial.
+              </p>
+
+              <div class="provider-register__phone-box">
+                <span
+                  class="provider-register__phone-prefix"
+                  [attr.data-asset-slot]="flagAssetPath"
+                  aria-hidden="true"
+                >
+                  <img
+                    class="provider-register__flag-asset"
+                    [class.provider-register__flag-asset--visible]="flagAssetLoaded()"
+                    [src]="flagAssetPath"
+                    alt=""
+                    (load)="onFlagLoad()"
+                    (error)="onFlagError()"
+                  />
+                  @if (!flagAssetLoaded()) {
+                    <svg class="provider-register__flag-svg" viewBox="0 0 18 12">
+                      <rect width="6" height="12" x="0" y="0" fill="#D91023" />
+                      <rect width="6" height="12" x="6" y="0" fill="#FFFFFF" />
+                      <rect width="6" height="12" x="12" y="0" fill="#D91023" />
+                    </svg>
+                  }
+                  <span class="provider-register__dial-code">+51</span>
+                </span>
+
+                <input
+                  id="provider-register-phone"
+                  class="provider-register__phone-input"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="9"
+                  formControlName="phone"
+                  placeholder="Número de teléfono móvil"
+                  autocomplete="tel-national"
+                />
+              </div>
+            </div>
+
+            <label class="provider-register__terms">
+              <input
+                id="provider-register-terms"
+                class="provider-register__checkbox"
+                type="checkbox"
+                formControlName="acceptedTerms"
+              />
+              <span class="provider-register__terms-text">
+                He leído y acepto todos los
+                <a
+                  class="provider-register__terms-link"
+                  href="#terminos"
+                  (click)="$event.preventDefault()"
+                >
+                  Términos y Condiciones</a
+                >.
+              </span>
+            </label>
+
+            @if (errorMessage()) {
+              <p class="provider-register__error" role="alert">{{ errorMessage() }}</p>
+            }
+
+            <div class="provider-register__submit-row">
+              <button class="provider-register__submit" type="submit" [disabled]="loading()">
+                SIGUIENTE
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      @case (2) {
+        <div class="provider-register__step" data-step="2">
+          @if (!awaitingEmailVerification()) {
+            <header class="provider-register__header">
+              <h1 class="provider-register__title">CUÉNTANOS SOBRE TI</h1>
+              <p class="provider-register__subtitle">
+                Ingresa los siguientes datos para continuar con el registro.
+              </p>
+            </header>
+
+            <form
+              class="provider-register__form"
+              [formGroup]="step2Form"
+              (ngSubmit)="onSubmitStep2()"
+              novalidate
+            >
+              <div class="provider-register__field">
+                <label class="provider-register__label" for="provider-register-fullname">
+                  NOMBRE COMPLETO
+                </label>
+                <input
+                  id="provider-register-fullname"
+                  class="provider-register__input"
+                  type="text"
+                  formControlName="fullName"
+                  placeholder="Nombre completo"
+                  autocomplete="name"
+                />
+              </div>
+
+              <div class="provider-register__field">
+                <label class="provider-register__label" for="provider-register-ruc">RUC</label>
+                <input
+                  id="provider-register-ruc"
+                  class="provider-register__input"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="11"
+                  formControlName="ruc"
+                  placeholder="Documento de identidad"
+                />
+              </div>
+
+              <div class="provider-register__field">
+                <label class="provider-register__label" for="provider-register-email">
+                  CORREO ELECTRÓNICO DE LA EMPRESA
+                </label>
+                <input
+                  id="provider-register-email"
+                  class="provider-register__input"
+                  type="email"
+                  formControlName="companyEmail"
+                  placeholder="Correo electrónico"
+                  autocomplete="email"
+                />
+              </div>
+
+              <div class="provider-register__field">
+                <label class="provider-register__label" for="provider-register-password">
+                  CONTRASEÑA
+                </label>
+                <input
+                  id="provider-register-password"
+                  class="provider-register__input"
+                  type="password"
+                  formControlName="password"
+                  placeholder="Ingresa tu contraseña"
+                  autocomplete="new-password"
+                />
+              </div>
+
+              @if (errorMessage()) {
+                <p class="provider-register__error" role="alert">{{ errorMessage() }}</p>
+              }
+
+              <div class="provider-register__submit-row">
+                <button class="provider-register__submit" type="submit" [disabled]="loading()">
+                  SIGUIENTE
+                </button>
+              </div>
+            </form>
+          } @else {
+            <header class="provider-register__header">
+              <h1 class="provider-register__title">VERIFICA TU CORREO ELECTRÓNICO</h1>
+              <p class="provider-register__subtitle">
+                {{ infoMessage() }}
+              </p>
+            </header>
+
+            <form
+              class="provider-register__form"
+              [formGroup]="verificationForm"
+              (ngSubmit)="onSubmitEmailVerification()"
+              novalidate
+            >
+              <div class="provider-register__field">
+                <label class="provider-register__label" for="provider-register-code">
+                  CÓDIGO DE VERIFICACIÓN
+                </label>
+                <input
+                  id="provider-register-code"
+                  class="provider-register__input"
+                  type="text"
+                  inputmode="numeric"
+                  formControlName="code"
+                  placeholder="Código de 6 dígitos"
+                  autocomplete="one-time-code"
+                />
+              </div>
+
+              @if (errorMessage()) {
+                <p class="provider-register__error" role="alert">{{ errorMessage() }}</p>
+              }
+
+              <div class="provider-register__resend-row">
+                <button
+                  class="provider-register__resend-button"
+                  type="button"
+                  [disabled]="loading()"
+                  (click)="onResendVerificationCode()"
+                >
+                  Reenviar código
+                </button>
+              </div>
+
+              <div class="provider-register__submit-row">
+                <button class="provider-register__submit" type="submit" [disabled]="loading()">
+                  SIGUIENTE
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      }
+
+      @case (3) {
+        <div class="provider-register__step" data-step="3">
+          <header class="provider-register__header">
+            <h1 class="provider-register__title">CUÉNTANOS SOBRE TU EMPRESA</h1>
+            <p class="provider-register__subtitle">
+              La información recopilada nos permitirá mejorar tu experiencia en la plataforma
+            </p>
+          </header>
+
+          <form
+            class="provider-register__form"
+            [formGroup]="step3Form"
+            (ngSubmit)="onSubmitStep3()"
+            novalidate
+          >
+            <div class="provider-register__field">
+              <label class="provider-register__label" for="provider-register-industry">
+                RUBRO
+              </label>
+              <div class="provider-register__select-wrap">
+                <select
+                  id="provider-register-industry"
+                  class="provider-register__select"
+                  [class.provider-register__select--placeholder]="
+                    !step3Form.controls.industry.value
+                  "
+                  formControlName="industry"
+                >
+                  <option value="" disabled>¿En qué rubro se desenvuelve tu empresa?</option>
+                  @for (option of industries; track option.value) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+                <span class="provider-register__select-chevron" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="provider-register__field">
+              <label class="provider-register__label" for="provider-register-specialty">
+                ESPECIALIDAD
+              </label>
+              <div class="provider-register__select-wrap">
+                <select
+                  id="provider-register-specialty"
+                  class="provider-register__select"
+                  [class.provider-register__select--placeholder]="
+                    !step3Form.controls.specialty.value
+                  "
+                  formControlName="specialty"
+                >
+                  <option value="" disabled>¿Por qué usas Axteri?</option>
+                  @for (option of specialties; track option.value) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+                <span class="provider-register__select-chevron" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            @if (errorMessage()) {
+              <p class="provider-register__error" role="alert">{{ errorMessage() }}</p>
+            }
+
+            <div class="provider-register__submit-row provider-register__submit-row--spaced">
+              <button class="provider-register__submit" type="submit" [disabled]="loading()">
+                SIGUIENTE
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      @case (4) {
+        <div class="provider-register__step provider-register__step--success" data-step="4">
+          <div class="provider-register__success-body">
+            <h1 class="provider-register__success-title">¡FELICIDADES!</h1>
+            <p class="provider-register__success-subtitle">
+              TU SOLICITUD HA SIDO REGISTRADA CON ÉXITO
+            </p>
+            <p class="provider-register__success-copy">
+              Hemos recibido tu información correctamente. Nuestro equipo la revisará y te
+              contactará en un plazo máximo de tres días a través de tu correo electrónico.
+            </p>
+            <p class="provider-register__success-copy">
+              Agradecemos tu confianza y estamos listos para acompañarte en los siguientes pasos.
+            </p>
+          </div>
+
+          <div class="provider-register__submit-row provider-register__submit-row--spaced">
+            <button class="provider-register__submit" type="button" (click)="onBackToHome()">
+              VOLVER AL INICIO
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </section>
+</app-auth-layout>

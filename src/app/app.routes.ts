@@ -2,6 +2,30 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'login/proveedores',
+    title: 'Iniciar sesión proveedores | Axteri Marketplace',
+    loadComponent: () =>
+      import('./features/auth/pages/provider-login-page/provider-login-page').then(
+        (m) => m.ProviderLoginPage,
+      ),
+  },
+  {
+    path: 'login/clientes',
+    title: 'Iniciar sesión clientes | Axteri Marketplace',
+    loadComponent: () =>
+      import('./features/auth/pages/customer-login-page/customer-login-page').then(
+        (m) => m.CustomerLoginPage,
+      ),
+  },
+  {
+    path: 'registro/proveedores',
+    title: 'Registro de proveedores | Axteri Marketplace',
+    loadComponent: () =>
+      import('./features/auth/pages/provider-register-page/provider-register-page').then(
+        (m) => m.ProviderRegisterPage,
+      ),
+  },
+  {
     path: '',
     loadComponent: () => import('./core/layout/main-layout/main-layout').then((m) => m.MainLayout),
     children: [

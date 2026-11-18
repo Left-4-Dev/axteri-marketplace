@@ -1,0 +1,54 @@
+<div class="auth-social">
+  <div class="auth-social__buttons" role="group" aria-label="Autenticación con redes sociales">
+    <button
+      class="auth-social__button"
+      type="button"
+      data-provider="oauth_google"
+      [disabled]="disabled()"
+      (click)="onGoogleClick()"
+    >
+      <svg class="auth-social__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="#4285F4"
+          d="M21.8 12.23c0-.72-.06-1.41-.19-2.08H12v3.94h5.5a4.7 4.7 0 0 1-2.04 3.09v2.56h3.3c1.93-1.78 3.04-4.4 3.04-7.51Z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 22.2c2.76 0 5.07-.91 6.76-2.46l-3.3-2.56c-.91.61-2.08.98-3.46.98-2.66 0-4.91-1.8-5.72-4.21H2.87v2.64A10.2 10.2 0 0 0 12 22.2Z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M6.28 13.95a6.12 6.12 0 0 1 0-3.9V7.41H2.87a10.2 10.2 0 0 0 0 9.18l3.41-2.64Z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 5.84c1.5 0 2.85.52 3.91 1.53l2.93-2.93C17.06 2.79 14.76 1.8 12 1.8A10.2 10.2 0 0 0 2.87 7.41l3.41 2.64C7.09 7.64 9.34 5.84 12 5.84Z"
+        />
+      </svg>
+      <span>Continúa con Google</span>
+    </button>
+
+    <button
+      class="auth-social__button"
+      type="button"
+      data-provider="oauth_linkedin_oidc"
+      [disabled]="disabled()"
+      (click)="onLinkedInClick()"
+    >
+      <svg class="auth-social__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10.2" fill="#0A66C2" />
+        <path
+          fill="#fff"
+          d="M8.34 10.12h2.12v6.82H8.34v-6.82Zm1.06-3.39a1.23 1.23 0 1 1 0 2.46 1.23 1.23 0 0 1 0-2.46Zm2.92 3.39h2.03v.93h.03c.28-.54.98-1.1 2.01-1.1 2.15 0 2.55 1.41 2.55 3.25v3.74h-2.12v-3.32c0-.79-.01-1.81-1.1-1.81-1.1 0-1.27.86-1.27 1.75v3.38h-2.13v-6.82Z"
+        />
+      </svg>
+      <span>Continúa con Linkedin</span>
+    </button>
+  </div>
+
+  <div class="auth-social__divider" aria-hidden="true">
+    <span class="auth-social__divider-line"></span>
+    <span class="auth-social__divider-text">o</span>
+    <span class="auth-social__divider-line"></span>
+  </div>
+</div>
