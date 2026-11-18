@@ -3,8 +3,9 @@
 # Compiled output
 /dist
 /tmp
-# Local browser Maps configuration (public at runtime, not versioned).
+# Local browser Maps and Clerk configuration (public at runtime, not versioned).
 /public/config/google-maps.local.json
+/public/config/clerk.local.json
 /out-tsc
 /bazel-out
 

@@ -1,0 +1,43 @@
+<nav class="auth-stepper" aria-label="Progreso de registro">
+  <ol class="auth-stepper__list">
+    @for (item of steps(); track item.step) {
+      @let status = stepStatus(item.step);
+      <li
+        class="auth-stepper__item"
+        [attr.data-status]="status"
+        [attr.aria-current]="status === 'active' ? 'step' : null"
+      >
+        <div class="auth-stepper__track">
+          <span class="auth-stepper__node" aria-hidden="true">
+            @if (status === 'completed') {
+              <svg class="auth-stepper__check" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M3.5 8.2 6.6 11.3 12.5 5.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            } @else if (status === 'active') {
+              <span class="auth-stepper__dot"></span>
+            }
+          </span>
+        </div>
+
+        <div class="auth-stepper__copy">
+          <span class="auth-stepper__caption">{{ item.caption }}</span>
+          <strong class="auth-stepper__label">{{ item.label }}</strong>
+        </div>
+      </li>
+    }
+  </ol>
+  @for (item of steps(); track item.step) {
+    @if (item.step === currentStep()) {
+      <p class="auth-stepper__active-copy" aria-live="polite">
+        <span>Paso {{ currentStep() }} de {{ steps().length }}</span
+        ><strong>{{ item.label }}</strong>
+      </p>
+    }
+  }
+</nav>
