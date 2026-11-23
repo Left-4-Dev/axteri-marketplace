@@ -15,8 +15,8 @@ $bp-tablet-max: 79.9375rem;
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
-  block-size: 100%;
-  border-radius: var(--radius-lg);
+  max-block-size: 100%;
+  border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -66,7 +66,7 @@ $bp-tablet-max: 79.9375rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     border-block-end: 1px solid var(--color-border);
-    background: var(--color-surface-tinted);
+    background: var(--color-surface);
   }
 
   &__tab {
@@ -98,7 +98,7 @@ $bp-tablet-max: 79.9375rem;
 
     &--active {
       border-block-end-color: var(--color-action);
-      background: var(--color-surface);
+      background: var(--color-accent-subtle);
       color: var(--color-accent-text);
       font-weight: var(--font-weight-bold);
     }
@@ -111,7 +111,7 @@ $bp-tablet-max: 79.9375rem;
     align-items: stretch;
     justify-content: flex-start;
     min-block-size: 0;
-    padding: var(--space-lg);
+    padding: var(--space-md);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -122,11 +122,9 @@ $bp-tablet-max: 79.9375rem;
     align-content: start;
     gap: var(--space-xs);
     flex: 0 0 auto;
-    padding: var(--space-lg) var(--space-md);
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface-muted);
-    text-align: center;
+    padding: var(--space-ms);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-tinted);
   }
 
   &__empty {
@@ -307,6 +305,7 @@ $bp-tablet-max: 79.9375rem;
 
 @media (max-width: $bp-tablet-max) {
   .conversation-context {
+    block-size: 100%;
     border-radius: 0;
 
     &__mobile-bar {

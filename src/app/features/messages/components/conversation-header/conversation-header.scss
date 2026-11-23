@@ -15,8 +15,10 @@ $bp-mobile-max: 47.9375rem;
   justify-content: space-between;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  border-block-end: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  background: var(--color-action);
+  color: var(--color-on-action);
+  box-shadow: var(--shadow-card);
 
   &__identity {
     display: flex;
@@ -47,7 +49,7 @@ $bp-mobile-max: 47.9375rem;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--color-focus);
+      outline: 2px solid var(--color-on-action);
       outline-offset: 2px;
     }
   }
@@ -102,8 +104,8 @@ $bp-mobile-max: 47.9375rem;
   &__name {
     margin: 0;
     overflow: hidden;
-    color: var(--color-text);
-    font-size: var(--font-size-body);
+    color: inherit;
+    font-size: var(--font-size-section-title);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-heading);
     text-overflow: ellipsis;
@@ -130,7 +132,7 @@ $bp-mobile-max: 47.9375rem;
     gap: var(--space-xs);
     min-inline-size: 0;
     margin: 0;
-    color: var(--color-text-secondary);
+    color: var(--color-on-action);
     font-size: var(--font-size-secondary);
     line-height: var(--line-height-label);
   }
@@ -179,13 +181,13 @@ $bp-mobile-max: 47.9375rem;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--color-focus);
+      outline: 2px solid var(--color-on-action);
       outline-offset: 2px;
     }
 
     &--active {
-      border-color: var(--color-action);
-      background: var(--color-action);
+      border-color: var(--color-on-action);
+      background: var(--color-action-active);
       color: var(--color-on-action);
 
       &:hover {
@@ -214,6 +216,12 @@ $bp-mobile-max: 47.9375rem;
 @media (max-width: $bp-tablet-max) {
   .conversation-header {
     padding: var(--space-ms) var(--space-md);
+
+    flex-wrap: wrap;
+
+    &__identity {
+      flex-basis: 16rem;
+    }
 
     &__action--context {
       display: inline-flex;

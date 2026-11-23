@@ -14,6 +14,7 @@
     <textarea
       class="message-composer__textarea"
       [class.message-composer__textarea--empty]="!draft()"
+      [class.message-composer__textarea--single-line]="isSingleLine()"
       name="messageBody"
       rows="1"
       [disabled]="disabled()"
@@ -30,6 +31,15 @@
     [disabled]="!canSubmit()"
     aria-label="Enviar mensaje"
   >
-    <span class="message-composer__submit-label">Enviar</span>
+    <img
+      #sendIcon
+      class="message-composer__send-icon"
+      src="/assets/icons/messages/send.svg"
+      alt=""
+      hidden
+      (load)="sendIcon.hidden = false"
+      (error)="sendIcon.hidden = true"
+    />
+    <span class="message-composer__send-fallback" aria-hidden="true">→</span>
   </button>
 </form>

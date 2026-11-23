@@ -94,8 +94,8 @@ $bp-mobile-max: 47.9375rem;
 
   &__workspace {
     display: grid;
-    grid-template-columns: 19.5rem minmax(0, 1fr) 21.5rem;
-    gap: var(--layout-card-gap);
+    grid-template-columns: minmax(17rem, 23fr) minmax(0, 57fr) minmax(15rem, 20fr);
+    gap: var(--space-md);
     block-size: clamp(34rem, calc(100dvh - var(--header-content-offset, 6rem) - 5.5rem), 48rem);
     min-inline-size: 0;
     min-block-size: 0;
@@ -114,6 +114,10 @@ $bp-mobile-max: 47.9375rem;
     min-inline-size: 0;
     min-block-size: 0;
     block-size: 100%;
+    gap: var(--space-ms);
+  }
+
+  &__chat:has(.messages-page__not-found) {
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: var(--shadow-card);
@@ -160,7 +164,7 @@ $bp-mobile-max: 47.9375rem;
 @media (max-width: $bp-desktop-compact) {
   .messages-page {
     &__workspace {
-      grid-template-columns: 16.5rem minmax(0, 1fr) 17.5rem;
+      grid-template-columns: 16.5rem minmax(0, 1fr) 15rem;
     }
   }
 }

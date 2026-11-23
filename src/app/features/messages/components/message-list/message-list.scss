@@ -14,19 +14,22 @@ $bp-mobile-max: 47.9375rem;
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-ml);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
   overflow-y: auto;
   overscroll-behavior: contain;
 
   &__timeline {
     display: grid;
-    gap: var(--space-lg);
+    gap: var(--space-md);
     margin-block-start: auto;
   }
 
   &__group {
     display: grid;
-    gap: var(--space-md);
+    gap: var(--space-ms);
   }
 
   &__date-separator {
@@ -46,7 +49,7 @@ $bp-mobile-max: 47.9375rem;
 
   &__items {
     display: grid;
-    gap: var(--space-ms);
+    gap: var(--space-sm);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -75,7 +78,7 @@ $bp-mobile-max: 47.9375rem;
   &__message {
     display: grid;
     gap: var(--space-2xs);
-    max-inline-size: min(36rem, 84%);
+    max-inline-size: min(33rem, 80%);
 
     &--incoming {
       justify-self: start;
@@ -89,22 +92,21 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__bubble {
-    padding: var(--space-ms) var(--space-md);
+    padding: var(--space-sm) var(--space-ms);
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-control);
     overflow-wrap: anywhere;
 
     .message-list__message--incoming & {
       border: 1px solid var(--color-border);
       border-end-start-radius: var(--radius-xs);
-      background: var(--color-surface-muted);
+      background: var(--color-surface-tinted);
       color: var(--color-text);
     }
 
     .message-list__message--outgoing & {
       border-end-end-radius: var(--radius-xs);
-      background: var(--color-action);
-      color: var(--color-on-action);
+      background: var(--color-accent-subtle);
+      color: var(--color-text);
     }
   }
 

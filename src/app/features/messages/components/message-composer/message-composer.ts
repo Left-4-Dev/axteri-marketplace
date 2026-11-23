@@ -21,6 +21,7 @@ export class MessageComposer {
   readonly messageSubmitted = output<string>();
 
   protected readonly draft = signal('');
+  protected readonly isSingleLine = computed(() => !this.draft().includes('\n'));
   protected readonly canSubmit = computed(() => !this.disabled() && this.draft().trim().length > 0);
 
   protected onDraftInput(event: Event): void {

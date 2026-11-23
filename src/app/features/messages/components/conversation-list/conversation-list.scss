@@ -12,20 +12,24 @@
   min-inline-size: 0;
   min-block-size: 0;
   block-size: 100%;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
+  gap: var(--space-ms);
 
-  &__header {
-    display: grid;
-    gap: var(--space-ms);
-    padding: var(--space-md);
-    border-block-end: 1px solid var(--color-border);
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-block-size: 0;
+    border-radius: var(--radius-md);
     background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
   }
 
-  &__title-row {
+  &__header {
+    padding: var(--space-ms) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -35,7 +39,8 @@
   &__title {
     margin: 0;
     color: var(--color-text);
-    font-size: var(--font-size-section-title);
+    font-size: var(--font-size-body);
+    text-transform: uppercase;
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-heading);
   }
@@ -56,6 +61,7 @@
 
   &__search {
     position: relative;
+    margin: var(--space-ms) var(--space-ms) var(--space-xs);
     display: flex;
     align-items: center;
   }
@@ -138,14 +144,14 @@
 
   &__item {
     display: grid;
-    grid-template-columns: 2.75rem minmax(0, 1fr);
+    grid-template-columns: var(--control-height) minmax(0, 1fr);
     align-items: center;
-    gap: var(--space-ms);
-    padding: var(--space-ms);
+    gap: var(--space-sm);
+    padding: var(--space-sm);
     border: 1px solid transparent;
     border-inline-start: 3px solid transparent;
     border-radius: var(--radius-md);
-    background: var(--color-surface-muted);
+    background: var(--color-surface-tinted);
     color: var(--color-text);
     text-decoration: none;
     transition:
@@ -172,8 +178,8 @@
   &__avatar {
     display: grid;
     place-items: center;
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
+    inline-size: var(--control-height);
+    block-size: var(--control-height);
     border: 1px solid var(--color-border);
     border-radius: 50%;
     background: var(--color-surface);
