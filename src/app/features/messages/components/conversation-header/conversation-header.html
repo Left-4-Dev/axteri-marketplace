@@ -1,0 +1,66 @@
+@let currentSeller = seller();
+<header class="conversation-header">
+  <div class="conversation-header__identity">
+    <button
+      class="conversation-header__back"
+      type="button"
+      aria-label="Volver a la lista de conversaciones"
+      (click)="backToList.emit()"
+    >
+      <span class="conversation-header__back-icon" aria-hidden="true"></span>
+      <span class="conversation-header__back-label">Conversaciones</span>
+    </button>
+
+    <span class="conversation-header__avatar" aria-hidden="true">
+      @if (currentSeller.logoUrl && !logoFailed()) {
+        <img [src]="currentSeller.logoUrl" alt="" width="48" height="48" (error)="onLogoError()" />
+      } @else {
+        <span class="conversation-header__avatar-fallback">
+          {{ getInitial(currentSeller.name) }}
+        </span>
+      }
+    </span>
+
+    <div class="conversation-header__copy">
+      <div class="conversation-header__title-row">
+        <h2 class="conversation-header__name">{{ currentSeller.name }}</h2>
+        @if (currentSeller.verified) {
+          <span class="conversation-header__verified" aria-label="Proveedor verificado">
+            <span aria-hidden="true">✓</span>
+            Verificado
+          </span>
+        }
+      </div>
+
+      <p class="conversation-header__meta">
+        <span class="conversation-header__sector">{{ currentSeller.sector }}</span>
+        <span class="conversation-header__separator" aria-hidden="true">·</span>
+        <span class="conversation-header__tagline">{{ currentSeller.tagline }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="conversation-header__actions">
+    <button
+      class="conversation-header__action conversation-header__action--context"
+      type="button"
+      [attr.aria-expanded]="isContextDrawerOpen()"
+      aria-controls="conversation-context-panel"
+      (click)="openContextTabs.emit()"
+    >
+      <span>Recursos</span>
+    </button>
+
+    <button
+      class="conversation-header__action"
+      [class.conversation-header__action--active]="isSellerInfoActive()"
+      type="button"
+      [attr.aria-pressed]="isSellerInfoActive()"
+      aria-label="Información del proveedor"
+      (click)="sellerInfoToggle.emit()"
+    >
+      <span class="conversation-header__info-icon" aria-hidden="true"></span>
+      <span>Información</span>
+    </button>
+  </div>
+</header>

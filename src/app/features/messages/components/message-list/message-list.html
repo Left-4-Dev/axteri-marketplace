@@ -1,0 +1,61 @@
+<section
+  #scrollContainer
+  class="message-list"
+  role="log"
+  aria-live="polite"
+  aria-label="Historial de mensajes de la conversación"
+>
+  @if (dayGroups().length > 0) {
+    <div class="message-list__timeline">
+      @for (group of dayGroups(); track group.dateKey) {
+        <div class="message-list__group">
+          <div class="message-list__date-separator" role="separator">
+            <span class="message-list__date-badge">{{ group.label }}</span>
+          </div>
+
+          <ol class="message-list__items">
+            @for (message of group.messages; track message.id) {
+              <li class="message-list__entry">
+                @switch (message.kind) {
+                  @case ('system') {
+                    <div class="message-list__system" role="status">
+                      <span class="message-list__system-pill">{{ message.event.label }}</span>
+                    </div>
+                  }
+                  @case ('text') {
+                    @let isOutgoing = message.author === 'buyer';
+                    <article
+                      class="message-list__message"
+                      [class.message-list__message--outgoing]="isOutgoing"
+                      [class.message-list__message--incoming]="!isOutgoing"
+                      [attr.aria-label]="
+                        (isOutgoing ? 'Tú' : sellerName() || 'Proveedor') +
+                        ', ' +
+                        formatTime(message.sentAt)
+                      "
+                    >
+                      <div class="message-list__bubble">
+                        <p class="message-list__body">{{ message.body }}</p>
+                      </div>
+                      <time class="message-list__timestamp" [attr.datetime]="message.sentAt">
+                        {{ formatTime(message.sentAt) }}
+                      </time>
+                    </article>
+                  }
+                }
+              </li>
+            }
+          </ol>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="message-list__empty" role="status">
+      <p class="message-list__empty-title">Inicia la conversación comercial</p>
+      <p class="message-list__empty-copy">
+        Aún no hay mensajes con {{ sellerName() || 'este proveedor' }}. Envía una consulta desde el
+        campo inferior.
+      </p>
+    </div>
+  }
+</section>

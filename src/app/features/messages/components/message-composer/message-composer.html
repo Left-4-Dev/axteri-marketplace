@@ -1,0 +1,35 @@
+<form class="message-composer" aria-label="Redactar mensaje" (submit)="onSubmit($event)">
+  <button
+    class="message-composer__attachment"
+    type="button"
+    disabled
+    aria-label="Adjuntar archivo (próximamente)"
+    title="Adjuntar archivo (próximamente)"
+  >
+    <span class="message-composer__attachment-icon" aria-hidden="true"></span>
+  </button>
+
+  <label class="message-composer__field">
+    <span class="message-composer__sr-only">Escribe un mensaje</span>
+    <textarea
+      class="message-composer__textarea"
+      [class.message-composer__textarea--empty]="!draft()"
+      name="messageBody"
+      rows="1"
+      [disabled]="disabled()"
+      placeholder="Escribe un mensaje..."
+      [value]="draft()"
+      (input)="onDraftInput($event)"
+      (keydown)="onKeydown($event)"
+    ></textarea>
+  </label>
+
+  <button
+    class="message-composer__submit"
+    type="submit"
+    [disabled]="!canSubmit()"
+    aria-label="Enviar mensaje"
+  >
+    <span class="message-composer__submit-label">Enviar</span>
+  </button>
+</form>

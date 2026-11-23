@@ -1,0 +1,96 @@
+@let activeConversation = store.activeConversation();
+@let seller = activeSeller();
+@let drawerOpen = contextDrawerOpen();
+@let currentMobilePanel = mobilePanel();
+<div class="messages-page">
+  <div class="messages-page__shell">
+    <nav class="messages-page__breadcrumb" aria-label="Breadcrumb">
+      <ol class="messages-page__breadcrumb-list">
+        <li class="messages-page__breadcrumb-item">
+          <a class="messages-page__breadcrumb-link" routerLink="/">Inicio</a>
+        </li>
+        <li
+          class="messages-page__breadcrumb-item messages-page__breadcrumb-current"
+          aria-current="page"
+        >
+          Mensajes
+        </li>
+      </ol>
+    </nav>
+
+    <div
+      class="messages-page__workspace"
+      [class.messages-page__workspace--mobile-list]="currentMobilePanel === 'list'"
+      [class.messages-page__workspace--mobile-chat]="currentMobilePanel === 'chat'"
+    >
+      <div class="messages-page__list-col">
+        <app-conversation-list
+          [conversations]="store.filteredConversations()"
+          [activeConversationId]="store.activeConversationId()"
+          [searchTerm]="store.searchTerm()"
+          [totalUnreadCount]="store.totalUnreadCount()"
+          (searchTermChange)="onSearchTermChange($event)"
+          (conversationSelected)="onConversationSelected()"
+        />
+      </div>
+
+      <section
+        class="messages-page__chat"
+        [attr.aria-label]="seller ? 'Conversación con ' + seller.name : 'Conversación seleccionada'"
+      >
+        @if (activeConversation && seller) {
+          <app-conversation-header
+            [seller]="seller"
+            [isSellerInfoActive]="store.contextMode() === 'seller-info'"
+            [isContextDrawerOpen]="drawerOpen"
+            (backToList)="showMobileConversationList()"
+            (sellerInfoToggle)="onSellerInfoToggle()"
+            (openContextTabs)="onOpenContextTabs()"
+          />
+
+          <app-message-list [messages]="store.messages()" [sellerName]="seller.name" />
+
+          <app-message-composer
+            [sellerName]="seller.name"
+            (messageSubmitted)="onMessageSubmitted($event)"
+          />
+        } @else if (store.isConversationNotFound()) {
+          <div class="messages-page__not-found" role="status">
+            <h2 class="messages-page__not-found-title">Conversación no encontrada</h2>
+            <p class="messages-page__not-found-copy">
+              No encontramos una conversación activa para el identificador
+              <strong>{{ store.activeConversationId() }}</strong
+              >. Selecciona una conversación de la lista para continuar.
+            </p>
+            <button
+              class="messages-page__not-found-action"
+              type="button"
+              (click)="showMobileConversationList()"
+            >
+              Ver lista de conversaciones
+            </button>
+          </div>
+        }
+      </section>
+
+      @if (drawerOpen) {
+        <div
+          class="messages-page__backdrop"
+          aria-hidden="true"
+          (click)="closeContextDrawer()"
+        ></div>
+      }
+
+      <div class="messages-page__context-col" [class.messages-page__context-col--open]="drawerOpen">
+        <app-conversation-context
+          [seller]="seller"
+          [activeTab]="store.activeContextTab()"
+          [mode]="store.contextMode()"
+          (tabChange)="onContextTabChange($event)"
+          (backToTabs)="onBackToContextTabs()"
+          (closeContext)="closeContextDrawer()"
+        />
+      </div>
+    </div>
+  </div>
+</div>
