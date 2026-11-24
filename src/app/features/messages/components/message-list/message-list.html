@@ -51,6 +51,82 @@
                               </li>
                             }
                           </ul>
+                        } @else if (message.kind === 'contact-info') {
+                          <div class="message-list__detail">
+                            <strong class="message-list__card-title">Contacto comercial</strong>
+                            <div class="message-list__contact-card">
+                              <span class="message-list__contact-name">{{
+                                message.contact.name
+                              }}</span>
+                              <dl class="message-list__contact-meta">
+                                <div class="message-list__contact-row">
+                                  <dt>Teléfono</dt>
+                                  <dd>{{ message.contact.phone }}</dd>
+                                </div>
+                                <div class="message-list__contact-row">
+                                  <dt>Correo</dt>
+                                  <dd>{{ message.contact.email }}</dd>
+                                </div>
+                              </dl>
+                            </div>
+                          </div>
+                        } @else if (message.kind === 'quotation') {
+                          <div class="message-list__detail">
+                            <strong class="message-list__card-title">Cotización</strong>
+                            <div class="message-list__document">
+                              <div class="message-list__document-head">
+                                <small class="message-list__document-badge">PDF</small>
+                                <span class="message-list__document-name">{{
+                                  message.fileName
+                                }}</span>
+                              </div>
+                              <span class="message-list__document-summary">{{
+                                message.summary
+                              }}</span>
+                            </div>
+                            @if (message.status === 'pending') {
+                              <span class="message-list__prompt"
+                                >¿Deseas continuar con la compra?</span
+                              >
+                              <div class="message-list__decisions">
+                                <button
+                                  type="button"
+                                  (click)="
+                                    quotationDecision.emit({ id: message.id, decision: 'accepted' })
+                                  "
+                                >
+                                  Continuar
+                                </button>
+                                <button
+                                  type="button"
+                                  (click)="
+                                    quotationDecision.emit({
+                                      id: message.id,
+                                      decision: 'changes-requested',
+                                    })
+                                  "
+                                >
+                                  Solicitar cambios
+                                </button>
+                              </div>
+                            } @else {
+                              <strong
+                                class="message-list__status"
+                                [class.message-list__status--accepted]="
+                                  message.status === 'accepted'
+                                "
+                                [class.message-list__status--changes]="
+                                  message.status === 'changes-requested'
+                                "
+                                role="status"
+                                >{{
+                                  message.status === 'accepted'
+                                    ? 'Cotización aceptada'
+                                    : 'Cambios solicitados'
+                                }}</strong
+                              >
+                            }
+                          </div>
                         } @else {
                           <p class="message-list__body">{{ message.body }}</p>
                         }

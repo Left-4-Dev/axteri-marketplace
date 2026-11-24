@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
 import { ProductCatalog } from '../product-selection/product-catalog';
-import { RouterLink } from '@angular/router';
 import {
   ConversationContextMode,
   ConversationContextTab,
   ConversationSeller,
 } from '../../models/messages.model';
-import { getSellerInitial } from '../../utils/message-preview';
+import { ConversationSellerInfo } from './conversation-seller-info';
 
 export interface ContextTabOption {
   readonly id: ConversationContextTab;
@@ -16,7 +15,7 @@ export interface ContextTabOption {
 
 @Component({
   selector: 'app-conversation-context',
-  imports: [RouterLink, ProductCatalog, Button],
+  imports: [ProductCatalog, Button, ConversationSellerInfo],
   templateUrl: './conversation-context.html',
   styleUrl: './conversation-context.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,11 +36,6 @@ export class ConversationContext {
     { id: 'orders', label: 'Órdenes' },
   ];
 
-  protected readonly logoFailed = linkedSignal({
-    source: this.seller,
-    computation: () => false,
-  });
-
   protected selectTab(tab: ConversationContextTab): void {
     this.tabChange.emit(tab);
   }
@@ -57,13 +51,5 @@ export class ConversationContext {
       const prev = this.tabs[(index - 1 + count) % count];
       this.selectTab(prev.id);
     }
-  }
-
-  protected getInitial(name: string): string {
-    return getSellerInitial(name);
-  }
-
-  protected onLogoError(): void {
-    this.logoFailed.set(true);
   }
 }

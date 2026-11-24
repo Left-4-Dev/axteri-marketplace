@@ -298,15 +298,23 @@ $bp-mobile-max: 47.9375rem;
     }
 
     &__quick {
+      flex-wrap: nowrap;
       gap: var(--space-xs);
-      padding: var(--space-xs) var(--space-ms);
+      padding: var(--space-xs) var(--space-sm);
       font-size: var(--font-size-caption);
 
       button {
-        min-block-size: 1.75rem;
-        padding: 0.25rem var(--space-sm);
+        flex: 1 1 0;
+        min-inline-size: 0;
+        min-block-size: 2rem;
+        padding: 0.25rem var(--space-xs);
         font-size: var(--font-size-caption);
+        white-space: nowrap;
       }
+    }
+
+    &__quick-label {
+      display: none;
     }
 
     &__not-found-action {

@@ -1,4 +1,32 @@
-import { Conversation, Message } from '../models/messages.model';
+import { ContactDetails, Conversation, Message } from '../models/messages.model';
+
+export const SELLER_CONTACTS: Readonly<Record<string, ContactDetails>> = {
+  'ldf-projects': {
+    name: 'Lucía Ramos',
+    phone: '+51 1 000 0001',
+    email: 'ldf-projects@example.com',
+  },
+  'electro-sur-industrial': {
+    name: 'Diego Medina',
+    phone: '+51 1 000 0002',
+    email: 'electro-sur-industrial@example.com',
+  },
+  'automatizacion-andina': {
+    name: 'Ana Vega',
+    phone: '+51 1 000 0003',
+    email: 'automatizacion-andina@example.com',
+  },
+  'suministros-mineros-pacifico': {
+    name: 'Luis Soto',
+    phone: '+51 1 000 0004',
+    email: 'suministros-mineros-pacifico@example.com',
+  },
+  'tableros-control-peru': {
+    name: 'Elena Ruiz',
+    phone: '+51 1 000 0005',
+    email: 'tableros-control-peru@example.com',
+  },
+};
 
 export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
   {
@@ -24,8 +52,8 @@ export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
     },
     unreadCount: 0,
     lastActivity: {
-      at: '2026-11-19T14:22:00-05:00',
-      preview: 'Buen día. Claro, contamos con disponibilidad inmediata en almacén de Lima.',
+      at: '2026-11-19T14:25:00-05:00',
+      preview: 'Cotización LDF-024.pdf',
       author: 'seller',
     },
   },
@@ -168,6 +196,16 @@ export const INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE: Readonly<
       sentAt: '2026-11-19T14:22:00-05:00',
       body: 'Buen día. Claro, contamos con disponibilidad inmediata en almacén de Lima.',
     },
+    {
+      id: 'ldf-quote-024',
+      conversationId: 'ldf-projects',
+      kind: 'quotation',
+      author: 'seller',
+      sentAt: '2026-11-19T14:25:00-05:00',
+      fileName: 'Cotización LDF-024.pdf',
+      summary: 'Interruptores C60H-DC y celdas SM6',
+      status: 'pending',
+    },
   ],
   'electro-sur-industrial': [
     {
@@ -221,6 +259,14 @@ export const INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE: Readonly<
       author: 'buyer',
       sentAt: '2026-08-15T11:15:00-05:00',
       body: 'Hola, ¿el motor WEG W22 de 3 kW viene con carcasa de hierro fundido 100L?',
+    },
+    {
+      id: 'aa-contact-1',
+      conversationId: 'automatizacion-andina',
+      kind: 'contact-info',
+      author: 'seller',
+      sentAt: '2026-08-15T11:29:00-05:00',
+      contact: SELLER_CONTACTS['automatizacion-andina'],
     },
     {
       id: 'aa-msg-2',

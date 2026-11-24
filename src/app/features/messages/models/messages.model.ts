@@ -87,7 +87,30 @@ export interface ProductRequestMessage extends MessageBase {
   readonly items: readonly RequestedProduct[];
 }
 
-export type Message = TextMessage | SystemMessage | ProductRequestMessage;
+export interface ContactDetails {
+  readonly name: string;
+  readonly phone: string;
+  readonly email: string;
+}
+
+export interface ContactInfoMessage extends MessageBase {
+  readonly kind: 'contact-info';
+  readonly author: 'seller';
+  readonly contact: ContactDetails;
+}
+
+export type QuotationDecision = 'accepted' | 'changes-requested';
+
+export interface QuotationMessage extends MessageBase {
+  readonly kind: 'quotation';
+  readonly author: 'seller';
+  readonly fileName: string;
+  readonly summary: string;
+  readonly status: 'pending' | QuotationDecision;
+}
+
+export type Message =
+  TextMessage | SystemMessage | ProductRequestMessage | ContactInfoMessage | QuotationMessage;
 
 export interface MessageDayGroup {
   readonly dateKey: string;

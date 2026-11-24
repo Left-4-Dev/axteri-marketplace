@@ -19,92 +19,15 @@
   </div>
 
   @if (!currentSeller) {
-    <div class="conversation-context__empty" role="status">
-      <p class="conversation-context__empty-title">Sin contexto disponible</p>
-      <p class="conversation-context__empty-copy">
+    <div class="conversation-context__placeholder conversation-context__empty" role="status">
+      <p class="conversation-context__placeholder-title">Sin contexto disponible</p>
+      <p class="conversation-context__placeholder-copy">
         Selecciona una conversación válida para consultar productos, archivos, órdenes o datos del
         proveedor.
       </p>
     </div>
   } @else if (mode() === 'seller-info') {
-    <section class="conversation-context__seller" aria-labelledby="context-seller-name">
-      <header class="conversation-context__seller-bar">
-        <button class="conversation-context__back" type="button" (click)="backToTabs.emit()">
-          <span class="conversation-context__back-icon" aria-hidden="true"></span>
-          <span>Volver</span>
-        </button>
-      </header>
-
-      <div class="conversation-context__seller-body">
-        <div class="conversation-context__seller-hero">
-          <span class="conversation-context__avatar" aria-hidden="true">
-            @if (currentSeller.logoUrl && !logoFailed()) {
-              <img
-                [src]="currentSeller.logoUrl"
-                alt=""
-                width="72"
-                height="72"
-                (error)="onLogoError()"
-              />
-            } @else {
-              <span class="conversation-context__avatar-fallback">
-                {{ getInitial(currentSeller.name) }}
-              </span>
-            }
-          </span>
-
-          <h3 class="conversation-context__seller-name" id="context-seller-name">
-            {{ currentSeller.name }}
-          </h3>
-
-          @if (currentSeller.verified) {
-            <span class="conversation-context__verified" aria-label="Proveedor verificado">
-              <span aria-hidden="true">✓</span>
-              Verificado
-            </span>
-          }
-
-          <p class="conversation-context__seller-tagline">{{ currentSeller.tagline }}</p>
-
-          @if (currentSeller.profilePath; as profilePath) {
-            <a class="conversation-context__profile-link" [routerLink]="profilePath">
-              Perfil del proveedor
-            </a>
-          }
-        </div>
-
-        <dl class="conversation-context__details">
-          <div class="conversation-context__detail-item">
-            <dt>Nombre de la compañía</dt>
-            <dd>{{ currentSeller.name }}</dd>
-          </div>
-          <div class="conversation-context__detail-item">
-            <dt>País / región</dt>
-            <dd>{{ currentSeller.locationLabel }}</dd>
-          </div>
-          <div class="conversation-context__detail-item">
-            <dt>Tipo de proveedor</dt>
-            <dd>{{ currentSeller.supplierType }}</dd>
-          </div>
-          <div class="conversation-context__detail-item">
-            <dt>Sector</dt>
-            <dd>{{ currentSeller.sector }}</dd>
-          </div>
-          <div class="conversation-context__detail-item">
-            <dt>Años en la industria</dt>
-            <dd>{{ currentSeller.yearsInIndustry }} años</dd>
-          </div>
-          <div class="conversation-context__detail-item">
-            <dt>Horario de servicio</dt>
-            <dd>
-              @for (schedule of currentSeller.businessHours; track schedule) {
-                <span class="conversation-context__schedule-line">{{ schedule }}</span>
-              }
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </section>
+    <app-conversation-seller-info [seller]="currentSeller" (backToTabs)="backToTabs.emit()" />
   } @else {
     <div
       class="conversation-context__tablist"
@@ -144,7 +67,7 @@
           <div class="conversation-context__placeholder">
             <p class="conversation-context__placeholder-title">Archivos compartidos</p>
             <p class="conversation-context__placeholder-copy">
-              Aún no se han compartido archivos con {{ currentSeller.name }}.
+              Consulta los documentos de la negociación en el historial de mensajes.
             </p>
           </div>
         }

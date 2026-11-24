@@ -5,10 +5,11 @@ import {
   computed,
   ElementRef,
   input,
+  output,
   viewChild,
 } from '@angular/core';
 import { MessageProductSummary } from '../product-selection/product-summary';
-import { Message, MessageDayGroup } from '../../models/messages.model';
+import { Message, MessageDayGroup, QuotationDecision } from '../../models/messages.model';
 import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/messages-format';
 
 @Component({
@@ -23,6 +24,8 @@ import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/
 })
 export class MessageList {
   readonly messages = input.required<readonly Message[]>();
+  readonly quotationDecision = output<{ id: string; decision: QuotationDecision }>();
+  private readonly latestMessageId = computed(() => this.messages().at(-1)?.id);
   readonly sellerName = input('');
 
   private readonly scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
@@ -50,7 +53,7 @@ export class MessageList {
   constructor() {
     afterRenderEffect({
       write: () => {
-        if (this.messages().length > 0) {
+        if (this.latestMessageId()) {
           this.scrollToLatest();
         }
       },

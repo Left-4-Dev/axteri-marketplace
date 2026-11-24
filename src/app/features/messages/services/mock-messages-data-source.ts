@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { mockSellerProducts } from '../data/message-products.data';
 import { Observable, of } from 'rxjs';
 import {
+  SELLER_CONTACTS,
   INITIAL_CONVERSATIONS_FIXTURE,
   INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE,
 } from '../data/messages.fixtures';
 import {
+  ContactInfoMessage,
   Conversation,
   ConversationProduct,
   Message,
@@ -16,6 +18,17 @@ import {
 @Injectable({ providedIn: 'root' })
 export class MockMessagesDataSource {
   private requestCounter = 0;
+
+  requestContact(conversation: Conversation): ContactInfoMessage {
+    return {
+      id: `${conversation.id}-contact-${++this.requestCounter}`,
+      conversationId: conversation.id,
+      kind: 'contact-info',
+      author: 'seller',
+      sentAt: new Date().toISOString(),
+      contact: { ...SELLER_CONTACTS[conversation.counterpart.seller.id] },
+    };
+  }
 
   getProducts(sellerId: string): readonly ConversationProduct[] {
     return mockSellerProducts(sellerId);

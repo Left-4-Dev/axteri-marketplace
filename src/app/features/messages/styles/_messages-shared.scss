@@ -96,17 +96,12 @@
     block-size: 0.375rem;
   }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
   &::-webkit-scrollbar-thumb {
     border-radius: var(--radius-pill);
-    background-color: rgb(98 101 116 / 28%);
-    transition: background-color var(--motion-fast) ease;
+    background: rgb(98 101 116 / 28%);
 
     &:hover {
-      background-color: rgb(98 101 116 / 48%);
+      background: rgb(98 101 116 / 48%);
     }
   }
 }

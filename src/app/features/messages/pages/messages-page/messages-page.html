@@ -54,9 +54,14 @@
               <button type="button" aria-controls="context-panel-products" (click)="openProducts()">
                 Solicitar productos
               </button>
+              <button type="button" (click)="store.requestContact()">Solicitar contacto</button>
             </div>
 
-            <app-message-list [messages]="store.messages()" [sellerName]="seller.name" />
+            <app-message-list
+              (quotationDecision)="store.decideQuotation($event.id, $event.decision)"
+              [messages]="store.messages()"
+              [sellerName]="seller.name"
+            />
           </div>
 
           @if (store.selection().length) {

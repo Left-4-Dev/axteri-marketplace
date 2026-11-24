@@ -27,7 +27,7 @@ describe('MessagesPage', () => {
     expect(element.querySelector('.conversation-header__name')?.textContent?.trim()).toBe(
       'LDF Projects',
     );
-    expect(element.querySelectorAll('.message-list__message').length).toBe(4);
+    expect(element.querySelectorAll('.message-list__message').length).toBe(5);
 
     const tabs = Array.from(
       element.querySelectorAll('app-conversation-context [role="tab"]'),
@@ -182,6 +182,40 @@ describe('MessagesPage', () => {
     expect(last.querySelector('.message-list__products')).not.toBeNull();
     expect(last.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
     expect(textarea.value).toBe('');
+  });
+
+  it('shares the active seller contact and scrolls to it', async () => {
+    const log = element.querySelector<HTMLElement>('.message-list')!;
+    Object.defineProperty(log, 'scrollHeight', { configurable: true, value: 880 });
+    element.querySelector<HTMLButtonElement>('.messages-page__quick button:last-child')!.click();
+    harness.detectChanges();
+    const card = Array.from(log.querySelectorAll('.message-list__detail')).at(-1);
+    expect(card?.textContent).toContain('Lucía Ramos');
+    expect(card?.textContent).toContain('ldf-projects@example.com');
+    expect(card?.textContent).toContain('+51');
+    expect(log.scrollTop).toBe(880);
+    await harness.navigateByUrl('/mensajes/automatizacion-andina');
+    expect(log.textContent).toContain('Ana Vega');
+    expect(log.textContent).not.toContain('Lucía Ramos');
+  });
+
+  it.each([
+    ['first-child', 'Cotización aceptada'],
+    ['last-child', 'Cambios solicitados'],
+  ])('applies the quotation decision %s only to this conversation', async (selector, status) => {
+    expect(element.querySelector('.message-list__document')?.textContent).toContain(
+      'Cotización LDF-024.pdf',
+    );
+    element
+      .querySelector<HTMLButtonElement>('.message-list__decisions button:' + selector)!
+      .click();
+    harness.detectChanges();
+    expect(element.querySelector('.message-list__detail [role=status]')?.textContent).toBe(status);
+    expect(element.querySelector('.message-list__decisions')).toBeNull();
+    await harness.navigateByUrl('/mensajes/electro-sur-industrial');
+    expect(element.querySelector('.message-list__document')).toBeNull();
+    await harness.navigateByUrl('/mensajes/ldf-projects');
+    expect(element.querySelector('.message-list__detail [role=status]')?.textContent).toBe(status);
   });
 
   it('shows the not-found state when navigating to an unknown conversationId', async () => {

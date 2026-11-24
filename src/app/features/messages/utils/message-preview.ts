@@ -2,6 +2,10 @@ import { Message } from '../models/messages.model';
 
 export function getMessagePreview(message: Message): string {
   switch (message.kind) {
+    case 'contact-info':
+      return 'Contacto: ' + message.contact.name;
+    case 'quotation':
+      return message.fileName;
     case 'text':
       return message.body.replace(/\s+/g, ' ').trim();
     case 'product-request':

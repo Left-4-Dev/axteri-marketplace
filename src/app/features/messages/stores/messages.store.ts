@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { take } from 'rxjs';
 import {
+  ContactInfoMessage,
+  QuotationDecision,
   Conversation,
   ConversationContextMode,
   ConversationContextTab,
@@ -145,12 +147,30 @@ export class MessagesStore {
     this.selections.update((state) => ({ ...state, [active.id]: next }));
   }
 
+  requestContact(): void {
+    const active = this.activeConversation();
+    if (active) this.appendMessage(this.dataSource.requestContact(active));
+  }
+
+  decideQuotation(id: string, decision: QuotationDecision): void {
+    const active = this.activeConversation();
+    const messages = this.messages();
+    const quote = messages.find((message) => message.id === id);
+    if (!active || quote?.kind !== 'quotation' || quote.status !== 'pending') return;
+    this.messagesByConversationState.update((state) => ({
+      ...state,
+      [active.id]: messages.map((message) =>
+        message === quote ? { ...quote, status: decision } : message,
+      ),
+    }));
+  }
+
   sendProductRequest(note?: string): ProductRequestMessage | null {
     const active = this.activeConversation();
     const items = this.selection();
     if (!active || !items.length) return null;
     const message = this.dataSource.createProductRequest(active.id, items, note?.trim());
-    this.appendOutgoing(message);
+    this.appendMessage(message);
     this.selections.update((state) => ({ ...state, [active.id]: [] }));
     return message;
   }
@@ -193,11 +213,13 @@ export class MessagesStore {
       sentAt,
     };
 
-    this.appendOutgoing(newMessage);
+    this.appendMessage(newMessage);
     return newMessage;
   }
 
-  private appendOutgoing(newMessage: TextMessage | ProductRequestMessage): void {
+  private appendMessage(
+    newMessage: TextMessage | ProductRequestMessage | ContactInfoMessage,
+  ): void {
     const { conversationId, sentAt } = newMessage;
     const currentMessages = this.messagesByConversationState()[conversationId] ?? [];
     this.messagesByConversationState.update((state) => ({
@@ -215,7 +237,7 @@ export class MessagesStore {
               lastActivity: {
                 at: sentAt,
                 preview,
-                author: 'buyer',
+                author: newMessage.author,
               },
             }
           : item,
