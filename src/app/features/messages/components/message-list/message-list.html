@@ -22,7 +22,7 @@
                       <span class="message-list__system-pill">{{ message.event.label }}</span>
                     </div>
                   }
-                  @case ('text') {
+                  @default {
                     @let isOutgoing = message.author === 'buyer';
                     <article
                       class="message-list__message"
@@ -35,7 +35,25 @@
                       "
                     >
                       <div class="message-list__bubble">
-                        <p class="message-list__body">{{ message.body }}</p>
+                        @if (message.kind === 'product-request') {
+                          <strong class="message-list__request-title"
+                            >Solicitud de productos</strong
+                          >
+                          @if (message.note) {
+                            <p class="message-list__body">{{ message.note }}</p>
+                          }
+                          <ul class="message-list__products">
+                            @for (item of message.items; track item.id) {
+                              <li>
+                                <app-message-product-summary [product]="item" /><span
+                                  >Cantidad: {{ item.quantity }}</span
+                                >
+                              </li>
+                            }
+                          </ul>
+                        } @else {
+                          <p class="message-list__body">{{ message.body }}</p>
+                        }
                       </div>
                       <time class="message-list__timestamp" [attr.datetime]="message.sentAt">
                         {{ formatTime(message.sentAt) }}

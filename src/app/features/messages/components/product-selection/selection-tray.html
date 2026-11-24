@@ -1,0 +1,47 @@
+<section aria-label="Selección de productos">
+  <header>
+    <strong>Selección ({{ store.selection().length }})</strong>
+  </header>
+  <ul #viewport aria-label="Productos seleccionados">
+    @for (item of store.selection(); track item.id) {
+      <li>
+        <app-message-product-summary [product]="item" [compact]="true" />
+        <div class="actions">
+          <app-message-product-quantity
+            [name]="item.name"
+            [quantity]="item.quantity"
+            (quantityChange)="store.setProductQuantity(item.id, $event)"
+          />
+          <button
+            type="button"
+            class="remove"
+            [attr.aria-label]="'Quitar ' + item.name"
+            (click)="store.setProductQuantity(item.id, 0)"
+          >
+            Quitar
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+  @if (scroll.canScrollPrev() || scroll.canScrollNext()) {
+    <nav aria-label="Desplazar selección">
+      <button
+        type="button"
+        [disabled]="!scroll.canScrollPrev()"
+        (click)="move(-1)"
+        aria-label="Productos anteriores"
+      >
+        ‹
+      </button>
+      <button
+        type="button"
+        [disabled]="!scroll.canScrollNext()"
+        (click)="move(1)"
+        aria-label="Productos siguientes"
+      >
+        ›
+      </button>
+    </nav>
+  }
+</section>

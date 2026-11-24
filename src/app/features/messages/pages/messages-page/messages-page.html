@@ -48,9 +48,22 @@
             (openContextTabs)="onOpenContextTabs()"
           />
 
-          <app-message-list [messages]="store.messages()" [sellerName]="seller.name" />
+          <div class="messages-page__timeline-card">
+            <div class="messages-page__quick" role="toolbar" aria-label="Acceso rápido">
+              <span class="messages-page__quick-label">Acceso rápido:</span>
+              <button type="button" aria-controls="context-panel-products" (click)="openProducts()">
+                Solicitar productos
+              </button>
+            </div>
 
+            <app-message-list [messages]="store.messages()" [sellerName]="seller.name" />
+          </div>
+
+          @if (store.selection().length) {
+            <app-product-selection-tray />
+          }
           <app-message-composer
+            [hasProducts]="store.selection().length > 0"
             [sellerName]="seller.name"
             (messageSubmitted)="onMessageSubmitted($event)"
           />
@@ -81,9 +94,14 @@
         ></div>
       }
 
-      <div class="messages-page__context-col" [class.messages-page__context-col--open]="drawerOpen">
+      <div
+        #contextPanel
+        class="messages-page__context-col"
+        [class.messages-page__context-col--open]="drawerOpen"
+      >
         <app-conversation-context
           [seller]="seller"
+          [selectionCount]="store.selection().length"
           [activeTab]="store.activeContextTab()"
           [mode]="store.contextMode()"
           (tabChange)="onContextTabChange($event)"

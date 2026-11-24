@@ -124,6 +124,66 @@ describe('MessagesPage', () => {
     );
   });
 
+  it('opens Products, filters the catalog and sends the tray as a request with auto-scroll', () => {
+    const click = (selector: string) => {
+      element.querySelector<HTMLButtonElement>(selector)!.click();
+      harness.detectChanges();
+    };
+    click('#context-tab-files');
+    click('.messages-page__quick button');
+    expect(element.querySelector('#context-tab-products')?.getAttribute('aria-selected')).toBe(
+      'true',
+    );
+    const search = element.querySelector<HTMLInputElement>('app-message-product-catalog input')!;
+    search.value = 'w22';
+    search.dispatchEvent(new Event('input'));
+    harness.detectChanges();
+    expect(element.querySelectorAll('app-message-product-catalog li')).toHaveLength(1);
+    click('app-message-product-catalog .add');
+    click('app-product-selection-tray button[aria-label^="Aumentar"]');
+    click('app-message-product-catalog button[aria-label^="Disminuir"]');
+    expect(
+      element
+        .querySelector('app-product-selection-tray app-message-product-quantity span')
+        ?.textContent?.trim(),
+    ).toBe('1');
+    click('app-product-selection-tray .remove');
+    expect(element.querySelector('app-product-selection-tray')).toBeNull();
+    click('app-message-product-catalog .add');
+    click('app-message-product-catalog button[aria-label^="Aumentar"]');
+    const log = element.querySelector<HTMLElement>('.message-list')!;
+    Object.defineProperty(log, 'scrollHeight', { configurable: true, value: 960 });
+    click('.message-composer__submit');
+    expect(log.scrollTop).toBe(960);
+    expect(element.querySelector('app-product-selection-tray')).toBeNull();
+    expect(log.querySelector('.message-list__request-title')?.textContent).toContain(
+      'Solicitud de productos',
+    );
+    const line = log.querySelector('.message-list__products li')!;
+    expect(line.textContent).toContain('W22');
+    expect(line.textContent).toContain('Cantidad: 2');
+    expect(line.textContent).toContain('345');
+    expect(line.querySelector('img')).not.toBeNull();
+  });
+
+  it('sends the composer draft as a note in one product request on Enter', () => {
+    element.querySelector<HTMLButtonElement>('app-message-product-catalog .add')!.click();
+    harness.detectChanges();
+    const textarea = element.querySelector<HTMLTextAreaElement>('.message-composer__textarea')!;
+    const count = element.querySelectorAll('.message-list__message').length;
+    textarea.value = '  Entrega\nen Lima  ';
+    textarea.dispatchEvent(new Event('input'));
+    harness.detectChanges();
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
+    harness.detectChanges();
+    const messages = element.querySelectorAll('.message-list__message');
+    expect(messages.length).toBe(count + 1);
+    const last = messages[messages.length - 1];
+    expect(last.querySelector('.message-list__products')).not.toBeNull();
+    expect(last.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
+    expect(textarea.value).toBe('');
+  });
+
   it('shows the not-found state when navigating to an unknown conversationId', async () => {
     await harness.navigateByUrl('/mensajes/id-inexistente');
     harness.detectChanges();

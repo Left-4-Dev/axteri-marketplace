@@ -104,7 +104,7 @@ export function formatDateSeparator(isoDate: string, referenceNow: Date = new Da
   return fullDateFormatter.format(parsed);
 }
 
-export function formatCurrencyEsPe(amount: number, currency: 'PEN' | 'USD' = 'PEN'): string {
+export function formatCurrencyEsPe(amount: number, currency = 'PEN'): string {
   if (currency === 'PEN') {
     return penCurrencyFormatter.format(amount);
   }

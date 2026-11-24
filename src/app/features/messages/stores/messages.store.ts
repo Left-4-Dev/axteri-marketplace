@@ -5,6 +5,8 @@ import {
   ConversationContextMode,
   ConversationContextTab,
   Message,
+  RequestedProduct,
+  ProductRequestMessage,
   TextMessage,
 } from '../models/messages.model';
 import { MessagesDataSource } from '../services/messages-data-source';
@@ -22,6 +24,27 @@ export class MessagesStore {
   private readonly searchTermState = signal('');
   private readonly activeContextTabState = signal<ConversationContextTab>('products');
   private readonly contextModeState = signal<ConversationContextMode>('tabs');
+
+  private readonly selections = signal<Readonly<Record<string, readonly RequestedProduct[]>>>({});
+  private readonly productQuery = signal('');
+  readonly productSearch = this.productQuery.asReadonly();
+  readonly products = computed(() => {
+    const seller = this.activeConversation()?.counterpart.seller;
+    return seller ? this.dataSource.getProducts(seller.id) : [];
+  });
+  readonly filteredProducts = computed(() => {
+    const query = this.productQuery().trim().toLocaleLowerCase();
+    return this.products().filter((product) =>
+      (product.brand + ' ' + product.name).toLocaleLowerCase().includes(query),
+    );
+  });
+  readonly selection = computed(() => {
+    const active = this.activeConversation();
+    return active ? (this.selections()[active.id] ?? []) : [];
+  });
+  readonly quantities = computed(
+    () => new Map(this.selection().map((item) => [item.id, item.quantity])),
+  );
 
   private localMessageCounter = 0;
 
@@ -85,6 +108,7 @@ export class MessagesStore {
 
     this.activeConversationIdState.set(normalizedId);
     if (previousId !== normalizedId) {
+      this.productQuery.set('');
       this.contextModeState.set('tabs');
     }
 
@@ -99,6 +123,36 @@ export class MessagesStore {
 
     this.ensureMessagesLoaded(normalizedId);
     this.markConversationAsRead(normalizedId);
+  }
+
+  setProductSearch(term: string): void {
+    this.productQuery.set(term);
+  }
+
+  setProductQuantity(productId: string, quantity: number): void {
+    const active = this.activeConversation();
+    const product = this.products().find((item) => item.id === productId);
+    if (!active || !product || !Number.isSafeInteger(quantity) || quantity < 0) return;
+    const items = this.selection();
+    let next: readonly RequestedProduct[];
+    if (quantity === 0) {
+      next = items.filter((item) => item.id !== productId);
+    } else if (this.quantities().has(productId)) {
+      next = items.map((item) => (item.id === productId ? { ...item, quantity } : item));
+    } else {
+      next = [...items, { ...product, quantity }];
+    }
+    this.selections.update((state) => ({ ...state, [active.id]: next }));
+  }
+
+  sendProductRequest(note?: string): ProductRequestMessage | null {
+    const active = this.activeConversation();
+    const items = this.selection();
+    if (!active || !items.length) return null;
+    const message = this.dataSource.createProductRequest(active.id, items, note?.trim());
+    this.appendOutgoing(message);
+    this.selections.update((state) => ({ ...state, [active.id]: [] }));
+    return message;
   }
 
   setSearchTerm(term: string): void {
@@ -139,16 +193,22 @@ export class MessagesStore {
       sentAt,
     };
 
-    const currentMessages = this.messagesByConversationState()[active.id] ?? [];
+    this.appendOutgoing(newMessage);
+    return newMessage;
+  }
+
+  private appendOutgoing(newMessage: TextMessage | ProductRequestMessage): void {
+    const { conversationId, sentAt } = newMessage;
+    const currentMessages = this.messagesByConversationState()[conversationId] ?? [];
     this.messagesByConversationState.update((state) => ({
       ...state,
-      [active.id]: [...currentMessages, newMessage],
+      [conversationId]: [...currentMessages, newMessage],
     }));
 
     const preview = getMessagePreview(newMessage);
     this.conversationsState.update((items) =>
       items.map((item) =>
-        item.id === active.id
+        item.id === conversationId
           ? {
               ...item,
               unreadCount: 0,
@@ -161,8 +221,6 @@ export class MessagesStore {
           : item,
       ),
     );
-
-    return newMessage;
   }
 
   private loadConversations(): void {

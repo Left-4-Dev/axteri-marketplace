@@ -124,6 +124,47 @@ $bp-mobile-max: 47.9375rem;
     overflow: hidden;
   }
 
+  &__timeline-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-inline-size: 0;
+    min-block-size: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  &__quick {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+    padding: var(--space-sm) var(--space-ml);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    background: var(--color-surface);
+    font-size: var(--font-size-secondary);
+    font-weight: var(--font-weight-semibold);
+    button {
+      @include controls.button;
+      min-block-size: var(--control-height-compact);
+      padding: var(--space-xs) var(--space-ms);
+      background: var(--color-accent-subtle);
+      color: var(--color-accent-text);
+      text-transform: none;
+      &:hover:not(:disabled),
+      &:active:not(:disabled) {
+        color: var(--color-on-action);
+      }
+    }
+  }
+
+  &__quick-label {
+    color: var(--color-text-secondary);
+  }
+
   &__not-found {
     display: grid;
     place-items: center;
@@ -216,16 +257,21 @@ $bp-mobile-max: 47.9375rem;
 
 @media (max-width: $bp-mobile-max) {
   .messages-page {
-    padding-block-end: var(--space-2lg);
+    padding-block: calc(var(--header-content-offset, 4rem) + var(--space-xs)) var(--space-md);
 
     &::before {
       inset-block-start: 0;
       border-radius: 0;
     }
 
+    &__breadcrumb {
+      margin-block-end: var(--space-xs);
+    }
+
     &__workspace {
       grid-template-columns: minmax(0, 1fr);
-      block-size: clamp(30rem, calc(100dvh - var(--header-content-offset, 4rem) - 4rem), 44rem);
+      block-size: calc(100dvh - var(--header-content-offset, 4rem) - 2.5rem);
+      min-block-size: 32rem;
 
       &--mobile-chat .messages-page__list-col {
         display: none;
@@ -233,6 +279,33 @@ $bp-mobile-max: 47.9375rem;
 
       &--mobile-list .messages-page__chat {
         display: none;
+      }
+    }
+
+    &__chat {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: var(--space-xs);
+
+      &:has(app-product-selection-tray) {
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
+      }
+    }
+
+    &__timeline-card {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    &__quick {
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-ms);
+      font-size: var(--font-size-caption);
+
+      button {
+        min-block-size: 1.75rem;
+        padding: 0.25rem var(--space-sm);
+        font-size: var(--font-size-caption);
       }
     }
 

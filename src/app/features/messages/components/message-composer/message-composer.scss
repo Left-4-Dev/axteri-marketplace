@@ -1,3 +1,5 @@
+@use '../../styles/messages-shared' as shared;
+
 $bp-mobile-max: 47.9375rem;
 
 :host {
@@ -6,15 +8,27 @@ $bp-mobile-max: 47.9375rem;
 }
 
 .message-composer {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'attach field submit';
   align-items: center;
-  gap: var(--space-sm);
+  column-gap: var(--space-sm);
   padding: var(--space-sm) var(--space-ms);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   background: var(--color-surface);
 
+  &--expanded {
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'field field field'
+      'attach . submit';
+    align-items: end;
+    row-gap: var(--space-xs);
+  }
+
   &__attachment {
+    grid-area: attach;
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
@@ -36,19 +50,10 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__field {
+    grid-area: field;
     position: relative;
     display: flex;
-    flex: 1;
     min-inline-size: 0;
-
-    // &:has(textarea:focus-visible)::before {
-    //   content: '';
-    //   position: absolute;
-    //   inset-inline-start: 0;
-    //   inset-block: var(--space-ms);
-    //   border-inline-start: var(--space-2xs) solid var(--color-focus);
-    //   pointer-events: none;
-    // }
   }
 
   &__sr-only {
@@ -64,26 +69,24 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__textarea {
+    @include shared.subtle-scrollbar;
+    --composer-line-height: 1.35;
     inline-size: 100%;
     min-inline-size: 0;
-    block-size: var(--control-height);
     min-block-size: var(--control-height);
     max-block-size: 6.5rem;
-    padding: var(--space-sm);
+    padding-block: calc((var(--control-height) - 1em * var(--composer-line-height)) / 2);
+    padding-inline: var(--space-sm);
     border: 0;
     border-radius: var(--radius-sm);
     background: transparent;
     color: var(--color-text);
     font-family: var(--font-primary);
     font-size: var(--font-size-body-small);
-    line-height: var(--line-height-label);
+    line-height: var(--composer-line-height);
     resize: none;
-    overflow-y: auto;
+    overflow-y: hidden;
     transition: background-color var(--motion-fast) ease;
-
-    &--single-line {
-      line-height: calc(var(--control-height) - (2 * var(--space-sm)));
-    }
 
     &--empty {
       overflow: hidden;
@@ -99,10 +102,6 @@ $bp-mobile-max: 47.9375rem;
       outline: none;
     }
 
-    // &:focus-visible {
-    //   background: var(--color-surface-tinted);
-    // }
-
     &:disabled {
       background: var(--color-disabled-surface);
       color: var(--color-text-muted);
@@ -111,6 +110,7 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__submit {
+    grid-area: submit;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -161,9 +161,20 @@ $bp-mobile-max: 47.9375rem;
 
 @media (max-width: $bp-mobile-max) {
   .message-composer {
-    gap: var(--space-xs);
+    column-gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
 
     &__attachment {
+      inline-size: 2rem;
+      block-size: 2rem;
+    }
+
+    &__textarea {
+      min-block-size: 2.25rem;
+      padding-block: calc((2.25rem - 1em * var(--composer-line-height)) / 2);
+    }
+
+    &__submit {
       inline-size: 2.25rem;
       block-size: 2.25rem;
     }

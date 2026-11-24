@@ -11,10 +11,10 @@
     <button
       class="conversation-context__close"
       type="button"
-      aria-label="Cerrar panel contextual"
+      aria-label="Cerrar"
       (click)="closeContext.emit()"
     >
-      <span aria-hidden="true">×</span>
+      <span class="conversation-context__close-icon" aria-hidden="true"></span>
     </button>
   </div>
 
@@ -138,14 +138,7 @@
     >
       @switch (activeTab()) {
         @case ('products') {
-          <div class="conversation-context__placeholder">
-            <p class="conversation-context__placeholder-title">
-              Catálogo de {{ currentSeller.name }}
-            </p>
-            <p class="conversation-context__placeholder-copy">
-              Aún no hay productos vinculados a esta conversación.
-            </p>
-          </div>
+          <app-message-product-catalog />
         }
         @case ('files') {
           <div class="conversation-context__placeholder">
@@ -165,5 +158,10 @@
         }
       }
     </div>
+    @if (activeTab() === 'products' && selectionCount()) {
+      <app-button class="conversation-context__view-selection" (click)="closeContext.emit()">
+        Ver selección ({{ selectionCount() }})
+      </app-button>
+    }
   }
 </aside>

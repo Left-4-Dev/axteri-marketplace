@@ -1,0 +1,44 @@
+<div class="product-catalog__search" role="search">
+  <span class="product-catalog__search-icon" aria-hidden="true"></span>
+  <input
+    #search
+    class="product-catalog__search-input"
+    type="search"
+    name="productSearch"
+    placeholder="Buscar producto o marca"
+    aria-label="Buscar producto o marca"
+    autocomplete="off"
+    [value]="store.productSearch()"
+    (input)="store.setProductSearch(search.value)"
+  />
+  @if (store.productSearch()) {
+    <button
+      class="product-catalog__search-clear"
+      type="button"
+      aria-label="Limpiar búsqueda de productos"
+      (click)="store.setProductSearch('')"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  }
+</div>
+<ul aria-label="Productos del proveedor">
+  @for (product of store.filteredProducts(); track product.id) {
+    <li>
+      <app-message-product-summary [product]="product" />
+      <app-message-product-quantity
+        [name]="product.name"
+        [quantity]="store.quantities().get(product.id) ?? 0"
+        (quantityChange)="store.setProductQuantity(product.id, $event)"
+      />
+    </li>
+  } @empty {
+    <li role="status">
+      {{
+        store.products().length
+          ? 'Sin resultados para esta búsqueda.'
+          : 'Este proveedor aún no tiene productos en el catálogo.'
+      }}
+    </li>
+  }
+</ul>

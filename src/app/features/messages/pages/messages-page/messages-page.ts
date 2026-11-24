@@ -1,8 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ElementRef,
+  Injector,
+  viewChild,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConversationContext } from '../../components/conversation-context/conversation-context';
 import { ConversationHeader } from '../../components/conversation-header/conversation-header';
+import { SelectionTray } from '../../components/product-selection/selection-tray';
 import { ConversationList } from '../../components/conversation-list/conversation-list';
 import { MessageComposer } from '../../components/message-composer/message-composer';
 import { MessageList } from '../../components/message-list/message-list';
@@ -17,6 +28,7 @@ import { MessagesStore } from '../../stores/messages.store';
     ConversationHeader,
     MessageList,
     MessageComposer,
+    SelectionTray,
     ConversationContext,
   ],
   templateUrl: './messages-page.html',
@@ -68,6 +80,22 @@ export class MessagesPage {
     }
   }
 
+  private readonly injector = inject(Injector);
+  private readonly contextPanel = viewChild.required<ElementRef<HTMLElement>>('contextPanel');
+
+  protected openProducts(): void {
+    this.store.selectContextTab('products');
+    this.contextDrawerOpen.set(true);
+    afterNextRender(
+      () => {
+        this.contextPanel()
+          .nativeElement.querySelector<HTMLElement>('#context-tab-products')
+          ?.focus();
+      },
+      { injector: this.injector },
+    );
+  }
+
   protected onOpenContextTabs(): void {
     this.store.showContextTabs();
     this.contextDrawerOpen.set(true);
@@ -86,7 +114,11 @@ export class MessagesPage {
   }
 
   protected onMessageSubmitted(body: string): void {
-    this.store.sendTextMessage(body);
+    if (this.store.selection().length) {
+      this.store.sendProductRequest(body);
+    } else {
+      this.store.sendTextMessage(body);
+    }
   }
 
   protected onEscapeKey(): void {

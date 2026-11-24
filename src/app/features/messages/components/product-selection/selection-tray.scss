@@ -1,0 +1,132 @@
+@use '../../styles/messages-shared' as shared;
+:host {
+  display: block;
+  min-width: 0;
+}
+section {
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-sm) var(--space-ms);
+}
+.actions,
+nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  justify-content: space-between;
+}
+header {
+  font-size: var(--font-size-body-small);
+}
+ul {
+  @include shared.subtle-scrollbar;
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  margin: var(--space-sm) 0 0;
+  padding: var(--space-2xs);
+  list-style: none;
+}
+li {
+  flex: 0 0 min(14rem, 95%);
+  min-width: 0;
+  scroll-snap-align: start;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+}
+.actions {
+  margin-top: var(--space-xs);
+}
+.remove,
+nav button {
+  min-height: var(--control-height-compact);
+  border: 0;
+  background: transparent;
+  color: var(--color-accent-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-secondary);
+}
+nav {
+  justify-content: flex-end;
+}
+nav button {
+  min-width: var(--control-height-compact);
+  font-size: var(--font-size-section-title);
+}
+button:focus-visible {
+  outline: 2px solid var(--color-focus);
+}
+button:disabled {
+  color: var(--color-disabled);
+  cursor: default;
+}
+@media (pointer: coarse) {
+  .remove,
+  nav button {
+    min-width: var(--control-height-large);
+    min-height: var(--control-height-large);
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  section {
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  header {
+    font-size: var(--font-size-caption);
+  }
+
+  ul {
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+    padding: 0;
+  }
+
+  li {
+    --product-thumb-size: 2rem;
+    --product-summary-gap: var(--space-xs);
+    --product-name-size: var(--font-size-caption);
+    --qty-btn-size: 1.625rem;
+    --qty-font-size: var(--font-size-caption);
+    --qty-gap: var(--space-2xs);
+    flex: 0 0 min(14.5rem, 84%);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-tinted);
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .actions {
+    margin-top: var(--space-2xs);
+    gap: var(--space-xs);
+  }
+
+  .remove,
+  nav button {
+    min-width: auto;
+    min-height: 1.625rem;
+    padding: 0 var(--space-xs);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .remove {
+    color: var(--color-text-secondary);
+
+    &:hover {
+      background: var(--color-accent-subtle);
+      color: var(--color-accent-text);
+    }
+  }
+
+  nav {
+    margin-top: var(--space-2xs);
+  }
+}

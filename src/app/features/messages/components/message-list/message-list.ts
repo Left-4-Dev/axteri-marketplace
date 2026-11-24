@@ -7,11 +7,13 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import { MessageProductSummary } from '../product-selection/product-summary';
 import { Message, MessageDayGroup } from '../../models/messages.model';
 import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/messages-format';
 
 @Component({
   selector: 'app-message-list',
+  imports: [MessageProductSummary],
   templateUrl: './message-list.html',
   styleUrl: './message-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

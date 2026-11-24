@@ -118,6 +118,52 @@ describe('MessagesStore', () => {
     expect(store.messages().length).toBe(initialCount);
   });
 
+  it('searches the active catalog by brand or name and resets search on navigation', () => {
+    store.selectConversation('ldf-projects');
+    store.setProductSearch('  w22  ');
+    expect(store.filteredProducts().map((p) => p.id)).toEqual(['weg-w22-3kw']);
+    store.setProductSearch('schneider');
+    expect(store.filteredProducts().length).toBeGreaterThan(1);
+    store.setProductSearch('inexistente');
+    expect(store.filteredProducts()).toEqual([]);
+    store.selectConversation('electro-sur-industrial');
+    expect(store.productSearch()).toBe('');
+    expect(store.filteredProducts().map((p) => p.id)).not.toContain('weg-w22-3kw');
+  });
+
+  it('keeps one line per product, removes zero and isolates drafts and requests by conversation', () => {
+    store.selectConversation('ldf-projects');
+    const first = store.products()[0];
+    const second = store.products()[1];
+    store.setProductQuantity(first.id, 1);
+    store.setProductQuantity(first.id, 1);
+    store.setProductQuantity(first.id, 2);
+    store.setProductQuantity(second.id, 1);
+    store.setProductQuantity(second.id, 0);
+    expect(store.selection()).toEqual([{ ...first, quantity: 2 }]);
+    store.selectConversation('electro-sur-industrial');
+    expect(store.selection()).toEqual([]);
+    store.setProductQuantity('unknown', 1);
+    expect(store.sendProductRequest()).toBeNull();
+    const other = store.products()[0];
+    store.setProductQuantity(other.id, 1);
+    store.selectConversation('ldf-projects');
+    const draft = store.selection();
+    const before = store.messages().length;
+    const sent = store.sendProductRequest()!;
+    expect(sent.kind).toBe('product-request');
+    expect(sent.items).toEqual(draft);
+    expect(sent.items[0]).not.toBe(draft[0]);
+    expect(store.messages().length).toBe(before + 1);
+    expect(store.messages().at(-1)).toEqual(sent);
+    expect(store.activeConversation()?.lastActivity?.preview).toBe('Solicitud de productos');
+    expect(store.selection()).toEqual([]);
+    expect(store.sendProductRequest()).toBeNull();
+    store.selectConversation('electro-sur-industrial');
+    expect(store.selection()).toEqual([{ ...other, quantity: 1 }]);
+    expect(store.messages()).not.toContain(sent);
+  });
+
   it('formats timestamps, date separators, currency, and quantities in es-PE', () => {
     const referenceNow = new Date('2026-11-19T18:00:00-05:00');
 

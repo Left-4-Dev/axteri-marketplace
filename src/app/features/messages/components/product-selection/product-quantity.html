@@ -1,0 +1,26 @@
+@if (quantity()) {
+  <button
+    type="button"
+    [attr.aria-label]="'Disminuir cantidad de ' + name()"
+    (click)="quantityChange.emit(quantity() - 1)"
+  >
+    −
+  </button>
+  <span aria-live="polite" aria-label="Cantidad">{{ quantity() }}</span>
+  <button
+    type="button"
+    [attr.aria-label]="'Aumentar cantidad de ' + name()"
+    (click)="quantityChange.emit(quantity() + 1)"
+  >
+    +
+  </button>
+} @else {
+  <button
+    class="add"
+    type="button"
+    [attr.aria-label]="'Agregar ' + name()"
+    (click)="quantityChange.emit(1)"
+  >
+    + Agregar
+  </button>
+}

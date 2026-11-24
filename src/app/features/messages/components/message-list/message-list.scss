@@ -1,3 +1,5 @@
+@use '../../styles/messages-shared' as shared;
+
 $bp-mobile-max: 47.9375rem;
 
 :host {
@@ -9,15 +11,13 @@ $bp-mobile-max: 47.9375rem;
 }
 
 .message-list {
+  @include shared.subtle-scrollbar;
   display: flex;
   flex: 1;
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
   padding: var(--space-md) var(--space-ml);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
   overflow-y: auto;
   overscroll-behavior: contain;
 
@@ -110,6 +110,29 @@ $bp-mobile-max: 47.9375rem;
     }
   }
 
+  &__request-title {
+    font-size: var(--font-size-body-small);
+  }
+  &__products {
+    display: grid;
+    gap: var(--space-xs);
+    list-style: none;
+    margin: var(--space-xs) 0 0;
+    padding: 0;
+    li {
+      display: grid;
+      gap: var(--space-xs);
+      padding: var(--space-sm);
+      background: var(--color-surface);
+      border-radius: var(--radius-sm);
+    }
+    li > span {
+      justify-self: end;
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+  }
+
   &__body {
     margin: 0;
     font-size: var(--font-size-body-small);
@@ -153,10 +176,45 @@ $bp-mobile-max: 47.9375rem;
 
 @media (max-width: $bp-mobile-max) {
   .message-list {
-    padding: var(--space-md);
+    padding: var(--space-sm) var(--space-ms);
 
     &__message {
       max-inline-size: 90%;
+    }
+
+    &__bubble:has(.message-list__products) {
+      padding: var(--space-xs) var(--space-sm);
+    }
+
+    &__request-title {
+      display: block;
+      color: var(--color-accent-text);
+      font-size: var(--font-size-caption);
+      font-weight: var(--font-weight-bold);
+    }
+
+    &__products {
+      gap: var(--space-2xs);
+      margin-block-start: var(--space-xs);
+
+      li {
+        --product-summary-align: flex-start;
+        --product-summary-gap: var(--space-xs);
+        --product-thumb-size: 2rem;
+        --product-name-size: var(--font-size-caption);
+        --product-price-size: 0.6875rem;
+        gap: var(--space-2xs);
+        padding: var(--space-xs) var(--space-sm);
+      }
+
+      li > span {
+        padding: 0.125rem var(--space-xs);
+        border-radius: var(--radius-pill);
+        background: var(--color-surface-tinted);
+        color: var(--color-accent-text);
+        font-size: 0.6875rem;
+        font-weight: var(--font-weight-semibold);
+      }
     }
   }
 }

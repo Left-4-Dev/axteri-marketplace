@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
+import { Button } from '../../../../shared/ui/button/button';
+import { ProductCatalog } from '../product-selection/product-catalog';
 import { RouterLink } from '@angular/router';
 import {
   ConversationContextMode,
@@ -14,13 +16,14 @@ export interface ContextTabOption {
 
 @Component({
   selector: 'app-conversation-context',
-  imports: [RouterLink],
+  imports: [RouterLink, ProductCatalog, Button],
   templateUrl: './conversation-context.html',
   styleUrl: './conversation-context.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationContext {
   readonly seller = input<ConversationSeller | null>(null);
+  readonly selectionCount = input(0);
   readonly activeTab = input<ConversationContextTab>('products');
   readonly mode = input<ConversationContextMode>('tabs');
 

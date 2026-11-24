@@ -1,3 +1,5 @@
+@use '../../styles/messages-shared' as shared;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -60,72 +62,16 @@
   }
 
   &__search {
-    position: relative;
+    @include shared.search-control(
+      'conversation-list__search-icon',
+      'conversation-list__search-input',
+      'conversation-list__search-clear'
+    );
     margin: var(--space-ms) var(--space-ms) var(--space-xs);
-    display: flex;
-    align-items: center;
-  }
-
-  &__search-icon {
-    position: absolute;
-    inset-inline-start: var(--space-ms);
-    inline-size: var(--icon-size-sm);
-    block-size: var(--icon-size-sm);
-    background-color: var(--color-text-muted);
-    mask: url('/assets/icons/common/search.svg') center / contain no-repeat;
-    pointer-events: none;
-  }
-
-  &__search-input {
-    inline-size: 100%;
-    min-block-size: var(--control-height-compact);
-    padding-block: var(--space-xs);
-    padding-inline: calc(var(--space-ms) + var(--icon-size-sm) + var(--space-sm)) var(--space-2lg);
-    border: 1px solid var(--color-border-control);
-    border-radius: var(--radius-pill);
-    background: var(--color-surface);
-    color: var(--color-text);
-    font-family: var(--font-primary);
-    font-size: var(--font-size-secondary);
-    transition: border-color var(--motion-fast) ease;
-
-    &::placeholder {
-      color: var(--color-text-muted);
-    }
-
-    &:focus-visible {
-      border-color: var(--color-focus);
-      outline: none;
-      box-shadow: var(--shadow-focus);
-    }
-  }
-
-  &__search-clear {
-    position: absolute;
-    inset-inline-end: var(--space-xs);
-    display: inline-grid;
-    place-items: center;
-    inline-size: 1.5rem;
-    block-size: 1.5rem;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: transparent;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body);
-    cursor: pointer;
-
-    &:hover {
-      background: var(--color-surface-muted);
-      color: var(--color-text);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-focus);
-    }
   }
 
   &__items {
+    @include shared.subtle-scrollbar;
     flex: 1;
     min-block-size: 0;
     margin: 0;

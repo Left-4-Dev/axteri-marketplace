@@ -68,11 +68,26 @@ export interface SystemMessage extends MessageBase {
   readonly event: SystemMessageEvent;
 }
 
-/**
- * Discriminated union of messages supported in Etapa 1.
- * Later stages will extend this union with product-request, quotation, contact-info, purchase-order, and attachment.
- */
-export type Message = TextMessage | SystemMessage;
+export interface ConversationProduct {
+  readonly id: string;
+  readonly name: string;
+  readonly brand: string;
+  readonly imageUrl?: string;
+  readonly priceLabel?: string;
+}
+
+export interface RequestedProduct extends ConversationProduct {
+  readonly quantity: number;
+}
+
+export interface ProductRequestMessage extends MessageBase {
+  readonly note?: string;
+  readonly kind: 'product-request';
+  readonly author: 'buyer';
+  readonly items: readonly RequestedProduct[];
+}
+
+export type Message = TextMessage | SystemMessage | ProductRequestMessage;
 
 export interface MessageDayGroup {
   readonly dateKey: string;
