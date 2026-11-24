@@ -164,6 +164,40 @@ describe('MessagesStore', () => {
     expect(store.messages()).not.toContain(sent);
   });
 
+  it('issues a single order for the accepted quotation and keeps its message in that conversation', () => {
+    store.selectConversation('ldf-projects');
+    const quote = store.messages().find((message) => message.kind === 'quotation')!;
+    store.decideQuotation(quote.id, 'accepted');
+    store.decideQuotation(quote.id, 'accepted');
+    expect(store.orders().size).toBe(1);
+    const [order] = store.orders().values();
+    expect(order.quotationId).toBe(quote.id);
+    expect(order.lines).toEqual(quote.lines);
+    expect(order).toMatchObject({
+      subtotalCents: 2020000,
+      taxCents: 363600,
+      totalCents: 2383600,
+      currency: 'PEN',
+    });
+    const messages = store.messages().filter((message) => message.kind === 'purchase-order');
+    expect(messages).toHaveLength(1);
+    expect(messages[0].orderId).toBe(order.id);
+    store.selectConversation('electro-sur-industrial');
+    expect(store.orders().size).toBe(0);
+    expect(store.messages()).not.toContain(messages[0]);
+    store.selectConversation('ldf-projects');
+    expect(store.orders().get(order.id)).toBe(order);
+  });
+
+  it('does not issue an order after changes have been requested', () => {
+    store.selectConversation('ldf-projects');
+    const quote = store.messages().find((message) => message.kind === 'quotation')!;
+    store.decideQuotation(quote.id, 'changes-requested');
+    store.decideQuotation(quote.id, 'accepted');
+    expect(store.orders().size).toBe(0);
+    expect(store.messages().some((message) => message.kind === 'purchase-order')).toBe(false);
+  });
+
   it('formats timestamps, date separators, currency, and quantities in es-PE', () => {
     const referenceNow = new Date('2026-11-19T18:00:00-05:00');
 

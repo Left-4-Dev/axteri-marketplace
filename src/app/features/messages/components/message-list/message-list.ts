@@ -1,3 +1,5 @@
+import { OrderSummary } from '../purchase-order/order-summary';
+import { PurchaseOrder } from '../../models/messages.model';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -14,7 +16,7 @@ import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/
 
 @Component({
   selector: 'app-message-list',
-  imports: [MessageProductSummary],
+  imports: [OrderSummary, MessageProductSummary],
   templateUrl: './message-list.html',
   styleUrl: './message-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,7 @@ export class MessageList {
   readonly messages = input.required<readonly Message[]>();
   readonly quotationDecision = output<{ id: string; decision: QuotationDecision }>();
   private readonly latestMessageId = computed(() => this.messages().at(-1)?.id);
+  readonly orders = input.required<ReadonlyMap<string, PurchaseOrder>>();
   readonly sellerName = input('');
 
   private readonly scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');

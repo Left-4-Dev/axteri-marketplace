@@ -1,0 +1,87 @@
+@let purchase = order();
+<dialog
+  #dialog
+  aria-labelledby="order-title"
+  (cancel)="$event.preventDefault(); close()"
+  closedby="any"
+>
+  <div class="sheet">
+    <header>
+      <div class="heading">
+        <small>{{ purchase.supplier }}</small>
+        <h2 id="order-title">
+          Orden de compra <span class="code">{{ purchase.id }}</span>
+        </h2>
+      </div>
+      <button type="button" class="close" aria-label="Cerrar detalle de orden" (click)="close()">
+        <span class="close-icon" aria-hidden="true"></span>
+      </button>
+    </header>
+    <div class="content" tabindex="0" role="region" aria-label="Información de la orden">
+      <section class="metadata metadata--admin">
+        <div>
+          <h3 class="label">Cliente</h3>
+          <strong>{{ purchase.customer.name }}</strong>
+          <p class="numeric">RUC {{ purchase.customer.taxId }}</p>
+          <p>{{ purchase.customer.address }}</p>
+        </div>
+        <div class="issued">
+          <h3 class="label">Fecha de emisión</h3>
+          <time class="numeric" [attr.datetime]="purchase.issuedAt">{{
+            purchase.issuedAt | date: 'dd/MM/yyyy' : '-0500'
+          }}</time>
+        </div>
+      </section>
+      <section class="section-products">
+        <h3>Productos</h3>
+        <div class="lines-head" aria-hidden="true">
+          <span>Descripción</span>
+          <span>Cant. × P. unit.</span>
+          <span>Importe</span>
+        </div>
+        <ul class="lines">
+          @for (line of purchase.lines; track $index) {
+            <li>
+              <strong>{{ line.product }}</strong
+              ><span class="numeric">{{ line.quantity }} × {{ money(line.unitPriceCents) }}</span
+              ><b class="numeric">{{ money(line.unitPriceCents * line.quantity) }}</b>
+            </li>
+          }
+        </ul>
+        <dl class="totals">
+          <div>
+            <dt>Subtotal</dt>
+            <dd class="numeric">{{ money(purchase.subtotalCents) }}</dd>
+          </div>
+          <div>
+            <dt>IGV ({{ purchase.taxPercent }} %)</dt>
+            <dd class="numeric">{{ money(purchase.taxCents) }}</dd>
+          </div>
+          <div class="total">
+            <dt>Total · {{ purchase.currency }}</dt>
+            <dd class="numeric">{{ money(purchase.totalCents) }}</dd>
+          </div>
+        </dl>
+      </section>
+      <section class="metadata section-terms">
+        <div>
+          <h3>Condiciones comerciales</h3>
+          <p>{{ purchase.terms }}</p>
+        </div>
+        <div>
+          <h3>Alcance de la oferta</h3>
+          <p>{{ purchase.scope }}</p>
+        </div>
+      </section>
+      <section class="section-bank">
+        <h3>Datos bancarios</h3>
+        <strong>{{ purchase.bank.name }}</strong>
+        <p class="numeric">{{ purchase.bank.account }}</p>
+      </section>
+    </div>
+    <footer>
+      <span>PDF no disponible en esta demostración.</span
+      ><button type="button" disabled>Descargar PDF</button>
+    </footer>
+  </div>
+</dialog>

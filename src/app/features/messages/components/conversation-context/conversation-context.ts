@@ -1,3 +1,5 @@
+import { OrderSummary } from '../purchase-order/order-summary';
+import { PurchaseOrder } from '../../models/messages.model';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
 import { ProductCatalog } from '../product-selection/product-catalog';
@@ -15,12 +17,13 @@ export interface ContextTabOption {
 
 @Component({
   selector: 'app-conversation-context',
-  imports: [ProductCatalog, Button, ConversationSellerInfo],
+  imports: [OrderSummary, ProductCatalog, Button, ConversationSellerInfo],
   templateUrl: './conversation-context.html',
   styleUrl: './conversation-context.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationContext {
+  readonly orders = input.required<ReadonlyMap<string, PurchaseOrder>>();
   readonly seller = input<ConversationSeller | null>(null);
   readonly selectionCount = input(0);
   readonly activeTab = input<ConversationContextTab>('products');

@@ -200,6 +200,11 @@ export const INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE: Readonly<
       id: 'ldf-quote-024',
       conversationId: 'ldf-projects',
       kind: 'quotation',
+      currency: 'PEN',
+      lines: [
+        { product: 'Interruptor C60H-DC', quantity: 4, unitPriceCents: 5000 },
+        { product: 'Celda SM6 QM', quantity: 1, unitPriceCents: 2000000 },
+      ],
       author: 'seller',
       sentAt: '2026-11-19T14:25:00-05:00',
       fileName: 'Cotización LDF-024.pdf',

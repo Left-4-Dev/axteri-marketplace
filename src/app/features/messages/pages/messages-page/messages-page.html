@@ -58,6 +58,7 @@
             </div>
 
             <app-message-list
+              [orders]="store.orders()"
               (quotationDecision)="store.decideQuotation($event.id, $event.decision)"
               [messages]="store.messages()"
               [sellerName]="seller.name"
@@ -105,6 +106,7 @@
         [class.messages-page__context-col--open]="drawerOpen"
       >
         <app-conversation-context
+          [orders]="store.orders()"
           [seller]="seller"
           [selectionCount]="store.selection().length"
           [activeTab]="store.activeContextTab()"

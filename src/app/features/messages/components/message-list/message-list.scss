@@ -343,7 +343,7 @@ $bp-mobile-max: 47.9375rem;
       max-inline-size: 90%;
     }
 
-    &__bubble:has(.message-list__products, .message-list__detail) {
+    &__bubble:has(.message-list__products, .message-list__detail, app-order-summary) {
       padding: var(--space-xs) var(--space-sm);
     }
 

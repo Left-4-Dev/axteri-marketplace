@@ -115,9 +115,14 @@ $bp-mobile-max: 47.9375rem;
   &__panel {
     @include shared.subtle-scrollbar;
     flex: 1;
+    gap: var(--space-ms);
     padding: var(--space-md);
     overflow-y: auto;
     overscroll-behavior: contain;
+
+    app-order-summary {
+      --order-summary-surface: var(--color-surface-tinted);
+    }
   }
 
   &__placeholder {
@@ -196,6 +201,12 @@ $bp-mobile-max: 47.9375rem;
 
     &__panel {
       padding: var(--space-ms) var(--space-md) var(--space-md);
+
+      app-order-summary {
+        --order-summary-surface: var(--color-surface);
+        --order-summary-radius: var(--radius-lg);
+        --order-summary-shadow: 0 2px 10px rgb(48 51 65 / 6%);
+      }
     }
 
     &__placeholder {

@@ -7,6 +7,8 @@ import {
   INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE,
 } from '../data/messages.fixtures';
 import {
+  PurchaseOrder,
+  QuotationMessage,
   ContactInfoMessage,
   Conversation,
   ConversationProduct,
@@ -18,6 +20,36 @@ import {
 @Injectable({ providedIn: 'root' })
 export class MockMessagesDataSource {
   private requestCounter = 0;
+
+  private orderNumber = 0;
+  createPurchaseOrder(quote: QuotationMessage, supplier: string): PurchaseOrder {
+    const lines = quote.lines.map((line) => ({ ...line }));
+    const subtotalCents = lines.reduce((sum, line) => sum + line.quantity * line.unitPriceCents, 0);
+    const taxPercent = 18;
+    const taxCents = Math.round((subtotalCents * taxPercent) / 100);
+    return {
+      id: 'OC-' + String(++this.orderNumber).padStart(5, '0'),
+      quotationId: quote.id,
+      conversationId: quote.conversationId,
+      issuedAt: new Date().toISOString(),
+      currency: quote.currency,
+      supplier,
+      lines,
+      subtotalCents,
+      taxPercent,
+      taxCents,
+      totalCents: subtotalCents + taxCents,
+      customer: {
+        name: 'Junta de Propietarios Lovento',
+        taxId: '20000000000',
+        address: 'Av. República 1234, San Isidro, Lima',
+      },
+      terms: 'Entrega coordinada en Lima en 12 días calendario. Garantía de fábrica de un año.',
+      scope:
+        'Suministro de los equipos indicados. Instalación y puesta en marcha por cuenta del cliente.',
+      bank: { name: 'Banco de demostración', account: 'Cuenta de ejemplo · 000-0000000' },
+    };
+  }
 
   requestContact(conversation: Conversation): ContactInfoMessage {
     return {

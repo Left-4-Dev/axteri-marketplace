@@ -218,6 +218,28 @@ describe('MessagesPage', () => {
     expect(element.querySelector('.message-list__detail [role=status]')?.textContent).toBe(status);
   });
 
+  it('opens and closes the same order detail from the timeline and Orders tab', () => {
+    const click = (selector: string) => {
+      element.querySelector<HTMLButtonElement>(selector)!.click();
+      harness.detectChanges();
+    };
+    click('.message-list__decisions button');
+    click('#context-tab-orders');
+    const summaries = element.querySelectorAll('app-order-summary');
+    expect(summaries).toHaveLength(2);
+    expect(summaries[0].textContent).toEqual(summaries[1].textContent);
+    for (const parent of ['app-message-list', 'app-conversation-context']) {
+      click(parent + ' app-order-summary button');
+      const dialog = element.querySelector('dialog')!;
+      expect(dialog.hasAttribute('open')).toBe(true);
+      expect(dialog.textContent).toContain('OC-00001');
+      expect(dialog.textContent).toContain('IGV');
+      expect(dialog.querySelector('footer button:disabled')).not.toBeNull();
+      click('dialog .close');
+      expect(element.querySelector('dialog')).toBeNull();
+    }
+  });
+
   it('shows the not-found state when navigating to an unknown conversationId', async () => {
     await harness.navigateByUrl('/mensajes/id-inexistente');
     harness.detectChanges();

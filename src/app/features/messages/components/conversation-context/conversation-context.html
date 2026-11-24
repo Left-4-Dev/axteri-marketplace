@@ -72,12 +72,16 @@
           </div>
         }
         @case ('orders') {
-          <div class="conversation-context__placeholder">
-            <p class="conversation-context__placeholder-title">Órdenes de compra</p>
-            <p class="conversation-context__placeholder-copy">
-              Aún no hay órdenes de compra en esta conversación.
-            </p>
-          </div>
+          @for (order of orders().values(); track order.id) {
+            <app-order-summary [order]="order" />
+          } @empty {
+            <div class="conversation-context__placeholder">
+              <p class="conversation-context__placeholder-title">Órdenes de compra</p>
+              <p class="conversation-context__placeholder-copy">
+                Aún no hay órdenes de compra en esta conversación.
+              </p>
+            </div>
+          }
         }
       }
     </div>

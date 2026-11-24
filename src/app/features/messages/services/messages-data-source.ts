@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
+  PurchaseOrder,
+  QuotationMessage,
   ContactInfoMessage,
   Conversation,
   ConversationProduct,
@@ -15,6 +17,7 @@ import { MockMessagesDataSource } from './mock-messages-data-source';
   useClass: MockMessagesDataSource,
 })
 export abstract class MessagesDataSource {
+  abstract createPurchaseOrder(quote: QuotationMessage, supplier: string): PurchaseOrder;
   abstract requestContact(conversation: Conversation): ContactInfoMessage;
   abstract getProducts(sellerId: string): readonly ConversationProduct[];
   abstract createProductRequest(

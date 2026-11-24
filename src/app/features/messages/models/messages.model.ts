@@ -101,8 +101,40 @@ export interface ContactInfoMessage extends MessageBase {
 
 export type QuotationDecision = 'accepted' | 'changes-requested';
 
+export interface OrderLine {
+  readonly product: string;
+  readonly quantity: number;
+  readonly unitPriceCents: number;
+}
+
+export interface PurchaseOrder {
+  readonly id: string;
+  readonly quotationId: string;
+  readonly conversationId: string;
+  readonly issuedAt: string;
+  readonly supplier: string;
+  readonly customer: { readonly name: string; readonly taxId: string; readonly address: string };
+  readonly lines: readonly OrderLine[];
+  readonly currency: string;
+  readonly subtotalCents: number;
+  readonly taxCents: number;
+  readonly taxPercent: number;
+  readonly totalCents: number;
+  readonly terms: string;
+  readonly scope: string;
+  readonly bank: { readonly name: string; readonly account: string };
+}
+
+export interface PurchaseOrderMessage extends MessageBase {
+  readonly kind: 'purchase-order';
+  readonly author: 'seller';
+  readonly orderId: string;
+}
+
 export interface QuotationMessage extends MessageBase {
   readonly kind: 'quotation';
+  readonly lines: readonly OrderLine[];
+  readonly currency: string;
   readonly author: 'seller';
   readonly fileName: string;
   readonly summary: string;
@@ -110,7 +142,12 @@ export interface QuotationMessage extends MessageBase {
 }
 
 export type Message =
-  TextMessage | SystemMessage | ProductRequestMessage | ContactInfoMessage | QuotationMessage;
+  | TextMessage
+  | SystemMessage
+  | ProductRequestMessage
+  | ContactInfoMessage
+  | QuotationMessage
+  | PurchaseOrderMessage;
 
 export interface MessageDayGroup {
   readonly dateKey: string;

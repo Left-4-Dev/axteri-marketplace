@@ -4,6 +4,8 @@ export function getMessagePreview(message: Message): string {
   switch (message.kind) {
     case 'contact-info':
       return 'Contacto: ' + message.contact.name;
+    case 'purchase-order':
+      return 'Orden de compra ' + message.orderId;
     case 'quotation':
       return message.fileName;
     case 'text':

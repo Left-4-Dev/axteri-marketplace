@@ -70,6 +70,10 @@
                               </dl>
                             </div>
                           </div>
+                        } @else if (message.kind === 'purchase-order') {
+                          @if (orders().get(message.orderId); as order) {
+                            <app-order-summary [order]="order" />
+                          }
                         } @else if (message.kind === 'quotation') {
                           <div class="message-list__detail">
                             <strong class="message-list__card-title">Cotización</strong>

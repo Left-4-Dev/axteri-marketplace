@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { take } from 'rxjs';
 import {
+  PurchaseOrder,
+  PurchaseOrderMessage,
   ContactInfoMessage,
   QuotationDecision,
   Conversation,
@@ -46,6 +48,16 @@ export class MessagesStore {
   });
   readonly quantities = computed(
     () => new Map(this.selection().map((item) => [item.id, item.quantity])),
+  );
+
+  private readonly orderState = signal<readonly PurchaseOrder[]>([]);
+  readonly orders = computed(
+    () =>
+      new Map(
+        this.orderState()
+          .filter((order) => order.conversationId === this.activeConversationId())
+          .map((order) => [order.id, order]),
+      ),
   );
 
   private localMessageCounter = 0;
@@ -157,12 +169,27 @@ export class MessagesStore {
     const messages = this.messages();
     const quote = messages.find((message) => message.id === id);
     if (!active || quote?.kind !== 'quotation' || quote.status !== 'pending') return;
+    const order =
+      decision === 'accepted'
+        ? this.dataSource.createPurchaseOrder(quote, active.counterpart.seller.name)
+        : null;
     this.messagesByConversationState.update((state) => ({
       ...state,
       [active.id]: messages.map((message) =>
         message === quote ? { ...quote, status: decision } : message,
       ),
     }));
+    if (order) {
+      this.orderState.update((orders) => [...orders, order]);
+      this.appendMessage({
+        id: order.id,
+        orderId: order.id,
+        kind: 'purchase-order',
+        author: 'seller',
+        conversationId: active.id,
+        sentAt: order.issuedAt,
+      });
+    }
   }
 
   sendProductRequest(note?: string): ProductRequestMessage | null {
@@ -218,7 +245,7 @@ export class MessagesStore {
   }
 
   private appendMessage(
-    newMessage: TextMessage | ProductRequestMessage | ContactInfoMessage,
+    newMessage: TextMessage | ProductRequestMessage | ContactInfoMessage | PurchaseOrderMessage,
   ): void {
     const { conversationId, sentAt } = newMessage;
     const currentMessages = this.messagesByConversationState()[conversationId] ?? [];
