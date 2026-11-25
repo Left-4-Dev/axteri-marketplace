@@ -1,0 +1,34 @@
+@let purchase = order();
+<section class="order-summary" [attr.aria-label]="'Orden de compra ' + purchase.id">
+  <header class="order-summary__head">
+    <strong class="order-summary__title">Orden de compra</strong>
+    <span class="order-summary__code">{{ purchase.id }}</span>
+  </header>
+  <div class="order-summary__card">
+    <ul class="order-summary__lines">
+      @for (line of purchase.lines; track $index) {
+        <li class="order-summary__line">
+          <span class="order-summary__qty">{{ line.quantity }} ×</span>
+          <span class="order-summary__name">{{ line.product }}</span>
+        </li>
+      }
+    </ul>
+    <div class="order-summary__foot">
+      <b class="order-summary__total">{{
+        formatCurrency(purchase.totalCents / 100, purchase.currency)
+      }}</b>
+      <button
+        #trigger
+        class="order-summary__action"
+        type="button"
+        aria-haspopup="dialog"
+        (click)="detailOpen.set(true)"
+      >
+        Ver detalle
+      </button>
+    </div>
+  </div>
+</section>
+@if (detailOpen()) {
+  <app-order-detail [order]="purchase" [trigger]="trigger" (dismissed)="detailOpen.set(false)" />
+}

@@ -60,6 +60,14 @@ export const routes: Routes = [
             (m) => m.ProductListPage,
           ),
       },
+      {
+        path: 'mensajes/:conversationId',
+        title: 'Mensajes | Axteri Marketplace',
+        loadComponent: () =>
+          import('./features/messages/pages/messages-page/messages-page').then(
+            (m) => m.MessagesPage,
+          ),
+      },
     ],
   },
 ];

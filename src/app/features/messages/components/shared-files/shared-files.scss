@@ -1,0 +1,32 @@
+.shared-files {
+  &__section + &__section {
+    margin-block-start: var(--space-ml);
+  }
+
+  &__title {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__list {
+    display: grid;
+    gap: var(--space-xs);
+
+    &--gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
+  }
+}

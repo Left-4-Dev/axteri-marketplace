@@ -1,0 +1,83 @@
+:host {
+  display: flex;
+  align-items: var(--product-summary-align, center);
+  gap: var(--product-summary-gap, var(--space-sm));
+  min-inline-size: 0;
+}
+
+.product-summary {
+  &__thumb {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--product-thumb-size, var(--control-height));
+    block-size: var(--product-thumb-size, var(--control-height));
+    overflow: hidden;
+    border: var(--product-thumb-border, 0);
+    border-radius: var(--product-thumb-radius, var(--radius-sm));
+    background: var(--product-thumb-bg, var(--color-surface-tinted));
+    box-shadow: 0 1px 4px rgb(81 70 190 / 8%);
+    color: var(--color-accent-text);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  &__copy {
+    display: grid;
+    flex: 1;
+    min-inline-size: 0;
+    gap: var(--space-2xs);
+    line-height: var(--line-height-tight);
+    overflow-wrap: anywhere;
+  }
+
+  &__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--product-name-clamp, unset);
+    overflow: hidden;
+    font-size: var(--product-name-size, var(--font-size-secondary));
+    font-weight: var(--font-weight-medium);
+
+    &--short {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2xs) var(--space-xs);
+    margin-block-start: var(--space-2xs);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__brand,
+  &__price {
+    font-size: var(--font-size-caption);
+  }
+
+  &__brand {
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    letter-spacing: var(--product-brand-tracking, normal);
+    text-transform: var(--product-brand-transform, none);
+  }
+
+  &__price {
+    font-size: var(--product-price-size, var(--font-size-caption));
+    color: var(--color-text);
+    font-weight: var(--product-price-weight, var(--font-weight-semibold));
+    font-variant-numeric: tabular-nums;
+  }
+}

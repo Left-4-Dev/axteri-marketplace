@@ -1,0 +1,133 @@
+@let activeConversation = store.activeConversation();
+@let seller = activeSeller();
+@let trigger = drawerTrigger();
+@let currentMobilePanel = mobilePanel();
+<div class="messages-page">
+  <div class="messages-page__shell">
+    <nav class="messages-page__breadcrumb" aria-label="Breadcrumb">
+      <ol class="messages-page__breadcrumb-list">
+        <li class="messages-page__breadcrumb-item">
+          <a class="messages-page__breadcrumb-link" routerLink="/">Inicio</a>
+        </li>
+        <li
+          class="messages-page__breadcrumb-item messages-page__breadcrumb-current"
+          aria-current="page"
+        >
+          Mensajes
+        </li>
+      </ol>
+    </nav>
+
+    <div
+      class="messages-page__workspace"
+      [class.messages-page__workspace--mobile-list]="currentMobilePanel === 'list'"
+      [class.messages-page__workspace--mobile-chat]="currentMobilePanel === 'chat'"
+    >
+      <div class="messages-page__list-col">
+        <app-conversation-list
+          [conversations]="store.filteredConversations()"
+          [activeConversationId]="store.activeConversationId()"
+          [searchTerm]="store.searchTerm()"
+          [totalUnreadCount]="store.totalUnreadCount()"
+          (searchTermChange)="onSearchTermChange($event)"
+          (conversationSelected)="onConversationSelected()"
+        />
+      </div>
+
+      <section
+        class="messages-page__chat"
+        [attr.aria-label]="seller ? 'Conversación con ' + seller.name : 'Conversación seleccionada'"
+      >
+        @if (activeConversation && seller) {
+          <app-conversation-header
+            [seller]="seller"
+            [isSellerInfoActive]="store.contextMode() === 'seller-info'"
+            [isContextDrawerOpen]="!!trigger"
+            (backToList)="showMobileConversationList()"
+            (sellerInfoToggle)="onSellerInfoToggle($event)"
+            (openContextTabs)="onOpenContextTabs($event)"
+          />
+
+          <div class="messages-page__timeline-card">
+            <div class="messages-page__quick" role="toolbar" aria-label="Acceso rápido">
+              <span class="messages-page__quick-label">Acceso rápido:</span>
+              <button
+                type="button"
+                aria-controls="context-panel-products"
+                #products
+                (click)="openProducts(products)"
+              >
+                Solicitar productos
+              </button>
+              <button type="button" (click)="store.requestContact()">Solicitar contacto</button>
+            </div>
+
+            <app-message-list
+              [resources]="store.resources()"
+              [orders]="store.orders()"
+              (quotationDecision)="store.decideQuotation($event.id, $event.decision)"
+              [messages]="store.messages()"
+              [sellerName]="seller.name"
+            />
+          </div>
+
+          @if (store.selection().length) {
+            <app-product-selection-tray />
+          }
+          <app-message-composer
+            [hasProducts]="store.selection().length > 0"
+            (messageSubmitted)="store.submitDraft($event)"
+          />
+        } @else if (store.isConversationNotFound()) {
+          <div class="messages-page__not-found" role="status">
+            <h2 class="messages-page__not-found-title">Conversación no encontrada</h2>
+            <p class="messages-page__not-found-copy">
+              No encontramos una conversación activa para el identificador
+              <strong>{{ store.activeConversationId() }}</strong
+              >. Selecciona una conversación de la lista para continuar.
+            </p>
+            <button
+              class="messages-page__not-found-action"
+              type="button"
+              (click)="showMobileConversationList()"
+            >
+              Ver lista de conversaciones
+            </button>
+          </div>
+        }
+      </section>
+
+      @if (trigger) {
+        <dialog
+          #contextPanel
+          class="messages-page__context-col messages-page__context-col--open"
+          [appMessageDialog]="trigger"
+          [initialFocus]="
+            store.contextMode() === 'tabs' ? '[role=tab][aria-selected=true]' : 'button'
+          "
+          aria-label="Contexto de la conversación"
+          closedby="any"
+          (dismissed)="closeContextDrawer()"
+        >
+          <ng-container *ngTemplateOutlet="context" />
+        </dialog>
+      } @else {
+        <div #contextPanel class="messages-page__context-col">
+          <ng-container *ngTemplateOutlet="context" />
+        </div>
+      }
+      <ng-template #context>
+        <app-conversation-context
+          [orders]="store.orders()"
+          [seller]="seller"
+          [selectionCount]="store.selection().length"
+          [activeTab]="store.activeContextTab()"
+          [mode]="store.contextMode()"
+          (tabChange)="onContextTabChange($event)"
+          (backToTabs)="onBackToContextTabs()"
+          (closeContext)="closeContextDrawer()"
+        />
+      </ng-template>
+    </div>
+  </div>
+</div>

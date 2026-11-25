@@ -1,0 +1,68 @@
+<section class="selection-tray" aria-label="Selección de productos">
+  <header class="selection-tray__header">
+    <strong class="selection-tray__title">Selección ({{ store.selection().length }})</strong>
+    <button
+      type="button"
+      class="selection-tray__toggle"
+      [attr.aria-expanded]="!collapsed()"
+      [attr.aria-label]="
+        collapsed() ? 'Expandir selección de productos' : 'Compactar selección de productos'
+      "
+      [title]="collapsed() ? 'Expandir selección' : 'Compactar selección'"
+      (click)="collapsed.set(!collapsed())"
+    >
+      <span class="selection-tray__toggle-icon" aria-hidden="true"></span>
+    </button>
+  </header>
+  @if (!collapsed()) {
+    <ul #viewport class="selection-tray__list" aria-label="Productos seleccionados">
+      @for (item of store.selection(); track item.id) {
+        <li class="selection-tray__item">
+          <app-message-product-summary
+            class="selection-tray__summary"
+            [product]="item"
+            [compact]="true"
+          />
+          <div class="selection-tray__actions">
+            <app-message-product-quantity
+              [name]="item.name"
+              [quantity]="item.quantity"
+              (quantityChange)="store.setProductQuantity(item.id, $event)"
+            />
+            <button
+              type="button"
+              class="selection-tray__remove"
+              [attr.aria-label]="'Quitar ' + item.name"
+              [title]="'Quitar ' + item.name"
+              (click)="store.setProductQuantity(item.id, 0)"
+            >
+              <span class="selection-tray__remove-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+    @if (scroll.canScrollPrev() || scroll.canScrollNext()) {
+      <nav class="selection-tray__nav" aria-label="Desplazar selección">
+        <button
+          class="selection-tray__nav-btn"
+          type="button"
+          [disabled]="!scroll.canScrollPrev()"
+          (click)="move(-1)"
+          aria-label="Productos anteriores"
+        >
+          ‹
+        </button>
+        <button
+          class="selection-tray__nav-btn"
+          type="button"
+          [disabled]="!scroll.canScrollNext()"
+          (click)="move(1)"
+          aria-label="Productos siguientes"
+        >
+          ›
+        </button>
+      </nav>
+    }
+  }
+</section>

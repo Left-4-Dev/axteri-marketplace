@@ -1,0 +1,95 @@
+@use '../../styles/messages-shared' as shared;
+
+:host {
+  display: grid;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+}
+
+.pending-files {
+  &__list {
+    @include shared.subtle-scrollbar;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    flex: 0 0 auto;
+    inline-size: min(11.5rem, 70%);
+    min-inline-size: 0;
+    padding: 0.1875rem 0.25rem 0.1875rem 0.375rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-tinted);
+    scroll-snap-align: start;
+  }
+
+  &__resource {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  &__remove {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast) ease,
+      color var(--motion-fast) ease;
+
+    &:hover {
+      background: var(--color-accent-subtle);
+      color: var(--color-action);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 1px;
+    }
+  }
+
+  &__remove-icon {
+    display: block;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    background-color: currentColor;
+    mask: url('/assets/icons/common/close.svg') center / contain no-repeat;
+  }
+
+  &__alert {
+    margin: 0;
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-warning-subtle);
+    color: var(--color-warning-text);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  .pending-files__remove {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+  }
+}

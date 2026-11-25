@@ -1,0 +1,15 @@
+@for (group of groups(); track group.title) {
+  <section class="shared-files__section">
+    <h3 class="shared-files__title">{{ group.title }}</h3>
+    <div
+      class="shared-files__list"
+      [class.shared-files__list--gallery]="group.title === 'Imágenes'"
+    >
+      @for (file of group.files; track file.id) {
+        <app-message-resource [resource]="file" />
+      } @empty {
+        <p class="shared-files__empty">{{ group.empty }}</p>
+      }
+    </div>
+  </section>
+}

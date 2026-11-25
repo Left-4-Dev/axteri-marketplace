@@ -1,0 +1,57 @@
+<form
+  class="message-composer"
+  [class.message-composer--expanded]="isExpanded()"
+  aria-label="Redactar mensaje"
+  (submit)="onSubmit($event)"
+>
+  @if (store.pendingFiles().length || store.attachmentError()) {
+    <app-pending-files class="message-composer__attachments" />
+  }
+  <input #picker hidden type="file" multiple [accept]="accept" (change)="readPicker(picker)" />
+  <button
+    class="message-composer__attachment"
+    type="button"
+    [disabled]="disabled()"
+    (click)="openPicker(picker)"
+    aria-label="Adjuntar archivos"
+    title="Adjuntar archivos"
+  >
+    <span class="message-composer__attachment-icon" aria-hidden="true"></span>
+  </button>
+
+  <label class="message-composer__field">
+    <span class="message-composer__sr-only">Escribe un mensaje</span>
+    <textarea
+      #textarea
+      class="message-composer__textarea"
+      [class.message-composer__textarea--empty]="!draft()"
+      name="messageBody"
+      rows="1"
+      [disabled]="disabled()"
+      [placeholder]="
+        hasProducts() || store.pendingFiles().length ? 'Nota opcional...' : 'Escribe un mensaje...'
+      "
+      [value]="draft()"
+      (input)="onDraftInput($event)"
+      (keydown)="onKeydown($event)"
+    ></textarea>
+  </label>
+
+  <button
+    class="message-composer__submit"
+    type="submit"
+    [disabled]="!canSubmit()"
+    [attr.aria-label]="hasProducts() ? 'Enviar solicitud de productos' : 'Enviar mensaje'"
+  >
+    <img
+      #sendIcon
+      class="message-composer__send-icon"
+      src="/assets/icons/messages/send.svg"
+      alt=""
+      hidden
+      (load)="sendIcon.hidden = false"
+      (error)="sendIcon.hidden = true"
+    />
+    <span class="message-composer__send-fallback" aria-hidden="true">→</span>
+  </button>
+</form>
