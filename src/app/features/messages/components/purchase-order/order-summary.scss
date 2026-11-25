@@ -55,12 +55,12 @@ $bp-mobile-max: 47.9375rem;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
 
-    li {
-      display: flex;
-      align-items: baseline;
-      gap: var(--space-xs);
-    }
+  &__line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
   }
 
   &__qty {

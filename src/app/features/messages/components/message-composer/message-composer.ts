@@ -27,7 +27,6 @@ import {
 export class MessageComposer {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly hasProducts = input(false);
-  readonly sellerName = input('');
 
   readonly messageSubmitted = output<string>();
 

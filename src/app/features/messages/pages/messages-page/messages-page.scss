@@ -130,11 +130,12 @@ $bp-mobile-max: 47.9375rem;
 
   &__chat {
     --composer-max-height: 6.5rem;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    --timeline-min-height: 0px;
+    grid-template-rows: auto minmax(var(--timeline-min-height), 1fr) auto;
     gap: var(--space-xs);
 
     &:has(app-product-selection-tray) {
-      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      grid-template-rows: auto minmax(var(--timeline-min-height), 1fr) auto auto;
     }
 
     &:has(app-product-selection-tray),
@@ -218,10 +219,6 @@ $bp-mobile-max: 47.9375rem;
     display: none;
     margin-block-start: var(--space-xs);
   }
-
-  &__backdrop {
-    display: none;
-  }
 }
 
 @media (max-width: $bp-desktop-compact) {
@@ -242,18 +239,19 @@ $bp-mobile-max: 47.9375rem;
       grid-template-columns: 16.5rem minmax(0, 1fr);
     }
 
-    &__backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 1090;
-      display: block;
-      background: rgb(48 51 65 / 42%);
-    }
-
     &__context-col {
       display: none;
 
       &--open {
+        &::backdrop {
+          background: rgb(48 51 65 / 42%);
+        }
+        margin: 0 0 0 auto;
+        padding: 0;
+        border: 0;
+        max-inline-size: none;
+        max-block-size: none;
+        color: inherit;
         position: fixed;
         inset-block: 0;
         inset-inline-end: 0;
@@ -346,7 +344,10 @@ $bp-mobile-max: 47.9375rem;
 
     &__chat {
       --composer-max-height: 3rem;
+      --timeline-min-height: 8.5rem;
       gap: var(--space-2xs);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
   }
 }

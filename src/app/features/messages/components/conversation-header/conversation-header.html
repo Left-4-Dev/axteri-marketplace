@@ -46,7 +46,8 @@
       type="button"
       [attr.aria-expanded]="isContextDrawerOpen()"
       aria-controls="conversation-context-panel"
-      (click)="openContextTabs.emit()"
+      #resources
+      (click)="openContextTabs.emit(resources)"
     >
       <span>Recursos</span>
     </button>
@@ -57,7 +58,8 @@
       type="button"
       [attr.aria-pressed]="isSellerInfoActive()"
       aria-label="Información del proveedor"
-      (click)="sellerInfoToggle.emit()"
+      #info
+      (click)="sellerInfoToggle.emit(info)"
     >
       <span class="conversation-header__info-icon" aria-hidden="true"></span>
       <span>Información</span>

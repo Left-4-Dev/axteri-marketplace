@@ -5,44 +5,52 @@
   font-size: var(--qty-font-size, var(--font-size-secondary));
   font-variant-numeric: tabular-nums;
 }
-button {
-  min-width: var(--qty-btn-size, var(--control-height-compact));
-  min-height: var(--qty-btn-size, var(--control-height-compact));
-  border: 0;
-  border-radius: var(--radius-pill);
-  color: var(--color-accent-text);
-  background: var(--color-accent-subtle);
-  cursor: pointer;
-  font: inherit;
-  font-weight: var(--font-weight-semibold);
-}
-.add {
-  padding-inline: var(--qty-add-pad-x, var(--space-ms));
-}
-button:hover {
-  background: var(--color-action);
-  color: var(--color-on-action);
-}
-button:focus-visible {
-  outline: 2px solid var(--color-focus);
-}
-@media (pointer: coarse) {
-  button {
-    min-width: var(--qty-btn-size, var(--control-height-large));
-    min-height: var(--qty-btn-size, var(--control-height-large));
+
+.product-quantity {
+  &__step {
+    min-inline-size: var(--qty-btn-size, var(--control-height-compact));
+    min-block-size: var(--qty-btn-size, var(--control-height-compact));
+    border: 0;
+    border-radius: var(--radius-pill);
+    color: var(--color-accent-text);
+    background: var(--color-accent-subtle);
+    cursor: pointer;
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+
+    &--add {
+      padding-inline: var(--qty-add-pad-x, var(--space-ms));
+    }
+
+    &:hover {
+      background: var(--color-action);
+      color: var(--color-on-action);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+    }
   }
 }
+
+@media (pointer: coarse) {
+  .product-quantity__step {
+    min-inline-size: var(--qty-btn-size, var(--control-height-large));
+    min-block-size: var(--qty-btn-size, var(--control-height-large));
+  }
+}
+
 @media (max-width: 47.9375rem) {
   :host {
     font-size: var(--qty-font-size, var(--font-size-caption));
   }
 
-  button {
-    min-width: var(--qty-btn-size, 1.875rem);
-    min-height: var(--qty-btn-size, 1.875rem);
-  }
+  .product-quantity__step {
+    min-inline-size: var(--qty-btn-size, 1.875rem);
+    min-block-size: var(--qty-btn-size, 1.875rem);
 
-  .add {
-    padding-inline: var(--qty-add-pad-x, var(--space-ms));
+    &--add {
+      padding-inline: var(--qty-add-pad-x, var(--space-ms));
+    }
   }
 }

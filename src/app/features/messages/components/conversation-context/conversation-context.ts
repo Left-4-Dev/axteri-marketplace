@@ -1,7 +1,14 @@
 import { SharedFiles } from '../shared-files/shared-files';
 import { OrderSummary } from '../purchase-order/order-summary';
 import { PurchaseOrder } from '../../models/messages.model';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  input,
+  output,
+  viewChildren,
+} from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
 import { ProductCatalog } from '../product-selection/product-catalog';
 import {
@@ -40,20 +47,33 @@ export class ConversationContext {
     { id: 'orders', label: 'Órdenes' },
   ];
 
+  private readonly tabButtons = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
+
   protected selectTab(tab: ConversationContextTab): void {
     this.tabChange.emit(tab);
   }
 
   protected onTabKeydown(event: KeyboardEvent, index: number): void {
     const count = this.tabs.length;
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      const next = this.tabs[(index + 1) % count];
-      this.selectTab(next.id);
-    } else if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      const prev = this.tabs[(index - 1 + count) % count];
-      this.selectTab(prev.id);
+    let target: number;
+    switch (event.key) {
+      case 'ArrowRight':
+        target = (index + 1) % count;
+        break;
+      case 'ArrowLeft':
+        target = (index - 1 + count) % count;
+        break;
+      case 'Home':
+        target = 0;
+        break;
+      case 'End':
+        target = count - 1;
+        break;
+      default:
+        return;
     }
+    event.preventDefault();
+    this.selectTab(this.tabs[target].id);
+    this.tabButtons()[target].nativeElement.focus();
   }
 }

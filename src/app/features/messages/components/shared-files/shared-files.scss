@@ -1,29 +1,31 @@
-section + section {
-  margin-block-start: var(--space-md);
-}
+.shared-files {
+  &__section + &__section {
+    margin-block-start: var(--space-md);
+  }
 
-h3 {
-  margin: 0 0 var(--space-xs);
-  color: var(--color-accent-text);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
+  &__title {
+    margin: 0 0 var(--space-xs);
+    color: var(--color-accent-text);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 
-section div {
-  display: grid;
-  gap: var(--space-xs);
-}
+  &__list {
+    display: grid;
+    gap: var(--space-xs);
 
-.gallery {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-sm);
-}
+    &--gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+  }
 
-p {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-secondary);
-  line-height: var(--line-height-label);
+  &__empty {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-secondary);
+    line-height: var(--line-height-label);
+  }
 }

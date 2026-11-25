@@ -37,6 +37,7 @@
       @for (tab of tabs; track tab.id; let idx = $index) {
         @let isSelected = activeTab() === tab.id;
         <button
+          #tabButton
           class="conversation-context__tab"
           [class.conversation-context__tab--active]="isSelected"
           type="button"

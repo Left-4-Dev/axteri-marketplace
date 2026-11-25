@@ -7,7 +7,7 @@
   <div class="order-summary__card">
     <ul class="order-summary__lines">
       @for (line of purchase.lines; track $index) {
-        <li>
+        <li class="order-summary__line">
           <span class="order-summary__qty">{{ line.quantity }} ×</span>
           <span class="order-summary__name">{{ line.product }}</span>
         </li>
@@ -30,5 +30,5 @@
   </div>
 </section>
 @if (detailOpen()) {
-  <app-order-detail [order]="purchase" (dismissed)="detailOpen.set(false); trigger.focus()" />
+  <app-order-detail [order]="purchase" [trigger]="trigger" (dismissed)="detailOpen.set(false)" />
 }

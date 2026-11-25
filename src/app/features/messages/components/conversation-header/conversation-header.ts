@@ -14,8 +14,8 @@ export class ConversationHeader {
   readonly isContextDrawerOpen = input(false);
 
   readonly backToList = output<void>();
-  readonly sellerInfoToggle = output<void>();
-  readonly openContextTabs = output<void>();
+  readonly sellerInfoToggle = output<HTMLButtonElement>();
+  readonly openContextTabs = output<HTMLButtonElement>();
 
   protected readonly logoFailed = linkedSignal({
     source: this.seller,

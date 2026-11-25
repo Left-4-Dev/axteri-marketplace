@@ -1,16 +1,21 @@
-<span class="thumb" aria-hidden="true">
+<span class="product-summary__thumb" aria-hidden="true">
   @if (image(); as url) {
-    <img [src]="url" alt="" (error)="image.set(undefined)" />
+    <img class="product-summary__image" [src]="url" alt="" (error)="image.set(undefined)" />
   } @else {
     {{ product().brand.slice(0, 1) }}
   }
 </span>
-<span class="copy">
+<span class="product-summary__copy">
   @if (!compact()) {
-    <span class="brand">{{ product().brand }}</span>
+    <span class="product-summary__brand">{{ product().brand }}</span>
   }
-  <strong [class.short]="compact()" [title]="product().name">{{ product().name }}</strong>
+  <strong
+    class="product-summary__name"
+    [class.product-summary__name--short]="compact()"
+    [title]="product().name"
+    >{{ product().name }}</strong
+  >
   @if (!compact() && product().priceLabel; as price) {
-    <span class="price">{{ price }}</span>
+    <span class="product-summary__price">{{ price }}</span>
   }
 </span>

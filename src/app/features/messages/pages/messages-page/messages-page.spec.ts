@@ -7,12 +7,139 @@ describe('MessagesPage', () => {
   let harness: RouterTestingHarness;
   let element: HTMLElement;
 
+  let compact = false;
+
   beforeEach(async () => {
+    compact = false;
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        new (class extends EventTarget {
+          get matches() {
+            return compact && query === '(max-width: 79.9375rem)';
+          }
+        })(),
+    );
     await TestBed.configureTestingModule({
       providers: [provideRouter(routes)],
     }).compileComponents();
     harness = await RouterTestingHarness.create('/mensajes/ldf-projects');
     element = harness.routeNativeElement!;
+  });
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('moves real focus and the single tab stop through consecutive arrows, Home and End', () => {
+    compact = true;
+    element.querySelector<HTMLButtonElement>('.messages-page__quick button')!.click();
+    harness.detectChanges();
+    const tabs = [
+      ...element.querySelectorAll<HTMLButtonElement>('app-conversation-context [role=tab]'),
+    ];
+    tabs[0].focus();
+    const moves = [
+      ['ArrowRight', 1],
+      ['ArrowRight', 2],
+      ['ArrowRight', 0],
+      ['ArrowLeft', 2],
+      ['ArrowLeft', 1],
+      ['Home', 0],
+      ['End', 2],
+    ] as const;
+    for (const [key, index] of moves) {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+      document.activeElement!.dispatchEvent(event);
+      harness.detectChanges();
+      expect(event.defaultPrevented).toBe(true);
+      expect(document.activeElement).toBe(tabs[index]);
+      expect(tabs.filter((tab) => tab.tabIndex === 0)).toEqual([tabs[index]]);
+      expect(tabs.filter((tab) => tab.getAttribute('aria-selected') === 'true')).toEqual([
+        tabs[index],
+      ]);
+    }
+  });
+
+  it('reopens an order after light dismiss, Escape and the close button, restoring scroll and focus each time', () => {
+    element.querySelector<HTMLButtonElement>('.message-list__decisions button')!.click();
+    harness.detectChanges();
+    const trigger = element.querySelector<HTMLButtonElement>('app-order-summary button')!;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'auto';
+    try {
+      for (const method of ['native', 'cancel', 'button']) {
+        trigger.click();
+        harness.detectChanges();
+        const dialog = element.querySelector<HTMLDialogElement>('dialog[open]')!;
+        const close = dialog.querySelector<HTMLButtonElement>('.order-detail__close')!;
+        expect(document.activeElement).toBe(close);
+        expect(document.body.style.overflow).toBe('hidden');
+        if (method === 'native') {
+          expect(dialog.getAttribute('closedby')).toBe('any');
+          // Light dismiss and dialog.close() both remove open before delivering close.
+          dialog.removeAttribute('open');
+          dialog.dispatchEvent(new Event('close'));
+        } else if (method === 'cancel') {
+          dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+        } else close.click();
+        harness.detectChanges();
+        expect(element.querySelector('app-order-detail')).toBeNull();
+        expect(document.body.style.overflow).toBe('auto');
+        expect(document.activeElement).toBe(trigger);
+      }
+    } finally {
+      document.body.style.overflow = previous;
+    }
+  });
+
+  it('releases an open order when route navigation destroys the component', async () => {
+    const previous = document.body.style.overflow;
+    element.querySelector<HTMLButtonElement>('.message-list__decisions button')!.click();
+    harness.detectChanges();
+    element.querySelector<HTMLButtonElement>('app-order-summary button')!.click();
+    harness.detectChanges();
+    expect(document.body.style.overflow).toBe('hidden');
+    await harness.navigateByUrl('/mensajes/electro-sur-industrial');
+    expect(element.querySelector('app-order-detail')).toBeNull();
+    expect(document.body.style.overflow).toBe(previous);
+  });
+
+  it('moves focus into the drawer, returns it to each opener and preserves the outer scroll lock', () => {
+    compact = true;
+    const open = (selector: string) => {
+      const trigger = element.querySelector<HTMLButtonElement>(selector)!;
+      trigger.click();
+      harness.detectChanges();
+      return trigger;
+    };
+    const previous = document.body.style.overflow;
+    // jsdom does not apply responsive CSS when matchMedia is stubbed.
+    const responsiveStyles = document.createElement('style');
+    responsiveStyles.textContent =
+      '.conversation-header__action--context, .conversation-context__mobile-bar { display: flex !important; }';
+    element.append(responsiveStyles);
+    const resources = open('.conversation-header__action--context');
+    expect(document.activeElement?.id).toBe('context-tab-products');
+    open('#context-tab-files');
+    const image = open('app-shared-files .resource-item__image');
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Cerrar vista previa');
+    open('app-shared-files dialog .resource-item__close');
+    expect(document.activeElement).toBe(image);
+    expect(document.body.style.overflow).toBe('hidden');
+    open('.conversation-context__close');
+    expect(document.activeElement).toBe(resources);
+    expect(document.body.style.overflow).toBe(previous);
+
+    const info = open('.conversation-header__action[aria-pressed]');
+    expect(document.activeElement).toBe(element.querySelector('.conversation-context__close'));
+    open('.conversation-context__back');
+    expect(document.activeElement?.id).toBe('context-tab-files');
+    element.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true }));
+    harness.detectChanges();
+    expect(document.activeElement).toBe(info);
+    const products = open('.messages-page__quick button');
+    expect(document.activeElement?.id).toBe('context-tab-products');
+    open('.conversation-context__close');
+    expect(document.activeElement).toBe(products);
   });
 
   it('loads inside MainLayout and renders the selected conversation, message timeline, and permanent context tabs', () => {
@@ -139,7 +266,7 @@ describe('MessagesPage', () => {
     search.dispatchEvent(new Event('input'));
     harness.detectChanges();
     expect(element.querySelectorAll('app-message-product-catalog li')).toHaveLength(1);
-    click('app-message-product-catalog .add');
+    click('app-message-product-catalog .product-quantity__step--add');
     click('app-product-selection-tray button[aria-label^="Aumentar"]');
     click('app-message-product-catalog button[aria-label^="Disminuir"]');
     expect(
@@ -147,10 +274,10 @@ describe('MessagesPage', () => {
         .querySelector('app-product-selection-tray app-message-product-quantity span')
         ?.textContent?.trim(),
     ).toBe('1');
-    expect(element.querySelector('app-product-selection-tray .send')).toBeNull();
-    click('app-product-selection-tray .remove');
+    expect(element.querySelector('app-product-selection-tray .selection-tray__send')).toBeNull();
+    click('app-product-selection-tray .selection-tray__remove');
     expect(element.querySelector('app-product-selection-tray')).toBeNull();
-    click('app-message-product-catalog .add');
+    click('app-message-product-catalog .product-quantity__step--add');
     click('app-message-product-catalog button[aria-label^="Aumentar"]');
     const log = element.querySelector<HTMLElement>('.message-list')!;
     Object.defineProperty(log, 'scrollHeight', { configurable: true, value: 960 });
@@ -168,7 +295,9 @@ describe('MessagesPage', () => {
   });
 
   it('sends the composer draft as a note in one product request on Enter', () => {
-    element.querySelector<HTMLButtonElement>('app-message-product-catalog .add')!.click();
+    element
+      .querySelector<HTMLButtonElement>('app-message-product-catalog .product-quantity__step--add')!
+      .click();
     harness.detectChanges();
     const textarea = element.querySelector<HTMLTextAreaElement>('.message-composer__textarea')!;
     const count = element.querySelectorAll('.message-list__message').length;
@@ -236,7 +365,7 @@ describe('MessagesPage', () => {
       expect(dialog.textContent).toContain('OC-00001');
       expect(dialog.textContent).toContain('IGV');
       expect(dialog.querySelector('footer button:disabled')).not.toBeNull();
-      click('dialog .close');
+      click('dialog .order-detail__close');
       expect(element.querySelector('dialog')).toBeNull();
     }
   });
@@ -245,10 +374,12 @@ describe('MessagesPage', () => {
     element.querySelector<HTMLButtonElement>('#context-tab-files')!.click();
     harness.detectChanges();
     const panel = element.querySelector('app-shared-files')!;
-    expect(panel.querySelectorAll('.document')).toHaveLength(1);
-    expect(panel.querySelector('.document')?.textContent).toContain('Cotización LDF-024.pdf');
-    expect(panel.querySelector('.document a')).toBeNull();
-    panel.querySelector<HTMLButtonElement>('button.image')!.click();
+    expect(panel.querySelectorAll('.resource-item__document')).toHaveLength(1);
+    expect(panel.querySelector('.resource-item__document')?.textContent).toContain(
+      'Cotización LDF-024.pdf',
+    );
+    expect(panel.querySelector('.resource-item__document a')).toBeNull();
+    panel.querySelector<HTMLButtonElement>('button.resource-item__image')!.click();
     harness.detectChanges();
     expect(panel.querySelector('dialog[open] img')?.getAttribute('src')).toContain(
       'weg-w22-01.webp',
@@ -273,7 +404,7 @@ describe('MessagesPage', () => {
     expect(composer.querySelector('app-pending-files')).not.toBeNull();
     expect(textarea.placeholder).toBe('Nota opcional...');
 
-    composer.querySelector<HTMLButtonElement>('app-pending-files .remove')!.click();
+    composer.querySelector<HTMLButtonElement>('app-pending-files .pending-files__remove')!.click();
     harness.detectChanges();
 
     expect(composer.querySelector('app-pending-files')).toBeNull();
@@ -288,7 +419,7 @@ describe('MessagesPage', () => {
     textarea.dispatchEvent(new Event('input'));
     harness.detectChanges();
 
-    composer.querySelector<HTMLButtonElement>('app-pending-files .remove')!.click();
+    composer.querySelector<HTMLButtonElement>('app-pending-files .pending-files__remove')!.click();
     harness.detectChanges();
 
     expect(composer.querySelector('app-pending-files')).toBeNull();

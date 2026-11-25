@@ -1,6 +1,6 @@
 @let activeConversation = store.activeConversation();
 @let seller = activeSeller();
-@let drawerOpen = contextDrawerOpen();
+@let trigger = drawerTrigger();
 @let currentMobilePanel = mobilePanel();
 <div class="messages-page">
   <div class="messages-page__shell">
@@ -42,16 +42,21 @@
           <app-conversation-header
             [seller]="seller"
             [isSellerInfoActive]="store.contextMode() === 'seller-info'"
-            [isContextDrawerOpen]="drawerOpen"
+            [isContextDrawerOpen]="!!trigger"
             (backToList)="showMobileConversationList()"
-            (sellerInfoToggle)="onSellerInfoToggle()"
-            (openContextTabs)="onOpenContextTabs()"
+            (sellerInfoToggle)="onSellerInfoToggle($event)"
+            (openContextTabs)="onOpenContextTabs($event)"
           />
 
           <div class="messages-page__timeline-card">
             <div class="messages-page__quick" role="toolbar" aria-label="Acceso rápido">
               <span class="messages-page__quick-label">Acceso rápido:</span>
-              <button type="button" aria-controls="context-panel-products" (click)="openProducts()">
+              <button
+                type="button"
+                aria-controls="context-panel-products"
+                #products
+                (click)="openProducts(products)"
+              >
                 Solicitar productos
               </button>
               <button type="button" (click)="store.requestContact()">Solicitar contacto</button>
@@ -71,7 +76,6 @@
           }
           <app-message-composer
             [hasProducts]="store.selection().length > 0"
-            [sellerName]="seller.name"
             (messageSubmitted)="store.submitDraft($event)"
           />
         } @else if (store.isConversationNotFound()) {
@@ -93,19 +97,26 @@
         }
       </section>
 
-      @if (drawerOpen) {
-        <div
-          class="messages-page__backdrop"
-          aria-hidden="true"
-          (click)="closeContextDrawer()"
-        ></div>
+      @if (trigger) {
+        <dialog
+          #contextPanel
+          class="messages-page__context-col messages-page__context-col--open"
+          [appMessageDialog]="trigger"
+          [initialFocus]="
+            store.contextMode() === 'tabs' ? '[role=tab][aria-selected=true]' : 'button'
+          "
+          aria-label="Contexto de la conversación"
+          closedby="any"
+          (dismissed)="closeContextDrawer()"
+        >
+          <ng-container *ngTemplateOutlet="context" />
+        </dialog>
+      } @else {
+        <div #contextPanel class="messages-page__context-col">
+          <ng-container *ngTemplateOutlet="context" />
+        </div>
       }
-
-      <div
-        #contextPanel
-        class="messages-page__context-col"
-        [class.messages-page__context-col--open]="drawerOpen"
-      >
+      <ng-template #context>
         <app-conversation-context
           [orders]="store.orders()"
           [seller]="seller"
@@ -116,7 +127,7 @@
           (backToTabs)="onBackToContextTabs()"
           (closeContext)="closeContextDrawer()"
         />
-      </div>
+      </ng-template>
     </div>
   </div>
 </div>

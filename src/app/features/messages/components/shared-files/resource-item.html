@@ -2,44 +2,47 @@
 @if (file.kind === 'image') {
   <button
     #trigger
-    class="image"
+    class="resource-item__image"
     type="button"
     (click)="previewOpen.set(true)"
     [attr.aria-label]="'Ampliar ' + file.name"
     [title]="file.name"
     aria-haspopup="dialog"
   >
-    <img [src]="file.url" alt="" /><span>{{ file.name }}</span>
+    <img class="resource-item__thumb" [src]="file.url" alt="" /><span class="resource-item__name">{{
+      file.name
+    }}</span>
   </button>
   @if (previewOpen()) {
     <dialog
-      #preview
+      #preview="messageDialog"
+      class="resource-item__dialog"
+      [appMessageDialog]="trigger"
       [attr.aria-label]="file.name"
-      (cancel)="$event.preventDefault(); closePreview()"
-      (close)="onPreviewClosed()"
+      (dismissed)="previewOpen.set(false)"
       closedby="any"
     >
-      <header>
-        <strong>{{ file.name }}</strong>
+      <header class="resource-item__dialog-header">
+        <strong class="resource-item__dialog-title">{{ file.name }}</strong>
         <button
           type="button"
-          class="close"
+          class="resource-item__close"
           aria-label="Cerrar vista previa"
-          (click)="closePreview()"
+          (click)="preview.close()"
         >
-          <span class="close-icon" aria-hidden="true"></span>
+          <span class="resource-item__close-icon" aria-hidden="true"></span>
         </button>
       </header>
-      <img [src]="file.url" [alt]="file.name" loading="lazy" />
+      <img class="resource-item__preview-image" [src]="file.url" [alt]="file.name" loading="lazy" />
     </dialog>
   }
 } @else {
-  <div class="document" [title]="file.name">
-    <span class="icon" aria-hidden="true"></span>
-    <div class="copy">
-      <strong>{{ file.name }}</strong>
-      <div class="meta">
-        <small
+  <div class="resource-item__document" [title]="file.name">
+    <span class="resource-item__icon" aria-hidden="true"></span>
+    <div class="resource-item__copy">
+      <strong class="resource-item__title">{{ file.name }}</strong>
+      <div class="resource-item__meta">
+        <small class="resource-item__meta-text"
           >{{ file.format }} ·
           {{
             file.bytes === undefined
@@ -50,9 +53,18 @@
           }}</small
         >
         @if (file.url) {
-          <a [href]="file.url" target="_blank" rel="noopener noreferrer">Abrir PDF</a>
+          <a
+            class="resource-item__link"
+            [href]="file.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir PDF
+          </a>
         } @else {
-          <small class="unavailable">Archivo no disponible</small>
+          <small class="resource-item__meta-text resource-item__meta-text--unavailable">
+            Archivo no disponible
+          </small>
         }
       </div>
     </div>

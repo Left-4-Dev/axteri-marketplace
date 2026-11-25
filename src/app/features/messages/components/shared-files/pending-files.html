@@ -1,20 +1,20 @@
 @if (store.pendingFiles().length) {
-  <ul aria-label="Adjuntos pendientes">
+  <ul class="pending-files__list" aria-label="Adjuntos pendientes">
     @for (file of store.pendingFiles(); track file.id) {
-      <li>
-        <app-message-resource [resource]="file" />
+      <li class="pending-files__item">
+        <app-message-resource class="pending-files__resource" [resource]="file" />
         <button
           type="button"
-          class="remove"
+          class="pending-files__remove"
           [attr.aria-label]="'Quitar ' + file.name"
           (click)="store.removeFile(file.id)"
         >
-          <span class="remove-icon" aria-hidden="true"></span>
+          <span class="pending-files__remove-icon" aria-hidden="true"></span>
         </button>
       </li>
     }
   </ul>
 }
 @if (store.attachmentError()) {
-  <p role="alert">{{ store.attachmentError() }}</p>
+  <p class="pending-files__alert" role="alert">{{ store.attachmentError() }}</p>
 }

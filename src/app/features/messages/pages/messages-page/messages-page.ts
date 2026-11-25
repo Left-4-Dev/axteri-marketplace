@@ -1,5 +1,7 @@
 import {
   afterNextRender,
+  DestroyRef,
+  DOCUMENT,
   ElementRef,
   Injector,
   viewChild,
@@ -9,6 +11,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { MessageDialog } from '../../utils/message-dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConversationContext } from '../../components/conversation-context/conversation-context';
@@ -24,6 +28,8 @@ import { MessagesStore } from '../../stores/messages.store';
   selector: 'app-messages-page',
   imports: [
     RouterLink,
+    MessageDialog,
+    NgTemplateOutlet,
     ConversationList,
     ConversationHeader,
     MessageList,
@@ -34,26 +40,32 @@ import { MessagesStore } from '../../stores/messages.store';
   templateUrl: './messages-page.html',
   styleUrl: './messages-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(document:keydown.escape)': 'onEscapeKey()',
-  },
 })
 export class MessagesPage {
   private readonly route = inject(ActivatedRoute);
   protected readonly store = inject(MessagesStore);
 
   protected readonly mobilePanel = signal<MobileMessagesPanel>('chat');
-  protected readonly contextDrawerOpen = signal(false);
+  protected readonly drawerTrigger = signal<HTMLButtonElement | null>(null);
+  private readonly drawerMedia =
+    inject(DOCUMENT).defaultView?.matchMedia?.('(max-width: 79.9375rem)');
 
   protected readonly activeSeller = computed(
     () => this.store.activeConversation()?.counterpart.seller ?? null,
   );
 
   constructor() {
+    const closeOnDesktop = () => {
+      if (!this.drawerMedia?.matches) this.closeContextDrawer();
+    };
+    this.drawerMedia?.addEventListener('change', closeOnDesktop);
+    inject(DestroyRef).onDestroy(() =>
+      this.drawerMedia?.removeEventListener('change', closeOnDesktop),
+    );
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       this.store.selectConversation(params.get('conversationId'));
       this.mobilePanel.set('chat');
-      this.contextDrawerOpen.set(false);
+      this.drawerTrigger.set(null);
     });
   }
 
@@ -63,42 +75,45 @@ export class MessagesPage {
 
   protected onConversationSelected(): void {
     this.mobilePanel.set('chat');
-    this.contextDrawerOpen.set(false);
+    this.drawerTrigger.set(null);
   }
 
   protected showMobileConversationList(): void {
     this.mobilePanel.set('list');
-    this.contextDrawerOpen.set(false);
+    this.drawerTrigger.set(null);
   }
 
-  protected onSellerInfoToggle(): void {
-    if (this.store.contextMode() === 'seller-info') {
+  protected onSellerInfoToggle(trigger: HTMLButtonElement): void {
+    if (!this.drawerMedia?.matches && this.store.contextMode() === 'seller-info') {
       this.store.showContextTabs();
     } else {
       this.store.showSellerInfo();
-      this.contextDrawerOpen.set(true);
+      if (this.drawerMedia?.matches) this.drawerTrigger.set(trigger);
     }
   }
 
   private readonly injector = inject(Injector);
-  private readonly contextPanel = viewChild.required<ElementRef<HTMLElement>>('contextPanel');
+  private readonly contextPanel = viewChild<ElementRef<HTMLElement>>('contextPanel');
 
-  protected openProducts(): void {
+  protected openProducts(trigger: HTMLButtonElement): void {
     this.store.selectContextTab('products');
-    this.contextDrawerOpen.set(true);
+    if (this.drawerMedia?.matches) this.drawerTrigger.set(trigger);
+    else this.focusSelectedTab();
+  }
+
+  private focusSelectedTab(): void {
     afterNextRender(
-      () => {
+      () =>
         this.contextPanel()
-          .nativeElement.querySelector<HTMLElement>('#context-tab-products')
-          ?.focus();
-      },
+          ?.nativeElement.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+          ?.focus(),
       { injector: this.injector },
     );
   }
 
-  protected onOpenContextTabs(): void {
+  protected onOpenContextTabs(trigger: HTMLButtonElement): void {
     this.store.showContextTabs();
-    this.contextDrawerOpen.set(true);
+    if (this.drawerMedia?.matches) this.drawerTrigger.set(trigger);
   }
 
   protected onContextTabChange(tab: ConversationContextTab): void {
@@ -107,15 +122,10 @@ export class MessagesPage {
 
   protected onBackToContextTabs(): void {
     this.store.showContextTabs();
+    this.focusSelectedTab();
   }
 
   protected closeContextDrawer(): void {
-    this.contextDrawerOpen.set(false);
-  }
-
-  protected onEscapeKey(): void {
-    if (this.contextDrawerOpen()) {
-      this.contextDrawerOpen.set(false);
-    }
+    this.drawerTrigger.set(null);
   }
 }

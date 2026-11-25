@@ -22,18 +22,19 @@
     </button>
   }
 </div>
-<ul aria-label="Productos del proveedor">
+<ul class="product-catalog__list" aria-label="Productos del proveedor">
   @for (product of store.filteredProducts(); track product.id) {
-    <li>
+    <li class="product-catalog__item">
       <app-message-product-summary [product]="product" />
       <app-message-product-quantity
+        class="product-catalog__quantity"
         [name]="product.name"
         [quantity]="store.quantities().get(product.id) ?? 0"
         (quantityChange)="store.setProductQuantity(product.id, $event)"
       />
     </li>
   } @empty {
-    <li role="status">
+    <li class="product-catalog__item product-catalog__item--empty" role="status">
       {{
         store.products().length
           ? 'Sin resultados para esta búsqueda.'
