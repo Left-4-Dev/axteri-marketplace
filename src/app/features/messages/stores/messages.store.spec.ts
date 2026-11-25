@@ -198,6 +198,78 @@ describe('MessagesStore', () => {
     expect(store.messages().some((message) => message.kind === 'purchase-order')).toBe(false);
   });
 
+  it('keeps files and text drafts isolated and releases local URLs only when no longer needed', () => {
+    const revoke = vi.fn();
+    let sequence = 0;
+    vi.stubGlobal(
+      'URL',
+      class extends URL {
+        static override createObjectURL() {
+          return 'blob:local-' + ++sequence;
+        }
+        static override revokeObjectURL = revoke;
+      },
+    );
+    try {
+      store.selectConversation('ldf-projects');
+      const pdf = new File(['pdf'], 'plan.pdf', { type: 'application/pdf' });
+      store.selectFiles([new File(['x'], 'x.html', { type: 'text/html' })]);
+      expect(store.attachmentError()).toBeTruthy();
+      expect(store.pendingFiles()).toHaveLength(0);
+      const oversized = new File(['large'], 'large.pdf', { type: 'application/pdf' });
+      Object.defineProperty(oversized, 'size', { value: store.attachmentPolicy.maxBytes + 1 });
+      store.selectFiles([pdf, oversized]);
+      expect(store.pendingFiles()).toHaveLength(0);
+      store.selectFiles(Array(store.attachmentPolicy.maxFiles + 1).fill(pdf));
+      expect(store.pendingFiles()).toHaveLength(0);
+      store.selectFiles([new File(['1'], 'anterior.pdf', { type: 'application/pdf' }), pdf]);
+      const [removed, retained] = store.pendingFiles();
+      store.removeFile(removed.id);
+      expect(revoke).toHaveBeenCalledWith(removed.url);
+      store.setDraft('Para revisión');
+      store.selectConversation('electro-sur-industrial');
+      expect(store.pendingFiles()).toEqual([]);
+      expect(store.draft()).toBe('');
+      store.selectConversation('ldf-projects');
+      expect(store.draft()).toBe('Para revisión');
+      store.submitDraft(store.draft());
+      expect(store.messages().at(-1)).toMatchObject({
+        kind: 'attachment',
+        note: 'Para revisión',
+        resourceIds: [retained.id],
+      });
+      expect(store.resources().get(retained.id)).toBe(retained);
+      expect(store.pendingFiles()).toEqual([]);
+      expect(store.draft()).toBe('');
+      expect(revoke).not.toHaveBeenCalledWith(retained.url);
+      store.selectFiles([pdf]);
+      const id = store.pendingFiles()[0].id;
+      const product = store.products()[0];
+      store.setProductQuantity(product.id, 1);
+      const before = store.messages().length;
+      store.submitDraft('Con el plano');
+      expect(store.messages()).toHaveLength(before + 1);
+      expect(store.messages().at(-1)).toMatchObject({
+        kind: 'product-request',
+        note: 'Con el plano',
+        resourceIds: [id],
+      });
+      expect(store.selection()).toEqual([]);
+      expect(store.pendingFiles()).toEqual([]);
+      store.selectConversation('electro-sur-industrial');
+      expect(store.resources().has(id)).toBe(false);
+      store.selectFiles([pdf]);
+      store.submitDraft('');
+      expect(store.messages().at(-1)).toMatchObject({ kind: 'attachment' });
+      expect(store.messages().at(-1)).not.toHaveProperty('note');
+      store.selectFiles([pdf]);
+      TestBed.resetTestingModule();
+      expect(revoke).toHaveBeenCalledTimes(5);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('formats timestamps, date separators, currency, and quantities in es-PE', () => {
     const referenceNow = new Date('2026-11-19T18:00:00-05:00');
 

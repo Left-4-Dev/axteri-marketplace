@@ -113,14 +113,6 @@ export class MessagesPage {
     this.contextDrawerOpen.set(false);
   }
 
-  protected onMessageSubmitted(body: string): void {
-    if (this.store.selection().length) {
-      this.store.sendProductRequest(body);
-    } else {
-      this.store.sendTextMessage(body);
-    }
-  }
-
   protected onEscapeKey(): void {
     if (this.contextDrawerOpen()) {
       this.contextDrawerOpen.set(false);

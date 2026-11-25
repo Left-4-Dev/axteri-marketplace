@@ -64,12 +64,7 @@
           <app-message-product-catalog />
         }
         @case ('files') {
-          <div class="conversation-context__placeholder">
-            <p class="conversation-context__placeholder-title">Archivos compartidos</p>
-            <p class="conversation-context__placeholder-copy">
-              Consulta los documentos de la negociación en el historial de mensajes.
-            </p>
-          </div>
+          <app-shared-files />
         }
         @case ('orders') {
           @for (order of orders().values(); track order.id) {

@@ -86,19 +86,18 @@ $bp-mobile-max: 47.9375rem;
   &__bubble {
     padding: var(--space-sm) var(--space-ms);
     border-radius: var(--radius-md);
+    color: var(--color-text);
     overflow-wrap: anywhere;
 
     .message-list__message--incoming & {
       border: 1px solid var(--color-border);
       border-end-start-radius: var(--radius-xs);
       background: var(--color-surface-tinted);
-      color: var(--color-text);
     }
 
     .message-list__message--outgoing & {
       border-end-end-radius: var(--radius-xs);
       background: var(--color-accent-subtle);
-      color: var(--color-text);
     }
   }
 
@@ -294,8 +293,13 @@ $bp-mobile-max: 47.9375rem;
       }
     }
   }
-  &__body {
+  &__body,
+  &__empty-title,
+  &__empty-copy {
     margin: 0;
+  }
+
+  &__body {
     font-size: var(--font-size-body-small);
     line-height: var(--line-height-body);
     white-space: pre-line;
@@ -321,14 +325,12 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__empty-title {
-    margin: 0;
     color: var(--color-text);
     font-size: var(--font-size-body);
     font-weight: var(--font-weight-bold);
   }
 
   &__empty-copy {
-    margin: 0;
     color: var(--color-text-secondary);
     font-size: var(--font-size-body-small);
     line-height: var(--line-height-body);

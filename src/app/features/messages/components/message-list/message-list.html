@@ -81,7 +81,7 @@
                               <div class="message-list__document-head">
                                 <small class="message-list__document-badge">PDF</small>
                                 <span class="message-list__document-name">{{
-                                  message.fileName
+                                  resources().get(message.resourceId)?.name
                                 }}</span>
                               </div>
                               <span class="message-list__document-summary">{{
@@ -131,8 +131,19 @@
                               >
                             }
                           </div>
+                        } @else if (message.kind === 'attachment') {
+                          @if (message.note) {
+                            <p class="message-list__body">{{ message.note }}</p>
+                          }
                         } @else {
                           <p class="message-list__body">{{ message.body }}</p>
+                        }
+                        @if (message.kind === 'attachment' || message.kind === 'product-request') {
+                          @for (id of message.resourceIds; track id) {
+                            @if (resources().get(id); as file) {
+                              <app-message-resource [resource]="file" />
+                            }
+                          }
                         }
                       </div>
                       <time class="message-list__timestamp" [attr.datetime]="message.sentAt">

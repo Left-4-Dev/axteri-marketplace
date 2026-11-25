@@ -1,132 +1,109 @@
 @use '../../styles/messages-shared' as shared;
+
 :host {
   display: block;
-  min-width: 0;
+  min-inline-size: 0;
 }
+
 section {
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
-  padding: var(--space-sm) var(--space-ms);
 }
+
+header,
 .actions,
 nav {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+}
+
+header,
+.actions {
   justify-content: space-between;
 }
+
 header {
-  font-size: var(--font-size-body-small);
+  flex-wrap: wrap;
+  font-size: var(--font-size-caption);
 }
+
+.toggle {
+  min-block-size: 1.625rem;
+  padding: 0 var(--space-xs);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-tinted);
+  color: var(--color-accent-text);
+  font: var(--font-weight-semibold) var(--font-size-caption) var(--font-primary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-accent-subtle);
+  }
+}
+
 ul {
   @include shared.subtle-scrollbar;
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
+  margin: var(--space-xs) 0 0;
+  padding: 0;
+  list-style: none;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
-  margin: var(--space-sm) 0 0;
-  padding: var(--space-2xs);
-  list-style: none;
 }
+
 li {
-  flex: 0 0 min(14rem, 95%);
-  min-width: 0;
-  scroll-snap-align: start;
-  border: 1px solid var(--color-border);
+  --product-thumb-size: 1.75rem;
+  --product-summary-gap: var(--space-xs);
+  --product-name-size: var(--font-size-caption);
+  --qty-btn-size: 1.5rem;
+  --qty-font-size: var(--font-size-caption);
+  --qty-gap: var(--space-2xs);
+  flex: 0 0 min(14rem, 84%);
+  min-inline-size: 0;
+  padding: var(--space-2xs) var(--space-xs);
   border-radius: var(--radius-sm);
-  padding: var(--space-sm);
+  background: var(--color-surface-tinted);
+  scroll-snap-align: start;
 }
+
 .actions {
-  margin-top: var(--space-xs);
+  margin-block-start: var(--space-2xs);
 }
+
 .remove,
 nav button {
-  min-height: var(--control-height-compact);
+  min-inline-size: auto;
+  min-block-size: 1.5rem;
+  padding: 0 var(--space-xs);
   border: 0;
+  border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--color-accent-text);
+  color: var(--color-text-secondary);
+  font: var(--font-weight-semibold) var(--font-size-caption) var(--font-primary);
   cursor: pointer;
-  font: inherit;
-  font-size: var(--font-size-secondary);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-subtle);
+    color: var(--color-accent-text);
+  }
 }
+
 nav {
   justify-content: flex-end;
+  margin-block-start: 0.125rem;
 }
-nav button {
-  min-width: var(--control-height-compact);
-  font-size: var(--font-size-section-title);
-}
+
 button:focus-visible {
   outline: 2px solid var(--color-focus);
 }
+
 button:disabled {
   color: var(--color-disabled);
   cursor: default;
-}
-@media (pointer: coarse) {
-  .remove,
-  nav button {
-    min-width: var(--control-height-large);
-    min-height: var(--control-height-large);
-  }
-}
-
-@media (max-width: 47.9375rem) {
-  section {
-    padding: var(--space-xs) var(--space-sm);
-  }
-
-  header {
-    font-size: var(--font-size-caption);
-  }
-
-  ul {
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
-    padding: 0;
-  }
-
-  li {
-    --product-thumb-size: 2rem;
-    --product-summary-gap: var(--space-xs);
-    --product-name-size: var(--font-size-caption);
-    --qty-btn-size: 1.625rem;
-    --qty-font-size: var(--font-size-caption);
-    --qty-gap: var(--space-2xs);
-    flex: 0 0 min(14.5rem, 84%);
-    border: 0;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-tinted);
-    padding: var(--space-xs) var(--space-sm);
-  }
-
-  .actions {
-    margin-top: var(--space-2xs);
-    gap: var(--space-xs);
-  }
-
-  .remove,
-  nav button {
-    min-width: auto;
-    min-height: 1.625rem;
-    padding: 0 var(--space-xs);
-    border-radius: var(--radius-pill);
-    font-size: var(--font-size-caption);
-    font-weight: var(--font-weight-semibold);
-  }
-
-  .remove {
-    color: var(--color-text-secondary);
-
-    &:hover {
-      background: var(--color-accent-subtle);
-      color: var(--color-accent-text);
-    }
-  }
-
-  nav {
-    margin-top: var(--space-2xs);
-  }
 }

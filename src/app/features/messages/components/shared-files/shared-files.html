@@ -1,0 +1,12 @@
+@for (group of groups(); track group.title) {
+  <section>
+    <h3>{{ group.title }}</h3>
+    <div [class.gallery]="group.title === 'Imágenes'">
+      @for (file of group.files; track file.id) {
+        <app-message-resource [resource]="file" />
+      } @empty {
+        <p>{{ group.empty }}</p>
+      }
+    </div>
+  </section>
+}

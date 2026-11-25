@@ -1,6 +1,9 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { ATTACHMENT_POLICY } from '../data/attachment-policy';
+import { DestroyRef, computed, inject, Injectable, signal } from '@angular/core';
 import { take } from 'rxjs';
 import {
+  AttachmentMessage,
+  SharedResource,
   PurchaseOrder,
   PurchaseOrderMessage,
   ContactInfoMessage,
@@ -60,6 +63,106 @@ export class MessagesStore {
       ),
   );
 
+  readonly attachmentPolicy = inject(ATTACHMENT_POLICY);
+  private readonly localFiles = signal<readonly { resource: SharedResource; pending: boolean }[]>(
+    [],
+  );
+  private readonly drafts = signal<Readonly<Record<string, string>>>({});
+  readonly draft = computed(() => this.drafts()[this.activeConversationId() ?? ''] ?? '');
+  readonly attachmentError = signal('');
+  readonly pendingFiles = computed(() =>
+    this.localFiles()
+      .filter(
+        (file) => file.pending && file.resource.conversationId === this.activeConversationId(),
+      )
+      .map((file) => file.resource),
+  );
+  readonly resources = computed(() => {
+    const id = this.activeConversationId();
+    const shared = id ? this.dataSource.getResources(id) : [];
+    const sent = this.localFiles()
+      .filter((file) => !file.pending && file.resource.conversationId === id)
+      .map((file) => file.resource);
+    return new Map([...shared, ...sent].map((resource) => [resource.id, resource]));
+  });
+
+  setDraft(text: string): void {
+    const active = this.activeConversation();
+    if (active) this.drafts.update((drafts) => ({ ...drafts, [active.id]: text }));
+  }
+
+  selectFiles(files: readonly File[]): void {
+    const active = this.activeConversation();
+    if (!active || !files.length) return;
+    const { maxFiles, maxBytes, formats } = this.attachmentPolicy;
+    if (files.length + this.pendingFiles().length > maxFiles) {
+      this.attachmentError.set('Puedes adjuntar hasta ' + maxFiles + ' archivos por envío.');
+      return;
+    }
+    for (const file of files) {
+      if (!Object.hasOwn(formats, file.type) || !file.size || file.size > maxBytes) {
+        this.attachmentError.set(
+          file.name +
+            ': elige un archivo ' +
+            Object.values(formats).join(', ') +
+            ' de hasta ' +
+            maxBytes / 1048576 +
+            ' MiB, con contenido.',
+        );
+        return;
+      }
+    }
+    const additions = files.map((file) => {
+      const resource: SharedResource = {
+        id: 'local-file-' + ++this.localMessageCounter,
+        conversationId: active.id,
+        name: file.name,
+        kind: file.type.startsWith('image/') ? 'image' : 'document',
+        format: formats[file.type],
+        bytes: file.size,
+        url: URL.createObjectURL(file),
+      };
+      return { resource, pending: true };
+    });
+    this.localFiles.update((current) => [...current, ...additions]);
+    this.attachmentError.set('');
+  }
+
+  removeFile(id: string): void {
+    const file = this.pendingFiles().find((item) => item.id === id);
+    if (!file) return;
+    if (file.url) URL.revokeObjectURL(file.url);
+    this.localFiles.update((files) => files.filter((entry) => entry.resource.id !== id));
+    this.attachmentError.set('');
+  }
+
+  submitDraft(body: string): void {
+    const active = this.activeConversation();
+    if (!active) return;
+    const ids = this.pendingFiles().map((file) => file.id);
+    if (this.selection().length) {
+      this.sendProductRequest(body, ids);
+    } else if (ids.length) {
+      this.appendMessage({
+        id: active.id + '-local-' + ++this.localMessageCounter,
+        kind: 'attachment',
+        author: 'buyer',
+        sentAt: new Date().toISOString(),
+        conversationId: active.id,
+        resourceIds: ids,
+        ...(body.trim() ? { note: body.trim() } : {}),
+      });
+    } else {
+      this.sendTextMessage(body);
+    }
+    if (ids.length)
+      this.localFiles.update((files) =>
+        files.map((file) => (ids.includes(file.resource.id) ? { ...file, pending: false } : file)),
+      );
+    this.setDraft('');
+    this.attachmentError.set('');
+  }
+
   private localMessageCounter = 0;
 
   readonly conversations = this.conversationsState.asReadonly();
@@ -113,6 +216,10 @@ export class MessagesStore {
   );
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      for (const { resource } of this.localFiles())
+        if (resource.url) URL.revokeObjectURL(resource.url);
+    });
     this.loadConversations();
   }
 
@@ -122,6 +229,7 @@ export class MessagesStore {
 
     this.activeConversationIdState.set(normalizedId);
     if (previousId !== normalizedId) {
+      this.attachmentError.set('');
       this.productQuery.set('');
       this.contextModeState.set('tabs');
     }
@@ -192,11 +300,17 @@ export class MessagesStore {
     }
   }
 
-  sendProductRequest(note?: string): ProductRequestMessage | null {
+  sendProductRequest(
+    note?: string,
+    resourceIds: readonly string[] = [],
+  ): ProductRequestMessage | null {
     const active = this.activeConversation();
     const items = this.selection();
     if (!active || !items.length) return null;
-    const message = this.dataSource.createProductRequest(active.id, items, note?.trim());
+    const message = {
+      ...this.dataSource.createProductRequest(active.id, items, note?.trim()),
+      ...(resourceIds.length ? { resourceIds } : {}),
+    };
     this.appendMessage(message);
     this.selections.update((state) => ({ ...state, [active.id]: [] }));
     return message;
@@ -245,7 +359,12 @@ export class MessagesStore {
   }
 
   private appendMessage(
-    newMessage: TextMessage | ProductRequestMessage | ContactInfoMessage | PurchaseOrderMessage,
+    newMessage:
+      | AttachmentMessage
+      | TextMessage
+      | ProductRequestMessage
+      | ContactInfoMessage
+      | PurchaseOrderMessage,
   ): void {
     const { conversationId, sentAt } = newMessage;
     const currentMessages = this.messagesByConversationState()[conversationId] ?? [];

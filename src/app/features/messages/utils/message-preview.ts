@@ -7,7 +7,9 @@ export function getMessagePreview(message: Message): string {
     case 'purchase-order':
       return 'Orden de compra ' + message.orderId;
     case 'quotation':
-      return message.fileName;
+      return 'Cotización';
+    case 'attachment':
+      return message.note || 'Adjuntos compartidos';
     case 'text':
       return message.body.replace(/\s+/g, ' ').trim();
     case 'product-request':

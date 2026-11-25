@@ -27,7 +27,7 @@ describe('MessagesPage', () => {
     expect(element.querySelector('.conversation-header__name')?.textContent?.trim()).toBe(
       'LDF Projects',
     );
-    expect(element.querySelectorAll('.message-list__message').length).toBe(5);
+    expect(element.querySelectorAll('.message-list__message').length).toBe(6);
 
     const tabs = Array.from(
       element.querySelectorAll('app-conversation-context [role="tab"]'),
@@ -36,7 +36,7 @@ describe('MessagesPage', () => {
     expect(tabs).toEqual(['Productos', 'Archivos', 'Órdenes']);
 
     const attachmentBtn = element.querySelector<HTMLButtonElement>('.message-composer__attachment');
-    expect(attachmentBtn?.disabled).toBe(true);
+    expect(attachmentBtn?.disabled).toBe(false);
 
     const textarea = element.querySelector<HTMLTextAreaElement>('.message-composer__textarea');
     expect(textarea?.placeholder).toBe('Escribe un mensaje...');
@@ -147,6 +147,7 @@ describe('MessagesPage', () => {
         .querySelector('app-product-selection-tray app-message-product-quantity span')
         ?.textContent?.trim(),
     ).toBe('1');
+    expect(element.querySelector('app-product-selection-tray .send')).toBeNull();
     click('app-product-selection-tray .remove');
     expect(element.querySelector('app-product-selection-tray')).toBeNull();
     click('app-message-product-catalog .add');
@@ -238,6 +239,72 @@ describe('MessagesPage', () => {
       click('dialog .close');
       expect(element.querySelector('dialog')).toBeNull();
     }
+  });
+
+  it('shows the quotation once in Files and opens the shared image preview', () => {
+    element.querySelector<HTMLButtonElement>('#context-tab-files')!.click();
+    harness.detectChanges();
+    const panel = element.querySelector('app-shared-files')!;
+    expect(panel.querySelectorAll('.document')).toHaveLength(1);
+    expect(panel.querySelector('.document')?.textContent).toContain('Cotización LDF-024.pdf');
+    expect(panel.querySelector('.document a')).toBeNull();
+    panel.querySelector<HTMLButtonElement>('button.image')!.click();
+    harness.detectChanges();
+    expect(panel.querySelector('dialog[open] img')?.getAttribute('src')).toContain(
+      'weg-w22-01.webp',
+    );
+  });
+
+  it('integrates pending files inside the composer and manages expanded state across attachment and text changes', () => {
+    const composer = element.querySelector<HTMLFormElement>('.message-composer')!;
+    const picker = composer.querySelector<HTMLInputElement>('input[type="file"]')!;
+    const textarea = composer.querySelector<HTMLTextAreaElement>('.message-composer__textarea')!;
+    const pdf = new File(['pdf'], 'especificacion.pdf', { type: 'application/pdf' });
+
+    expect(composer.classList.contains('message-composer--expanded')).toBe(false);
+    expect(composer.querySelector('app-pending-files')).toBeNull();
+
+    composer.querySelector<HTMLButtonElement>('.message-composer__attachment')!.click();
+    Object.defineProperty(picker, 'files', { configurable: true, value: [pdf] });
+    picker.dispatchEvent(new Event('change'));
+    harness.detectChanges();
+
+    expect(composer.classList.contains('message-composer--expanded')).toBe(true);
+    expect(composer.querySelector('app-pending-files')).not.toBeNull();
+    expect(textarea.placeholder).toBe('Nota opcional...');
+
+    composer.querySelector<HTMLButtonElement>('app-pending-files .remove')!.click();
+    harness.detectChanges();
+
+    expect(composer.querySelector('app-pending-files')).toBeNull();
+    expect(composer.classList.contains('message-composer--expanded')).toBe(false);
+
+    composer.querySelector<HTMLButtonElement>('.message-composer__attachment')!.click();
+    Object.defineProperty(picker, 'files', { configurable: true, value: [pdf] });
+    picker.dispatchEvent(new Event('change'));
+    harness.detectChanges();
+
+    textarea.value = 'Linea 1\nLinea 2';
+    textarea.dispatchEvent(new Event('input'));
+    harness.detectChanges();
+
+    composer.querySelector<HTMLButtonElement>('app-pending-files .remove')!.click();
+    harness.detectChanges();
+
+    expect(composer.querySelector('app-pending-files')).toBeNull();
+    expect(composer.classList.contains('message-composer--expanded')).toBe(true);
+
+    composer.querySelector<HTMLButtonElement>('.message-composer__attachment')!.click();
+    Object.defineProperty(picker, 'files', { configurable: true, value: [pdf] });
+    picker.dispatchEvent(new Event('change'));
+    harness.detectChanges();
+
+    composer.querySelector<HTMLButtonElement>('.message-composer__submit')!.click();
+    harness.detectChanges();
+
+    expect(composer.querySelector('app-pending-files')).toBeNull();
+    expect(composer.classList.contains('message-composer--expanded')).toBe(false);
+    expect(textarea.value).toBe('');
   });
 
   it('shows the not-found state when navigating to an unknown conversationId', async () => {

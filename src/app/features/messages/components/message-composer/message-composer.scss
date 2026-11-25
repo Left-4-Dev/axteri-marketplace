@@ -18,6 +18,14 @@ $bp-mobile-max: 47.9375rem;
   box-shadow: var(--shadow-card);
   background: var(--color-surface);
 
+  &:has(.message-composer__attachments) {
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'attachments attachments attachments'
+      'attach field submit';
+    row-gap: var(--space-xs);
+  }
+
   &--expanded {
     grid-template-rows: auto auto;
     grid-template-areas:
@@ -25,6 +33,18 @@ $bp-mobile-max: 47.9375rem;
       'attach . submit';
     align-items: end;
     row-gap: var(--space-xs);
+
+    &:has(.message-composer__attachments) {
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+        'attachments attachments attachments'
+        'field field field'
+        'attach . submit';
+    }
+  }
+
+  &__attachments {
+    grid-area: attachments;
   }
 
   &__attachment {
@@ -35,11 +55,34 @@ $bp-mobile-max: 47.9375rem;
     inline-size: var(--control-height);
     block-size: var(--control-height);
     padding: 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
     border-radius: 50%;
-    background: var(--color-surface-muted);
-    color: var(--color-disabled);
-    cursor: not-allowed;
+    background: var(--color-surface-tinted);
+    color: var(--color-accent-text);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast) ease,
+      color var(--motion-fast) ease;
+
+    &:hover:not(:disabled) {
+      background: var(--color-accent-subtle);
+      color: var(--color-action);
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--color-brand) 22%, white);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background: var(--color-surface-muted);
+      color: var(--color-disabled);
+      cursor: not-allowed;
+    }
   }
 
   &__attachment-icon {
@@ -74,7 +117,7 @@ $bp-mobile-max: 47.9375rem;
     inline-size: 100%;
     min-inline-size: 0;
     min-block-size: var(--control-height);
-    max-block-size: 6.5rem;
+    max-block-size: var(--composer-max-height, 6.5rem);
     padding-block: calc((var(--control-height) - 1em * var(--composer-line-height)) / 2);
     padding-inline: var(--space-sm);
     border: 0;
@@ -159,7 +202,7 @@ $bp-mobile-max: 47.9375rem;
   }
 }
 
-@media (max-width: $bp-mobile-max) {
+@media (max-width: $bp-mobile-max), (max-height: 36rem) {
   .message-composer {
     column-gap: var(--space-xs);
     padding: var(--space-xs) var(--space-sm);

@@ -1,4 +1,7 @@
+import { MessagesStore } from '../../stores/messages.store';
+import { PendingFiles } from '../shared-files/pending-files';
 import {
+  inject,
   afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -13,6 +16,7 @@ import {
 
 @Component({
   selector: 'app-message-composer',
+  imports: [PendingFiles],
   templateUrl: './message-composer.html',
   styleUrl: './message-composer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,10 +33,32 @@ export class MessageComposer {
 
   private readonly textareaRef = viewChild<ElementRef<HTMLTextAreaElement>>('textarea');
 
-  protected readonly draft = signal('');
-  protected readonly isExpanded = signal(false);
+  protected readonly store = inject(MessagesStore);
+  protected readonly draft = this.store.draft;
+  protected readonly accept = Object.keys(this.store.attachmentPolicy.formats).join(',');
+  private pickerConversation: string | null = null;
+  private displayedConversation: string | null = null;
+
+  protected openPicker(picker: HTMLInputElement): void {
+    this.pickerConversation = this.store.activeConversationId();
+    picker.click();
+  }
+  protected readPicker(picker: HTMLInputElement): void {
+    if (this.pickerConversation === this.store.activeConversationId()) {
+      this.store.selectFiles(Array.from(picker.files ?? []));
+    }
+    picker.value = '';
+  }
+  private readonly textExpanded = signal(false);
+  protected readonly isExpanded = computed(
+    () => this.store.pendingFiles().length > 0 || this.textExpanded(),
+  );
   protected readonly canSubmit = computed(
-    () => !this.disabled() && (this.hasProducts() || this.draft().trim().length > 0),
+    () =>
+      !this.disabled() &&
+      (this.hasProducts() ||
+        this.store.pendingFiles().length > 0 ||
+        this.draft().trim().length > 0),
   );
 
   private collapseBelowLength: number | null = null;
@@ -40,7 +66,16 @@ export class MessageComposer {
   constructor() {
     afterRenderEffect({
       write: () => {
-        this.draft();
+        const id = this.store.activeConversationId();
+        const draft = this.draft();
+        if (id !== this.displayedConversation) {
+          this.displayedConversation = id;
+          this.collapseBelowLength = null;
+          this.textExpanded.set(false);
+        }
+        this.hasProducts();
+        this.store.pendingFiles();
+        this.syncExpandedState(draft);
         this.isExpanded();
         this.resizeTextarea();
       },
@@ -49,12 +84,12 @@ export class MessageComposer {
 
   protected onDraftInput(event: Event): void {
     const value = (event.target as HTMLTextAreaElement | null)?.value ?? '';
-    this.draft.set(value);
+    this.store.setDraft(value);
     this.syncExpandedState(value);
   }
 
   protected onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
       this.submit();
     }
@@ -77,20 +112,19 @@ export class MessageComposer {
     }
     const text = this.draft().trim();
     this.messageSubmitted.emit(text);
-    this.draft.set('');
-    this.isExpanded.set(false);
+    this.textExpanded.set(false);
     this.collapseBelowLength = null;
   }
 
   private syncExpandedState(value: string): void {
     if (!value) {
-      this.isExpanded.set(false);
+      this.textExpanded.set(false);
       this.collapseBelowLength = null;
       return;
     }
 
     if (value.includes('\n')) {
-      this.isExpanded.set(true);
+      this.textExpanded.set(true);
       this.collapseBelowLength = null;
       return;
     }
@@ -104,15 +138,15 @@ export class MessageComposer {
     const minHeight = Number.parseFloat(getComputedStyle(el).minBlockSize) || 40;
     const isMultiLine = el.scrollHeight > minHeight + 2;
 
-    if (!this.isExpanded() && isMultiLine) {
+    if (!this.textExpanded() && isMultiLine) {
       this.collapseBelowLength = value.length;
-      this.isExpanded.set(true);
+      this.textExpanded.set(true);
     } else if (
-      this.isExpanded() &&
+      this.textExpanded() &&
       !isMultiLine &&
       (this.collapseBelowLength === null || value.length < this.collapseBelowLength)
     ) {
-      this.isExpanded.set(false);
+      this.textExpanded.set(false);
       this.collapseBelowLength = null;
     }
   }

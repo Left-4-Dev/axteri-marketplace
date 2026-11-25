@@ -80,7 +80,26 @@ export interface RequestedProduct extends ConversationProduct {
   readonly quantity: number;
 }
 
+export type SharedResource = {
+  readonly id: string;
+  readonly conversationId: string;
+  readonly name: string;
+  readonly format: string;
+  readonly bytes?: number;
+} & (
+  | { readonly kind: 'document'; readonly url?: string }
+  | { readonly kind: 'image'; readonly url: string }
+);
+
+export interface AttachmentMessage extends MessageBase {
+  readonly kind: 'attachment';
+  readonly author: MessageAuthor;
+  readonly resourceIds: readonly string[];
+  readonly note?: string;
+}
+
 export interface ProductRequestMessage extends MessageBase {
+  readonly resourceIds?: readonly string[];
   readonly note?: string;
   readonly kind: 'product-request';
   readonly author: 'buyer';
@@ -136,7 +155,7 @@ export interface QuotationMessage extends MessageBase {
   readonly lines: readonly OrderLine[];
   readonly currency: string;
   readonly author: 'seller';
-  readonly fileName: string;
+  readonly resourceId: string;
   readonly summary: string;
   readonly status: 'pending' | QuotationDecision;
 }
@@ -147,7 +166,8 @@ export type Message =
   | ProductRequestMessage
   | ContactInfoMessage
   | QuotationMessage
-  | PurchaseOrderMessage;
+  | PurchaseOrderMessage
+  | AttachmentMessage;
 
 export interface MessageDayGroup {
   readonly dateKey: string;

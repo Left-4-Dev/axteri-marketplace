@@ -1,0 +1,60 @@
+@let file = resource();
+@if (file.kind === 'image') {
+  <button
+    #trigger
+    class="image"
+    type="button"
+    (click)="previewOpen.set(true)"
+    [attr.aria-label]="'Ampliar ' + file.name"
+    [title]="file.name"
+    aria-haspopup="dialog"
+  >
+    <img [src]="file.url" alt="" /><span>{{ file.name }}</span>
+  </button>
+  @if (previewOpen()) {
+    <dialog
+      #preview
+      [attr.aria-label]="file.name"
+      (cancel)="$event.preventDefault(); closePreview()"
+      (close)="onPreviewClosed()"
+      closedby="any"
+    >
+      <header>
+        <strong>{{ file.name }}</strong>
+        <button
+          type="button"
+          class="close"
+          aria-label="Cerrar vista previa"
+          (click)="closePreview()"
+        >
+          <span class="close-icon" aria-hidden="true"></span>
+        </button>
+      </header>
+      <img [src]="file.url" [alt]="file.name" loading="lazy" />
+    </dialog>
+  }
+} @else {
+  <div class="document" [title]="file.name">
+    <span class="icon" aria-hidden="true"></span>
+    <div class="copy">
+      <strong>{{ file.name }}</strong>
+      <div class="meta">
+        <small
+          >{{ file.format }} ·
+          {{
+            file.bytes === undefined
+              ? 'Tamaño no disponible'
+              : file.bytes < 1024
+                ? file.bytes + ' B'
+                : (file.bytes / 1024 | number: '1.0-0') + ' KB'
+          }}</small
+        >
+        @if (file.url) {
+          <a [href]="file.url" target="_blank" rel="noopener noreferrer">Abrir PDF</a>
+        } @else {
+          <small class="unavailable">Archivo no disponible</small>
+        }
+      </div>
+    </div>
+  </div>
+}

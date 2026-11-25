@@ -1,3 +1,5 @@
+import { ResourceItem } from '../shared-files/resource-item';
+import { SharedResource } from '../../models/messages.model';
 import { OrderSummary } from '../purchase-order/order-summary';
 import { PurchaseOrder } from '../../models/messages.model';
 import {
@@ -16,7 +18,7 @@ import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/
 
 @Component({
   selector: 'app-message-list',
-  imports: [OrderSummary, MessageProductSummary],
+  imports: [ResourceItem, OrderSummary, MessageProductSummary],
   templateUrl: './message-list.html',
   styleUrl: './message-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +27,7 @@ import { formatDateSeparator, formatMessageTime, getDateKey } from '../../utils/
   },
 })
 export class MessageList {
+  readonly resources = input.required<ReadonlyMap<string, SharedResource>>();
   readonly messages = input.required<readonly Message[]>();
   readonly quotationDecision = output<{ id: string; decision: QuotationDecision }>();
   private readonly latestMessageId = computed(() => this.messages().at(-1)?.id);

@@ -197,6 +197,14 @@ export const INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE: Readonly<
       body: 'Buen día. Claro, contamos con disponibilidad inmediata en almacén de Lima.',
     },
     {
+      id: 'ldf-photo-w22',
+      conversationId: 'ldf-projects',
+      kind: 'attachment',
+      author: 'seller',
+      sentAt: '2026-11-19T14:24:00-05:00',
+      resourceIds: ['ldf-w22-photo'],
+    },
+    {
       id: 'ldf-quote-024',
       conversationId: 'ldf-projects',
       kind: 'quotation',
@@ -207,7 +215,7 @@ export const INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE: Readonly<
       ],
       author: 'seller',
       sentAt: '2026-11-19T14:25:00-05:00',
-      fileName: 'Cotización LDF-024.pdf',
+      resourceId: 'ldf-024-pdf',
       summary: 'Interruptores C60H-DC y celdas SM6',
       status: 'pending',
     },

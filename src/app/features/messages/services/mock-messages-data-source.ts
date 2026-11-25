@@ -7,6 +7,7 @@ import {
   INITIAL_MESSAGES_BY_CONVERSATION_FIXTURE,
 } from '../data/messages.fixtures';
 import {
+  SharedResource,
   PurchaseOrder,
   QuotationMessage,
   ContactInfoMessage,
@@ -60,6 +61,28 @@ export class MockMessagesDataSource {
       sentAt: new Date().toISOString(),
       contact: { ...SELLER_CONTACTS[conversation.counterpart.seller.id] },
     };
+  }
+
+  getResources(conversationId: string): readonly SharedResource[] {
+    if (conversationId !== 'ldf-projects') return [];
+    return [
+      {
+        id: 'ldf-024-pdf',
+        conversationId,
+        kind: 'document',
+        name: 'Cotización LDF-024.pdf',
+        format: 'PDF',
+      },
+      {
+        id: 'ldf-w22-photo',
+        conversationId,
+        kind: 'image',
+        name: 'Motor WEG W22.webp',
+        format: 'WEBP',
+        bytes: 94996,
+        url: '/assets/products/weg-w22/gallery/weg-w22-01.webp',
+      },
+    ];
   }
 
   getProducts(sellerId: string): readonly ConversationProduct[] {

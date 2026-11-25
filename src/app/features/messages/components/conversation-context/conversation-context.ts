@@ -1,3 +1,4 @@
+import { SharedFiles } from '../shared-files/shared-files';
 import { OrderSummary } from '../purchase-order/order-summary';
 import { PurchaseOrder } from '../../models/messages.model';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
@@ -17,7 +18,7 @@ export interface ContextTabOption {
 
 @Component({
   selector: 'app-conversation-context',
-  imports: [OrderSummary, ProductCatalog, Button, ConversationSellerInfo],
+  imports: [SharedFiles, OrderSummary, ProductCatalog, Button, ConversationSellerInfo],
   templateUrl: './conversation-context.html',
   styleUrl: './conversation-context.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,12 +4,17 @@
   aria-label="Redactar mensaje"
   (submit)="onSubmit($event)"
 >
+  @if (store.pendingFiles().length || store.attachmentError()) {
+    <app-pending-files class="message-composer__attachments" />
+  }
+  <input #picker hidden type="file" multiple [accept]="accept" (change)="readPicker(picker)" />
   <button
     class="message-composer__attachment"
     type="button"
-    disabled
-    aria-label="Adjuntar archivo (próximamente)"
-    title="Adjuntar archivo (próximamente)"
+    [disabled]="disabled()"
+    (click)="openPicker(picker)"
+    aria-label="Adjuntar archivos"
+    title="Adjuntar archivos"
   >
     <span class="message-composer__attachment-icon" aria-hidden="true"></span>
   </button>
@@ -23,7 +28,9 @@
       name="messageBody"
       rows="1"
       [disabled]="disabled()"
-      [placeholder]="hasProducts() ? 'Nota opcional...' : 'Escribe un mensaje...'"
+      [placeholder]="
+        hasProducts() || store.pendingFiles().length ? 'Nota opcional...' : 'Escribe un mensaje...'
+      "
       [value]="draft()"
       (input)="onDraftInput($event)"
       (keydown)="onKeydown($event)"

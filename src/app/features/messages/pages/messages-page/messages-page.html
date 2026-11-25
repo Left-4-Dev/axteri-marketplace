@@ -58,6 +58,7 @@
             </div>
 
             <app-message-list
+              [resources]="store.resources()"
               [orders]="store.orders()"
               (quotationDecision)="store.decideQuotation($event.id, $event.decision)"
               [messages]="store.messages()"
@@ -71,7 +72,7 @@
           <app-message-composer
             [hasProducts]="store.selection().length > 0"
             [sellerName]="seller.name"
-            (messageSubmitted)="onMessageSubmitted($event)"
+            (messageSubmitted)="store.submitDraft($event)"
           />
         } @else if (store.isConversationNotFound()) {
           <div class="messages-page__not-found" role="status">

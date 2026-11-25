@@ -123,6 +123,10 @@ $bp-mobile-max: 47.9375rem;
     app-order-summary {
       --order-summary-surface: var(--color-surface-tinted);
     }
+
+    app-shared-files {
+      --resource-surface: var(--color-surface-tinted);
+    }
   }
 
   &__placeholder {
@@ -206,6 +210,12 @@ $bp-mobile-max: 47.9375rem;
         --order-summary-surface: var(--color-surface);
         --order-summary-radius: var(--radius-lg);
         --order-summary-shadow: 0 2px 10px rgb(48 51 65 / 6%);
+      }
+
+      app-shared-files {
+        --resource-surface: var(--color-surface);
+        --resource-radius: var(--radius-md);
+        --resource-shadow: 0 2px 8px rgb(48 51 65 / 6%);
       }
     }
 
