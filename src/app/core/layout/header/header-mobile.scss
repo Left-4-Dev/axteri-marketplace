@@ -85,6 +85,24 @@
       padding: var(--space-sm);
       border-radius: 50%;
     }
+    &--search-open &__brand {
+      display: none;
+    }
+    &--search-open &__search {
+      flex: 1;
+      padding: 2px;
+      background: var(--header-search-gradient);
+    }
+    &--search-open &__search-input {
+      display: block;
+      block-size: var(--control-height);
+      &:focus {
+        outline: none;
+      }
+    }
+    &--search-open &__search-button {
+      border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+    }
     &__mobile-navigation {
       display: grid;
       gap: 0;

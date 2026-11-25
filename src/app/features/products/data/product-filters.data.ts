@@ -44,15 +44,21 @@ export const PURCHASE_CAPACITY_OPTIONS: readonly ProductFilterOption<PurchaseCap
 export const RATING_OPTIONS: readonly number[] = [1, 2, 3, 4, 5];
 
 export const PRODUCT_BRANDS: readonly string[] = [
-  ...new Set(catalog.products().map((p) => catalog.getBrand(p.brandId)!.name)),
+  ...new Set([
+    ...catalog.products().map((p) => catalog.getBrand(p.brandId)!.name),
+    ...catalog.brands.map((b) => b.name),
+  ]),
 ];
 
 export const PRODUCT_ORIGINS: readonly string[] = [
-  'Alemania',
-  'Estados Unidos',
-  'China',
-  'Japón',
-  'Reino Unido',
-  'España',
-  'India',
+  ...new Set([
+    'Alemania',
+    'Estados Unidos',
+    'China',
+    'Japón',
+    'Reino Unido',
+    'España',
+    'India',
+    ...catalog.products().flatMap((p) => (p.origin ? [p.origin] : [])),
+  ]),
 ];

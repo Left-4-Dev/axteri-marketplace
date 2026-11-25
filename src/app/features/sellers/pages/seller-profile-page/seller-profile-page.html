@@ -23,7 +23,7 @@
       >
         @switch (section.id) {
           @case ('productos') {
-            <app-seller-products [products]="products()" />
+            <app-seller-products [products]="products()" [sellerId]="item.id" />
           }
           @case ('marcas') {
             <app-seller-brands [brands]="item.brands" />

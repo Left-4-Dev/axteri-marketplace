@@ -38,17 +38,24 @@
       <h2 class="products-menu__heading">Recomendados por Axter</h2>
       <ul class="products-menu__brands" aria-label="Marcas recomendadas">
         @for (brand of brands; track brand.id) {
-          <li class="products-menu__brand">
-            <span class="products-menu__brand-circle">
-              <img
-                class="products-menu__brand-logo"
-                [src]="brand.logoUrl"
-                alt=""
-                width="64"
-                height="64"
-              />
-            </span>
-            <span class="products-menu__brand-name">{{ brand.name }}</span>
+          <li>
+            <a
+              class="products-menu__brand"
+              routerLink="/productos"
+              [queryParams]="{ marca: brand.id }"
+              (click)="navigate.emit()"
+            >
+              <span class="products-menu__brand-circle">
+                <img
+                  class="products-menu__brand-logo"
+                  [src]="brand.logoUrl"
+                  alt=""
+                  width="64"
+                  height="64"
+                />
+              </span>
+              <span class="products-menu__brand-name">{{ brand.name }}</span>
+            </a>
           </li>
         }
       </ul>
@@ -60,14 +67,18 @@
             class="products-menu__column"
             [attr.aria-label]="'Subcategorías de ' + activeCategory().name"
           >
-            @for (subcategory of column; track subcategory) {
+            @for (subcategory of column; track subcategory.id) {
               <li>
                 <a
                   class="products-menu__subcategory"
                   routerLink="/productos"
+                  [queryParams]="{
+                    categoria: activeCategory().id,
+                    subcategoria: subcategory.id,
+                  }"
                   (click)="navigate.emit()"
                 >
-                  {{ subcategory }}
+                  {{ subcategory.name }}
                 </a>
               </li>
             }

@@ -10,6 +10,7 @@ import {
   signal,
   viewChildren,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { Button } from '../../../../shared/ui/button/button';
 import { Brand } from '../../models/home-content.model';
 
@@ -25,6 +26,7 @@ export class PreferredBrands {
   protected readonly scrollableBrands = signal<ReadonlySet<string>>(new Set());
   private readonly viewports = viewChildren<ElementRef<HTMLDivElement>>('categoriesViewport');
   private readonly document = inject(DOCUMENT);
+  private readonly router = inject(Router);
 
   constructor() {
     afterRenderEffect({
@@ -80,5 +82,9 @@ export class PreferredBrands {
       event.preventDefault();
       viewport.scrollTo({ left: event.key === 'Home' ? 0 : viewport.scrollWidth, behavior });
     }
+  }
+
+  protected viewBrandProducts(brandId: string): void {
+    void this.router.navigate(['/productos'], { queryParams: { marca: brandId } });
   }
 }

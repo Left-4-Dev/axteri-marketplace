@@ -1,6 +1,7 @@
 @use '../../../../styles/breakpoints' as bp;
 
-.header--scrolled {
+.header--scrolled,
+.header--search-open {
   .header__navbar {
     inset-block-start: 0.5rem;
     inset-inline-start: max(var(--header-inset), calc((100% - 80rem) / 2));
@@ -49,7 +50,8 @@
 }
 
 @media (max-width: bp.$xxl) {
-  .header--scrolled {
+  .header--scrolled,
+  .header--search-open {
     .header__navbar {
       gap: var(--space-md);
       min-block-size: 4.25rem;
@@ -119,7 +121,8 @@
 }
 
 @media (max-width: bp.$xl) {
-  .header--scrolled {
+  .header--scrolled,
+  .header--search-open {
     .header__navbar {
       gap: var(--space-md);
       min-block-size: 4rem;
@@ -197,7 +200,8 @@
 }
 
 @media (max-width: bp.$lg) {
-  .header--scrolled {
+  .header--scrolled,
+  .header--search-open {
     .header__navbar {
       gap: var(--space-ms);
       min-block-size: 4rem;

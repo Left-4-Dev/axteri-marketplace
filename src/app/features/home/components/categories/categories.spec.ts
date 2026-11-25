@@ -74,8 +74,8 @@ describe('Categories', () => {
     );
     const links = element.querySelectorAll<HTMLAnchorElement>('a.categories__link');
     expect(links).toHaveLength(HOME_CATEGORIES.length);
-    links.forEach((link) => {
-      expect(link.getAttribute('href')).toBe('/productos');
+    links.forEach((link, index) => {
+      expect(link.getAttribute('href')).toBe(`/productos?categoria=${HOME_CATEGORIES[index].id}`);
     });
     expect(element.querySelector('article')?.hasAttribute('tabindex')).toBe(false);
   });

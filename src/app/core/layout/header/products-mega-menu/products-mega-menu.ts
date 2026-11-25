@@ -47,7 +47,7 @@ export class ProductsMegaMenu {
   protected activateCategory(id: string): void {
     this.selectCategory(id);
     this.navigate.emit();
-    void this.router.navigateByUrl('/productos');
+    void this.router.navigate(['/productos'], { queryParams: { categoria: id } });
   }
 
   protected onCategoryKeydown(event: KeyboardEvent, index: number): void {

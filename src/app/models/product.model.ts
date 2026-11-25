@@ -31,6 +31,12 @@ export interface Product {
   readonly id: string;
   readonly name: string;
   readonly brand: string;
+  readonly brandId?: string;
+  readonly sellerId?: string;
+  readonly categoryId?: string;
+  readonly subcategoryId?: string;
+  readonly origin?: string;
+  readonly rating?: number;
   readonly description?: string;
   readonly badge?: string;
   readonly minOrderLabel?: string;

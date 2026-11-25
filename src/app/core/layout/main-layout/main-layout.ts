@@ -1,5 +1,5 @@
-import { Component, DOCUMENT, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, DOCUMENT, inject, viewChild } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { Footer } from '../footer/footer';
 import { FloatingActions } from '../floating-actions/floating-actions';
 import { Header } from '../header/header';
@@ -12,12 +12,12 @@ import { Header } from '../header/header';
 })
 export class MainLayout {
   private readonly document = inject(DOCUMENT);
+  private readonly header = viewChild.required(Header);
 
-  private readonly router = inject(Router);
   protected focusPrimarySearch(): void {
     const target = this.document.querySelector<HTMLElement>('[data-primary-search]');
     if (!target) {
-      void this.router.navigate(['/productos']);
+      this.header().openSearch();
       return;
     }
 

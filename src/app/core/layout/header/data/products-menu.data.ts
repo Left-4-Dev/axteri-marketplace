@@ -1,3 +1,4 @@
+import { CatalogCategory } from '../../../catalog/catalog.model';
 import { catalog } from '../../../catalog/catalog.repository';
 export interface HeaderNavigationLink {
   readonly id: string;
@@ -6,11 +7,7 @@ export interface HeaderNavigationLink {
   readonly fragment?: string;
 }
 
-export interface ProductMenuCategory {
-  readonly id: string;
-  readonly name: string;
-  readonly subcategories: readonly string[];
-}
+export type ProductMenuCategory = CatalogCategory;
 
 export interface RecommendedBrand {
   readonly id: string;
@@ -24,9 +21,7 @@ export const HEADER_NAVIGATION_LINKS: readonly HeaderNavigationLink[] = [
   { id: 'help', label: 'Ayuda' },
 ];
 
-export const PRODUCT_MENU_CATEGORIES: readonly ProductMenuCategory[] = catalog.categories.map(
-  (c) => ({ ...c, subcategories: c.subcategories.map((s) => s.name) }),
-);
+export const PRODUCT_MENU_CATEGORIES: readonly ProductMenuCategory[] = catalog.categories;
 export const RECOMMENDED_PRODUCT_BRANDS: readonly RecommendedBrand[] =
   catalog.collections.menuBrands.map((id) => {
     const b = catalog.getBrand(id)!;

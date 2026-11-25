@@ -54,6 +54,8 @@ export class CatalogRepository {
               this.getBrand(p.brandId)?.name,
               this.getSeller(p.sellerId)?.name,
               this.getCategory(p.categoryId)?.name,
+              this.getCategory(p.categoryId)?.subcategories.find((s) => s.id === p.subcategoryId)
+                ?.name,
             ].join(' '),
           ).includes(term)),
     );

@@ -57,11 +57,13 @@ export function cloneFiltersState(state: ProductFiltersState): ProductFiltersSta
 })
 export class ProductFilters {
   readonly appliedFilters = input<ProductFiltersState>(INITIAL_PRODUCT_FILTERS);
+  readonly contextChips = input<readonly ActiveFilterChip[]>([]);
   readonly brands = input<readonly string[]>(PRODUCT_BRANDS);
   readonly origins = input<readonly string[]>(PRODUCT_ORIGINS);
   readonly priceBounds = input<ProductPriceRangeFilter>(DEFAULT_PRICE_RANGE);
 
   readonly filtersChange = output<ProductFiltersState>();
+  readonly clearContext = output<void>();
 
   protected readonly sortOptions: readonly ProductFilterOption<ProductSort>[] = SORT_OPTIONS;
   protected readonly verificationOptions: readonly ProductFilterOption<SupplierVerificationFilter>[] =
@@ -87,12 +89,15 @@ export class ProductFilters {
   );
   protected readonly brandQuery = signal<string>('');
   protected readonly originQuery = signal<string>('');
+  private readonly contextCleared = signal<boolean>(false);
 
   constructor() {
     effect(() => {
       const incoming = cloneFiltersState(this.appliedFilters());
+      this.contextChips();
       this.committedFilters.set(incoming);
       this.draftFilters.set(cloneFiltersState(incoming));
+      this.contextCleared.set(false);
     });
   }
 
@@ -135,7 +140,7 @@ export class ProductFilters {
   protected readonly activeChips = computed<readonly ActiveFilterChip[]>(() => {
     const applied = this.committedFilters();
     const bounds = this.priceBounds();
-    const chips: ActiveFilterChip[] = [];
+    const chips: ActiveFilterChip[] = [...this.contextChips()];
 
     for (const value of applied.supplierVerification) {
       const option = this.verificationOptions.find((item) => item.value === value);
@@ -217,18 +222,24 @@ export class ProductFilters {
 
   applyFilters(): void {
     const next = cloneFiltersState(this.draftFilters());
+    if (this.contextCleared()) {
+      this.contextCleared.set(false);
+      this.clearContext.emit();
+    }
     this.committedFilters.set(next);
     this.filtersChange.emit(cloneFiltersState(next));
   }
 
   discardDraft(): void {
     this.draftFilters.set(cloneFiltersState(this.committedFilters()));
+    this.contextCleared.set(false);
     this.brandQuery.set('');
     this.originQuery.set('');
   }
 
   clearDraftFilters(): void {
     const bounds = this.priceBounds();
+    this.contextCleared.set(true);
     this.draftFilters.set({
       sortBy: 'relevance',
       supplierVerification: [],

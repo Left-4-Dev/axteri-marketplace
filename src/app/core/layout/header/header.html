@@ -1,4 +1,8 @@
-<header class="header" [class.header--scrolled]="scrolled()">
+<header
+  class="header"
+  [class.header--scrolled]="scrolled()"
+  [class.header--search-open]="searchOpen()"
+>
   <div #navbar class="header__navbar">
     <a class="header__brand" routerLink="/" aria-label="Axteri, inicio" (click)="closeMobileMenu()">
       <span class="header__logo" aria-hidden="true"
@@ -48,7 +52,7 @@
       class="header__search"
       role="search"
       aria-label="Buscar productos"
-      (submit)="$event.preventDefault()"
+      (submit)="onSearchSubmit($event)"
     >
       <input
         #searchInput
@@ -117,7 +121,12 @@
       >
         @for (category of productCategories; track category.id) {
           <li>
-            <a class="header__mobile-category" routerLink="/productos" (click)="closeMobileMenu()">
+            <a
+              class="header__mobile-category"
+              routerLink="/productos"
+              [queryParams]="{ categoria: category.id }"
+              (click)="closeMobileMenu()"
+            >
               {{ category.name }}
             </a>
           </li>
