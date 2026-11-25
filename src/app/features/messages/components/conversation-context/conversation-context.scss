@@ -46,17 +46,25 @@ $bp-mobile-max: 47.9375rem;
   }
 
   &__close {
+    position: relative;
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
-    inline-size: 2.25rem;
-    block-size: 2.25rem;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
     padding: 0;
     border: 0;
     border-radius: 50%;
     background: var(--color-surface-tinted);
     color: var(--color-text);
+    line-height: 0;
     cursor: pointer;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -0.125rem;
+    }
 
     &:hover {
       background: var(--color-accent-subtle);
@@ -71,8 +79,8 @@ $bp-mobile-max: 47.9375rem;
 
   &__close-icon {
     display: block;
-    inline-size: var(--icon-size-sm);
-    block-size: var(--icon-size-sm);
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
     background-color: currentColor;
     mask: url('/assets/icons/common/close.svg') center / contain no-repeat;
   }
@@ -80,23 +88,40 @@ $bp-mobile-max: 47.9375rem;
   &__tablist {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-block-end: 1px solid var(--color-border);
-    background: var(--color-surface);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-brand) 14%, white),
+      color-mix(in srgb, var(--color-brand) 8%, white)
+    );
   }
 
   &__tab {
+    position: relative;
     min-block-size: var(--control-height);
     padding: var(--space-sm) var(--space-xs);
     border: 0;
     border-block-end: 2px solid transparent;
     background: transparent;
     color: var(--color-text-secondary);
-    font: var(--font-weight-semibold) var(--font-size-secondary) var(--font-primary);
+    font: var(--font-weight-medium) var(--font-size-secondary) var(--font-primary);
     cursor: pointer;
+    transition:
+      color var(--motion-fast) ease,
+      background-color var(--motion-fast) ease,
+      border-color var(--motion-fast) ease;
+
+    & + &::before {
+      content: '';
+      position: absolute;
+      inset-block: 26%;
+      inset-inline-start: 0;
+      inline-size: 1px;
+      background: color-mix(in srgb, var(--color-brand) 22%, transparent);
+    }
 
     &:hover {
       color: var(--color-accent-text);
-      background: var(--color-accent-subtle);
+      background: color-mix(in srgb, var(--color-brand) 8%, transparent);
     }
 
     &:focus-visible {
@@ -106,26 +131,35 @@ $bp-mobile-max: 47.9375rem;
 
     &--active {
       border-block-end-color: var(--color-action);
-      background: var(--color-accent-subtle);
       color: var(--color-accent-text);
-      font-weight: var(--font-weight-bold);
+      font-weight: var(--font-weight-semibold);
     }
   }
 
   &__panel {
     @include shared.subtle-scrollbar;
     flex: 1;
-    gap: var(--space-ms);
-    padding: var(--space-md);
+    gap: var(--space-sm);
+    padding: var(--space-ms);
     overflow-y: auto;
     overscroll-behavior: contain;
 
     app-order-summary {
-      --order-summary-surface: var(--color-surface-tinted);
+      --order-summary-surface: var(--color-surface);
+      padding: var(--space-sm);
+      border-radius: var(--radius-md);
+      background: linear-gradient(
+        180deg,
+        var(--color-surface-tinted),
+        color-mix(in srgb, var(--color-brand) 12%, white)
+      );
+      box-shadow: 0 2px 6px rgb(81 70 190 / 7%);
     }
 
     app-shared-files {
-      --resource-surface: var(--color-surface-tinted);
+      --resource-surface: color-mix(in srgb, var(--color-brand) 11%, white);
+      --resource-radius: var(--radius-md);
+      --resource-shadow: 0 2px 6px rgb(81 70 190 / 7%);
     }
   }
 

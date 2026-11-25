@@ -1,9 +1,13 @@
 @let currentSeller = seller();
 <section class="conversation-context__seller" aria-labelledby="context-seller-name">
   <header class="conversation-context__seller-bar">
-    <button class="conversation-context__back" type="button" (click)="backToTabs.emit()">
+    <button
+      class="conversation-context__back"
+      type="button"
+      aria-label="Volver a los recursos de la conversación"
+      (click)="backToTabs.emit()"
+    >
       <span class="conversation-context__back-icon" aria-hidden="true"></span>
-      <span>Volver</span>
     </button>
   </header>
 

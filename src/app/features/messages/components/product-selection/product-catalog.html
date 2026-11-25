@@ -25,13 +25,14 @@
 <ul class="product-catalog__list" aria-label="Productos del proveedor">
   @for (product of store.filteredProducts(); track product.id) {
     <li class="product-catalog__item">
-      <app-message-product-summary [product]="product" />
-      <app-message-product-quantity
-        class="product-catalog__quantity"
-        [name]="product.name"
-        [quantity]="store.quantities().get(product.id) ?? 0"
-        (quantityChange)="store.setProductQuantity(product.id, $event)"
-      />
+      <app-message-product-summary [product]="product">
+        <app-message-product-quantity
+          class="product-catalog__quantity"
+          [name]="product.name"
+          [quantity]="store.quantities().get(product.id) ?? 0"
+          (quantityChange)="store.setProductQuantity(product.id, $event)"
+        />
+      </app-message-product-summary>
     </li>
   } @empty {
     <li class="product-catalog__item product-catalog__item--empty" role="status">

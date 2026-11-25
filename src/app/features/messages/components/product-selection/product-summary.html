@@ -15,7 +15,12 @@
     [title]="product().name"
     >{{ product().name }}</strong
   >
-  @if (!compact() && product().priceLabel; as price) {
-    <span class="product-summary__price">{{ price }}</span>
+  @if (!compact()) {
+    <span class="product-summary__footer">
+      @if (product().priceLabel; as price) {
+        <span class="product-summary__price">{{ price }}</span>
+      }
+      <ng-content />
+    </span>
   }
 </span>

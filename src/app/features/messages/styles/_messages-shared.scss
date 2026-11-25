@@ -24,9 +24,10 @@
     min-block-size: var(--control-height-compact);
     padding-block: var(--space-xs);
     padding-inline: calc(var(--space-ms) + var(--icon-size-sm) + var(--space-sm)) var(--space-2lg);
-    border: 1px solid var(--color-border-control);
-    border-radius: var(--radius-pill);
+    border: 1px solid color-mix(in srgb, var(--color-brand) 20%, var(--color-border));
+    border-radius: var(--radius-sm);
     background: var(--color-surface);
+    box-shadow: 0 1px 4px rgb(81 70 190 / 6%);
     color: var(--color-text);
     font-family: var(--font-primary);
     font-size: var(--font-size-secondary);
@@ -46,13 +47,13 @@
     }
 
     &:hover {
-      border-color: var(--color-action);
+      border-color: color-mix(in srgb, var(--color-brand) 55%, var(--color-border));
     }
 
     &:focus-visible {
       border-color: var(--color-action);
       outline: none;
-      box-shadow: inset 0 0 0 1px var(--color-action);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand) 28%, transparent);
     }
   }
 

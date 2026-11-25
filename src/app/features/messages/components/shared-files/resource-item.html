@@ -9,9 +9,15 @@
     [title]="file.name"
     aria-haspopup="dialog"
   >
-    <img class="resource-item__thumb" [src]="file.url" alt="" /><span class="resource-item__name">{{
-      file.name
-    }}</span>
+    <img class="resource-item__thumb" [src]="file.url" alt="" /><span
+      #marqueeHost
+      class="resource-item__name"
+      [class.resource-item__marquee]="marquee()"
+      [class.resource-item__marquee--overflow]="marqueeOverflow() > 0"
+      [style.--marquee-distance.px]="marqueeOverflow()"
+      [style.--marquee-duration.s]="marqueeDuration()"
+      ><span #marqueeTrack class="resource-item__marquee-track">{{ file.name }}</span></span
+    >
   </button>
   @if (previewOpen()) {
     <dialog
@@ -40,7 +46,22 @@
   <div class="resource-item__document" [title]="file.name">
     <span class="resource-item__icon" aria-hidden="true"></span>
     <div class="resource-item__copy">
-      <strong class="resource-item__title">{{ file.name }}</strong>
+      <strong
+        #marqueeHost
+        class="resource-item__title"
+        [class.resource-item__marquee]="marquee()"
+        [class.resource-item__marquee--overflow]="marqueeOverflow() > 0"
+        [class.resource-item__marquee--active]="marqueePinned()"
+        [style.--marquee-distance.px]="marqueeOverflow()"
+        [style.--marquee-duration.s]="marqueeDuration()"
+        [attr.tabindex]="marquee() && marqueeOverflow() > 0 ? 0 : null"
+        [attr.aria-label]="marquee() && marqueeOverflow() > 0 ? file.name : null"
+        (click)="toggleMarquee()"
+        (keydown.enter)="toggleMarquee()"
+        (keydown.space)="$event.preventDefault(); toggleMarquee()"
+        (blur)="marqueePinned.set(false)"
+        ><span #marqueeTrack class="resource-item__marquee-track">{{ file.name }}</span></strong
+      >
       <div class="resource-item__meta">
         <small class="resource-item__meta-text"
           >{{ file.format }} ·

@@ -12,35 +12,48 @@ $bp-mobile-max: 47.9375rem;
 }
 
 .conversation-context {
+  &__seller {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-brand) 9%, white),
+      color-mix(in srgb, var(--color-brand) 16%, white)
+    );
+  }
+
   &__seller-bar {
     display: flex;
     align-items: center;
-    padding: var(--space-sm) var(--space-md);
-    border-block-end: 1px solid var(--color-border);
-    background: var(--color-surface-tinted);
+    padding: var(--space-sm) var(--space-ms) 0;
   }
 
   &__back,
   &__verified {
-    display: inline-flex;
-    align-items: center;
-    border-radius: var(--radius-pill);
     color: var(--color-accent-text);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
   }
 
   &__back {
-    gap: var(--space-xs);
-    min-block-size: var(--control-height-compact);
-    padding: var(--space-xs) var(--space-ms);
-    border: 1px solid var(--color-border);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
     background: var(--color-surface);
-    font: var(--font-weight-bold) var(--font-size-secondary) var(--font-primary);
+    box-shadow: 0 2px 6px rgb(81 70 190 / 10%);
+    line-height: 0;
     cursor: pointer;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -0.25rem;
+    }
 
     &:hover {
       background: var(--color-accent-subtle);
-      border-color: var(--color-action);
     }
   }
 
@@ -54,21 +67,22 @@ $bp-mobile-max: 47.9375rem;
 
   &__back-icon {
     display: block;
-    inline-size: var(--icon-size-sm);
-    block-size: var(--icon-size-sm);
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
     background-color: currentColor;
     mask: url('/assets/icons/common/chevron-down.svg') center / contain no-repeat;
     transform: rotate(90deg);
+    transform-origin: center;
   }
 
   &__seller-body {
     @include shared.subtle-scrollbar;
     display: grid;
     align-content: start;
-    gap: var(--space-lg);
+    gap: var(--space-md);
     flex: 1;
     min-block-size: 0;
-    padding: var(--space-lg);
+    padding: var(--space-sm) var(--space-md) var(--space-lg);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -78,19 +92,19 @@ $bp-mobile-max: 47.9375rem;
     justify-items: center;
     gap: var(--space-xs);
     padding-block-end: var(--space-md);
-    border-block-end: 1px solid var(--color-border);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-brand) 22%, transparent);
     text-align: center;
   }
 
   &__avatar {
     display: grid;
     place-items: center;
-    inline-size: 4.5rem;
-    block-size: 4.5rem;
-    border: 1px solid var(--color-border);
+    inline-size: 5rem;
+    block-size: 5rem;
+    padding: var(--space-xs);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    box-shadow: var(--shadow-control);
+    box-shadow: 0 4px 12px rgb(81 70 190 / 12%);
     overflow: hidden;
 
     img {
@@ -103,21 +117,27 @@ $bp-mobile-max: 47.9375rem;
   &__avatar-fallback {
     color: var(--color-accent-text);
     font-size: var(--font-size-page-title);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
   }
 
   &__seller-name {
     margin: var(--space-xs) 0 0;
     color: var(--color-text);
     font-size: var(--font-size-body);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
   }
 
   &__verified {
+    display: inline-flex;
+    align-items: center;
     gap: var(--space-2xs);
-    padding: var(--space-2xs) var(--space-sm);
-    background: var(--color-accent-subtle);
-    font-size: var(--font-size-caption);
+    padding: 0.1875rem var(--space-sm);
+    border-radius: var(--radius-xs);
+    background: var(--color-surface);
+    box-shadow: 0 1px 4px rgb(81 70 190 / 8%);
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   &__seller-tagline {
@@ -136,10 +156,16 @@ $bp-mobile-max: 47.9375rem;
     margin-block-start: var(--space-xs);
     padding: var(--space-sm) var(--control-padding-inline);
     border-radius: var(--radius-pill);
-    background: var(--color-action);
+    background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--color-brand) 55%, var(--color-action)),
+      color-mix(in srgb, var(--color-brand) 82%, var(--color-action))
+    );
+    box-shadow: 0 3px 10px rgb(98 84 207 / 24%);
     color: var(--color-on-action);
-    font: var(--font-weight-bold) var(--control-font-size) / var(--line-height-label)
+    font: var(--font-weight-semibold) var(--control-font-size) / var(--line-height-label)
       var(--font-primary);
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-decoration: none;
 
@@ -171,7 +197,7 @@ $bp-mobile-max: 47.9375rem;
     dd {
       margin: 0;
       color: var(--color-text);
-      font-size: var(--font-size-body-small);
+      font-size: var(--font-size-secondary);
       font-weight: var(--font-weight-semibold);
       line-height: var(--line-height-label);
     }

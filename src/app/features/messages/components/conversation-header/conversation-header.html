@@ -8,7 +8,6 @@
       (click)="backToList.emit()"
     >
       <span class="conversation-header__back-icon" aria-hidden="true"></span>
-      <span class="conversation-header__back-label">Conversaciones</span>
     </button>
 
     <span class="conversation-header__avatar" aria-hidden="true">
@@ -58,11 +57,11 @@
       type="button"
       [attr.aria-pressed]="isSellerInfoActive()"
       aria-label="Información del proveedor"
+      title="Información del proveedor"
       #info
       (click)="sellerInfoToggle.emit(info)"
     >
       <span class="conversation-header__info-icon" aria-hidden="true"></span>
-      <span>Información</span>
     </button>
   </div>
 </header>

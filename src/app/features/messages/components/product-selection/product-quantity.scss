@@ -2,33 +2,53 @@
   display: inline-flex;
   align-items: center;
   gap: var(--qty-gap, var(--space-xs));
+  padding: var(--qty-pad, 0);
+  border-radius: var(--qty-radius, 0);
+  background: var(--qty-bg, transparent);
+  box-shadow: var(--qty-shadow, none);
   font-size: var(--qty-font-size, var(--font-size-secondary));
   font-variant-numeric: tabular-nums;
 }
 
 .product-quantity {
+  &__value {
+    min-inline-size: var(--qty-value-min-w, auto);
+    padding-inline: 0.125rem;
+    color: var(--color-text);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+  }
+
   &__step {
     min-inline-size: var(--qty-btn-size, var(--control-height-compact));
     min-block-size: var(--qty-btn-size, var(--control-height-compact));
     border: 0;
-    border-radius: var(--radius-pill);
-    color: var(--color-accent-text);
-    background: var(--color-accent-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--color-on-action);
+    background: var(--color-action);
+    box-shadow: 0 2px 6px rgb(98 84 207 / 20%);
     cursor: pointer;
     font: inherit;
     font-weight: var(--font-weight-semibold);
+    transition:
+      background-color var(--motion-fast) ease,
+      box-shadow var(--motion-fast) ease;
 
     &--add {
       padding-inline: var(--qty-add-pad-x, var(--space-ms));
     }
 
     &:hover {
-      background: var(--color-action);
-      color: var(--color-on-action);
+      background: var(--color-action-hover);
+    }
+
+    &:active {
+      background: var(--color-action-active);
     }
 
     &:focus-visible {
       outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
     }
   }
 }

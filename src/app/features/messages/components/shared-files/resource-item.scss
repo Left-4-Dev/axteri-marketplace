@@ -9,9 +9,9 @@
   &__document {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
     min-inline-size: 0;
-    padding: var(--space-xs) var(--space-sm);
+    padding: 0.3125rem var(--space-sm);
     border-radius: var(--resource-radius, var(--radius-sm));
     background: var(--resource-surface, var(--color-surface-tinted));
     box-shadow: var(--resource-shadow, none);
@@ -39,8 +39,8 @@
 
   &__thumb {
     flex: none;
-    inline-size: 2.25rem;
-    block-size: 2.25rem;
+    inline-size: 2rem;
+    block-size: 2rem;
     border-radius: var(--radius-xs);
     object-fit: cover;
   }
@@ -55,6 +55,34 @@
     white-space: nowrap;
   }
 
+  &__marquee {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 1px;
+      border-radius: var(--radius-xs);
+    }
+  }
+
+  &__marquee-track {
+    display: inline-block;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  &__marquee--overflow.resource-item__marquee--active &__marquee-track {
+    max-inline-size: none;
+    overflow: visible;
+    text-overflow: clip;
+    animation: resource-marquee var(--marquee-duration, 3s) linear infinite alternate;
+  }
+
   &__copy {
     display: grid;
     gap: var(--space-2xs);
@@ -67,7 +95,7 @@
     overflow: hidden;
     color: var(--color-text);
     font-size: var(--font-size-caption);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -102,9 +130,9 @@
   &__link {
     display: inline-flex;
     align-items: center;
-    padding: 0.0625rem var(--space-xs);
-    border-radius: var(--radius-pill);
-    background: var(--color-accent-subtle);
+    padding: 0.125rem var(--space-xs);
+    border-radius: var(--radius-xs);
+    background: var(--color-surface);
     color: var(--color-accent-text);
     font-size: 0.6875rem;
     font-weight: var(--font-weight-semibold);
@@ -243,8 +271,28 @@
   }
 
   &__thumb {
-    inline-size: 1.75rem;
-    block-size: 1.75rem;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  &__icon {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+  }
+
+  &__copy {
+    gap: 0;
+  }
+
+  &__title {
+    font-size: 0.6875rem;
+    line-height: 1.2;
+  }
+
+  &__link {
+    padding: 0 var(--space-xs);
+    font-size: 0.625rem;
+    line-height: 1.25;
   }
 
   &__meta {
@@ -256,5 +304,36 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+:host-context(.pending-files__item:hover)
+  .resource-item__marquee--overflow
+  .resource-item__marquee-track,
+:host-context(.pending-files__item:focus-within)
+  .resource-item__marquee--overflow
+  .resource-item__marquee-track {
+  max-inline-size: none;
+  overflow: visible;
+  text-overflow: clip;
+  animation: resource-marquee var(--marquee-duration, 3s) linear infinite alternate;
+}
+
+@keyframes resource-marquee {
+  0%,
+  12% {
+    transform: translateX(0);
+  }
+
+  88%,
+  100% {
+    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resource-item__marquee--overflow .resource-item__marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 }
