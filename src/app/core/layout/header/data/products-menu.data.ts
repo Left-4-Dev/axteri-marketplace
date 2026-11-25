@@ -20,7 +20,7 @@ export interface RecommendedBrand {
 
 export const HEADER_NAVIGATION_LINKS: readonly HeaderNavigationLink[] = [
   { id: 'offers', label: 'Oferta', routerLink: '/', fragment: 'limited-offers' },
-  { id: 'sell', label: 'Vender' },
+  { id: 'sell', label: 'Vender', routerLink: '/registro/proveedores' },
   { id: 'help', label: 'Ayuda' },
 ];
 

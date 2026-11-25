@@ -1,5 +1,5 @@
 import { Component, DOCUMENT, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Footer } from '../footer/footer';
 import { FloatingActions } from '../floating-actions/floating-actions';
 import { Header } from '../header/header';
@@ -13,9 +13,13 @@ import { Header } from '../header/header';
 export class MainLayout {
   private readonly document = inject(DOCUMENT);
 
+  private readonly router = inject(Router);
   protected focusPrimarySearch(): void {
     const target = this.document.querySelector<HTMLElement>('[data-primary-search]');
-    if (!target) return;
+    if (!target) {
+      void this.router.navigate(['/productos']);
+      return;
+    }
 
     const reducedMotion = this.document.defaultView?.matchMedia(
       '(prefers-reduced-motion: reduce)',

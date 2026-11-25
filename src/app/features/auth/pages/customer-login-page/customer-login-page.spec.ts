@@ -39,6 +39,7 @@ describe('CustomerLoginPage', () => {
   });
 
   it('renders customer login copy, feature panel items, and hides "Recuérdame"', () => {
+    expect(element.querySelector('a[href="/registro/proveedores"]')).toBeNull();
     expect(element.querySelector('app-auth-layout')).not.toBeNull();
     expect(element.querySelector('app-auth-login-form')).not.toBeNull();
     expect(element.querySelector('h1')?.textContent?.trim()).toBe('COMPRA EN AXTERI');

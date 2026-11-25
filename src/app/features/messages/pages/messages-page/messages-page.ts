@@ -63,8 +63,9 @@ export class MessagesPage {
       this.drawerMedia?.removeEventListener('change', closeOnDesktop),
     );
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.store.selectConversation(params.get('conversationId'));
-      this.mobilePanel.set('chat');
+      const id = params.get('conversationId');
+      this.store.selectConversation(id);
+      this.mobilePanel.set(id ? 'chat' : 'list');
       this.drawerTrigger.set(null);
     });
   }

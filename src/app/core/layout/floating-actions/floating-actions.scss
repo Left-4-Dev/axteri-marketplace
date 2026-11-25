@@ -22,7 +22,10 @@
   border: 0;
   background: none;
   color: var(--color-action);
-  cursor: not-allowed;
+  cursor: pointer;
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
   & + & {
     border-block-start: 1px solid var(--color-border);
   }

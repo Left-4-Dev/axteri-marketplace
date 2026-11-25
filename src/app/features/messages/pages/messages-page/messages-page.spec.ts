@@ -1,5 +1,6 @@
+import { MessagesStore } from '../../stores/messages.store';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
 
@@ -7,16 +8,21 @@ describe('MessagesPage', () => {
   let harness: RouterTestingHarness;
   let element: HTMLElement;
 
+  let mobile = false;
   let compact = false;
 
   beforeEach(async () => {
+    mobile = false;
     compact = false;
     vi.stubGlobal(
       'matchMedia',
       (query: string) =>
         new (class extends EventTarget {
           get matches() {
-            return compact && query === '(max-width: 79.9375rem)';
+            return (
+              (compact && query === '(max-width: 79.9375rem)') ||
+              (mobile && query === '(max-width: 47.9375rem)')
+            );
           }
         })(),
     );
@@ -28,6 +34,57 @@ describe('MessagesPage', () => {
   });
 
   afterEach(() => vi.unstubAllGlobals());
+
+  it('enters the most recently updated thread from the global Messages link', async () => {
+    const router = TestBed.inject(Router);
+    const store = TestBed.inject(MessagesStore);
+    const recent = store.conversations()[1];
+    store.selectConversation(recent.id);
+    store.sendTextMessage('Nueva actividad');
+    const link = element.querySelector<HTMLAnchorElement>(
+      'app-floating-actions a[href="/mensajes"]',
+    )!;
+    expect(link.tabIndex).toBe(0);
+    link.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/mensajes/' + recent.id);
+    expect(router.lastSuccessfulNavigation()?.extras.replaceUrl).toBe(true);
+  });
+
+  it('opens the mobile inbox before entering a selected conversation', async () => {
+    mobile = true;
+    element.querySelector<HTMLButtonElement>('.header__menu-button')!.click();
+    harness.detectChanges();
+    const link = element.querySelector<HTMLAnchorElement>(
+      '.header__mobile-link[href="/mensajes"]',
+    )!;
+    expect(link.tabIndex).toBe(0);
+    link.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/mensajes');
+    expect(element.querySelector('.messages-page__workspace--mobile-list')).not.toBeNull();
+    expect(TestBed.inject(MessagesStore).activeConversationId()).toBeNull();
+  });
+  it('keeps an empty desktop inbox at its general URL', async () => {
+    const store = TestBed.inject(MessagesStore);
+    vi.spyOn(store, 'conversations').mockReturnValue([]);
+    await harness.navigateByUrl('/mensajes');
+    expect(TestBed.inject(Router).url).toBe('/mensajes');
+    expect(store.activeConversationId()).toBeNull();
+  });
+  it('redirects unmatched paths to Home', async () => {
+    await harness.navigateByUrl('/unmatched/path');
+    expect(TestBed.inject(Router).url).toBe('/');
+    expect(harness.routeNativeElement?.querySelector('app-home-page')).not.toBeNull();
+  });
+  it('provides native links for desktop and mobile accounts and selling, with orders disabled', () => {
+    expect(element.querySelectorAll('app-header a[href="/login/clientes"]')).toHaveLength(2);
+    expect(element.querySelectorAll('app-header a[href="/registro/proveedores"]')).toHaveLength(2);
+    expect(element.querySelector('app-floating-actions a[href="/login/clientes"]')).not.toBeNull();
+    expect(element.querySelectorAll('button[aria-label="Mis pedidos"]:disabled')).toHaveLength(2);
+    expect(element.querySelector('.header__orders-count')).toBeNull();
+  });
 
   it('moves real focus and the single tab stop through consecutive arrows, Home and End', () => {
     compact = true;

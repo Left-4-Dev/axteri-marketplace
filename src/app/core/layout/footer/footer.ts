@@ -23,7 +23,7 @@ export const FOOTER_EXPLORE_LINKS: readonly FooterNavigationItem[] = [
 
 export const FOOTER_COMPANY_LINKS: readonly FooterNavigationItem[] = [
   { id: 'about', label: 'Acerca de nosotros' },
-  { id: 'sell', label: 'Vende en Axteri' },
+  { id: 'sell', label: 'Vende en Axteri', routerLink: '/registro/proveedores' },
 ];
 
 export const FOOTER_HELP_LINKS: readonly FooterNavigationItem[] = [

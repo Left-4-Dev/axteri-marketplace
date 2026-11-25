@@ -61,13 +61,11 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'mensajes/:conversationId',
-        title: 'Mensajes | Axteri Marketplace',
-        loadComponent: () =>
-          import('./features/messages/pages/messages-page/messages-page').then(
-            (m) => m.MessagesPage,
-          ),
+        path: 'mensajes',
+        loadChildren: () =>
+          import('./features/messages/messages.routes').then((m) => m.messagesRoutes),
       },
     ],
   },
+  { path: '**', redirectTo: '' },
 ];

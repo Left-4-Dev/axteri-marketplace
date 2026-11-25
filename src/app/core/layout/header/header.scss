@@ -164,6 +164,7 @@
     inline-size: max-content;
   }
   &__action {
+    text-decoration: none;
     display: flex;
     align-items: center;
     gap: var(--space-sm);
@@ -227,20 +228,5 @@
   }
   &__orders-icon {
     position: relative;
-  }
-  &__orders-count {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: -0.125rem;
-    display: grid;
-    place-items: center;
-    min-inline-size: 1.125rem;
-    block-size: 1.125rem;
-    padding-inline: 0.2rem;
-    border-radius: var(--radius-md);
-    background: var(--color-text);
-    color: var(--color-on-action);
-    font-size: var(--font-size-caption);
-    font-weight: var(--font-weight-bold);
   }
 }

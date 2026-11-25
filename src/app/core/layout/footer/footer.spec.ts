@@ -103,9 +103,11 @@ describe('Footer', () => {
       }),
     );
 
+    expect(element.querySelector('a[href="/registro/proveedores"]')?.textContent?.trim()).toBe(
+      'Vende en Axteri',
+    );
     expect(disabledLinks).toEqual([
       { text: 'Acerca de nosotros', disabled: 'true' },
-      { text: 'Vende en Axteri', disabled: 'true' },
       { text: 'Atención al cliente', disabled: 'true' },
       { text: 'Centro de ayuda', disabled: 'true' },
       { text: 'Libro de reclamaciones', disabled: 'true' },
@@ -129,7 +131,7 @@ describe('Footer', () => {
     ]);
 
     const anchors = Array.from(element.querySelectorAll<HTMLAnchorElement>('a'));
-    expect(anchors).toHaveLength(5);
+    expect(anchors).toHaveLength(6);
     for (const anchor of anchors) {
       const href = anchor.getAttribute('href');
       expect(href).toBeTruthy();
