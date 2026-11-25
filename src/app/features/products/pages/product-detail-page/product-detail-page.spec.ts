@@ -17,6 +17,17 @@ describe('ProductDetailPage', () => {
     element = harness.routeNativeElement!;
   });
 
+  it('renders a base detail without absent gallery, technical sections or dangling anchors', async () => {
+    await harness.navigateByUrl('/productos/metabo-khe96');
+    expect(element.querySelector('app-product-detail-page h1')?.textContent).toContain('KHE 96');
+    expect(element.querySelector('.purchase-panel__price')?.textContent).toContain('850');
+    expect(
+      element.querySelector(
+        'app-product-documents, app-product-gallery,app-product-section-nav,app-product-variants,app-product-reviews',
+      ),
+    ).toBeNull();
+  });
+
   it('loads the lazy detail route inside the global layout', () => {
     expect(element.querySelector('app-header')).not.toBeNull();
     expect(element.querySelector('app-footer')).not.toBeNull();

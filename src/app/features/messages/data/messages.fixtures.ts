@@ -1,3 +1,5 @@
+import { catalog, sellerLocation } from '../../../core/catalog/catalog.repository';
+import { ConversationSeller } from '../models/messages.model';
 import { ContactDetails, Conversation, Message } from '../models/messages.model';
 
 export const SELLER_CONTACTS: Readonly<Record<string, ContactDetails>> = {
@@ -28,27 +30,21 @@ export const SELLER_CONTACTS: Readonly<Record<string, ContactDetails>> = {
   },
 };
 
+function conversationSeller(id: string): ConversationSeller {
+  const seller = catalog.getSeller(id)!;
+  return {
+    ...seller,
+    yearsInIndustry: seller.years,
+    locationLabel: sellerLocation(seller) + ' - ' + seller.location.country,
+    ...(id === 'ldf-projects' ? { profilePath: '/proveedores/' + id } : {}),
+  };
+}
 export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
   {
     id: 'ldf-projects',
     counterpart: {
       kind: 'seller',
-      seller: {
-        id: 'ldf-projects',
-        name: 'LDF Projects',
-        verified: true,
-        tagline: 'Soluciones eléctricas, celdas de media tensión y tableros para la industria.',
-        logoUrl: '/assets/sellers/ldf-projects/logo.webp',
-        sector: 'Eléctrico',
-        supplierType: 'Importador',
-        locationLabel: 'San Miguel, Lima - Perú',
-        yearsInIndustry: 12,
-        businessHours: [
-          'Lunes a viernes: 9:00 a. m. - 7:00 p. m.',
-          'Sábados: 9:00 a. m. - 1:00 p. m.',
-        ],
-        profilePath: '/proveedores/ldf-projects',
-      },
+      seller: conversationSeller('ldf-projects'),
     },
     unreadCount: 0,
     lastActivity: {
@@ -61,20 +57,7 @@ export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
     id: 'electro-sur-industrial',
     counterpart: {
       kind: 'seller',
-      seller: {
-        id: 'electro-sur-industrial',
-        name: 'Electro Sur Industrial',
-        verified: true,
-        tagline: 'Distribución de equipamiento eléctrico y maniobra para proyectos del sur.',
-        sector: 'Energía y distribución',
-        supplierType: 'Distribuidor autorizado',
-        locationLabel: 'Tacna - Perú',
-        yearsInIndustry: 11,
-        businessHours: [
-          'Lunes a viernes: 8:30 a. m. - 6:00 p. m.',
-          'Sábados: 9:00 a. m. - 12:30 p. m.',
-        ],
-      },
+      seller: conversationSeller('electro-sur-industrial'),
     },
     unreadCount: 3,
     lastActivity: {
@@ -87,17 +70,7 @@ export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
     id: 'automatizacion-andina',
     counterpart: {
       kind: 'seller',
-      seller: {
-        id: 'automatizacion-andina',
-        name: 'Automatización Andina',
-        verified: true,
-        tagline: 'Motores trifásicos, variadores de frecuencia y control industrial.',
-        sector: 'Automatización industrial',
-        supplierType: 'Representante comercial',
-        locationLabel: 'Arequipa - Perú',
-        yearsInIndustry: 8,
-        businessHours: ['Lunes a viernes: 8:00 a. m. - 5:30 p. m.'],
-      },
+      seller: conversationSeller('automatizacion-andina'),
     },
     unreadCount: 1,
     lastActivity: {
@@ -110,17 +83,7 @@ export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
     id: 'suministros-mineros-pacifico',
     counterpart: {
       kind: 'seller',
-      seller: {
-        id: 'suministros-mineros-pacifico',
-        name: 'Suministros Mineros del Pacífico',
-        verified: false,
-        tagline: 'Equipos de protección personal, instrumentación y ferretería técnica.',
-        sector: 'Seguridad industrial',
-        supplierType: 'Mayorista',
-        locationLabel: 'Callao, Lima - Perú',
-        yearsInIndustry: 6,
-        businessHours: ['Lunes a viernes: 8:30 a. m. - 6:00 p. m.'],
-      },
+      seller: conversationSeller('suministros-mineros-pacifico'),
     },
     unreadCount: 0,
     lastActivity: {
@@ -133,17 +96,7 @@ export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
     id: 'tableros-control-peru',
     counterpart: {
       kind: 'seller',
-      seller: {
-        id: 'tableros-control-peru',
-        name: 'Tableros y Control Perú',
-        verified: true,
-        tagline: 'Integración de tableros autosoportados y centros de control de motores.',
-        sector: 'Eléctrico',
-        supplierType: 'Fabricante',
-        locationLabel: 'Ate, Lima - Perú',
-        yearsInIndustry: 15,
-        businessHours: ['Lunes a viernes: 8:00 a. m. - 6:00 p. m.'],
-      },
+      seller: conversationSeller('tableros-control-peru'),
     },
     unreadCount: 0,
     lastActivity: null,

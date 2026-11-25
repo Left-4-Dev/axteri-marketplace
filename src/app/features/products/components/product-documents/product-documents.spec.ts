@@ -116,11 +116,12 @@ describe('ProductDocuments', () => {
   });
 
   it('opens the real document in a new tab when a valid href is provided', async () => {
-    await render();
+    const linked = dataset.map((doc) => ({ ...doc, href: 'https://example.com/' + doc.fileName }));
+    await render(linked);
     const links = Array.from(element.querySelectorAll<HTMLAnchorElement>('a'));
     expect(links).toHaveLength(dataset.length);
     links.forEach((link, index) => {
-      expect(link.getAttribute('href')).toBe(dataset[index].href);
+      expect(link.getAttribute('href')).toBe(linked[index].href);
       expect(link.getAttribute('target')).toBe('_blank');
       expect(link.getAttribute('rel')).toBe('noopener noreferrer');
       expect(link.getAttribute('aria-label')).toBe(`Abrir ${dataset[index].fileName}`);

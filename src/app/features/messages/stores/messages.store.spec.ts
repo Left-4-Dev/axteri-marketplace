@@ -120,7 +120,7 @@ describe('MessagesStore', () => {
 
   it('searches the active catalog by brand or name and resets search on navigation', () => {
     store.selectConversation('ldf-projects');
-    store.setProductSearch('  w22  ');
+    store.setProductSearch('  jaula de ardilla  ');
     expect(store.filteredProducts().map((p) => p.id)).toEqual(['weg-w22-3kw']);
     store.setProductSearch('schneider');
     expect(store.filteredProducts().length).toBeGreaterThan(1);

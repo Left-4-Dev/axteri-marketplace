@@ -1,3 +1,4 @@
+import { catalog } from '../../../core/catalog/catalog.repository';
 import {
   ProductFilterOption,
   ProductFiltersState,
@@ -43,28 +44,7 @@ export const PURCHASE_CAPACITY_OPTIONS: readonly ProductFilterOption<PurchaseCap
 export const RATING_OPTIONS: readonly number[] = [1, 2, 3, 4, 5];
 
 export const PRODUCT_BRANDS: readonly string[] = [
-  'Schneider',
-  'Acid Eater',
-  'Abus',
-  'Action Chemical',
-  '3B Putty',
-  'Ability One',
-  'Siemens',
-  'Atlas',
-  'Metabo',
-  'Lincoln',
-  'Grundfos',
-  'Mazak',
-  'Haas',
-  'Ingersoll',
-  'Toyota',
-  'Cummins',
-  'Dorner',
-  'Flex-Mix',
-  'Despatch',
-  'Miller',
-  'Okamoto',
-  'Kasto',
+  ...new Set(catalog.products().map((p) => catalog.getBrand(p.brandId)!.name)),
 ];
 
 export const PRODUCT_ORIGINS: readonly string[] = [

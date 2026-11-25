@@ -1,7 +1,10 @@
 @let item = detail();
 <aside class="purchase-panel" aria-label="Información comercial">
   <section class="purchase-panel__body" aria-label="Información de compra">
-    <p class="purchase-panel__sku">SKU: {{ item.sku }}</p>
+    @if (item.sku) {
+      <p class="purchase-panel__sku">SKU: {{ item.sku }}</p>
+    }
+
     @let price = item.price;
     <div class="purchase-panel__pricing">
       @switch (price.kind) {
@@ -37,18 +40,23 @@
           <p class="purchase-panel__price">Por cotizar</p>
         }
       }
-      @if (price.kind !== 'quote') {
+      @if (price.kind !== 'quote' && (price.includesTax !== undefined || price.unitLabel)) {
         <p>
-          {{ price.includesTax ? 'Incluye IGV' : 'IGV no incluido' }}
+          @if (price.includesTax !== undefined) {
+            {{ price.includesTax ? 'Incluye IGV' : 'IGV no incluido' }}
+          }
           @if (price.unitLabel) {
             | {{ price.unitLabel }}
           }
         </p>
       }
     </div>
-    <p class="purchase-panel__stock">
-      Stock disponible: <strong>{{ item.purchase.stock }}</strong>
-    </p>
+    @if (item.purchase.stock !== undefined) {
+      <p class="purchase-panel__stock">
+        Stock disponible: <strong>{{ item.purchase.stock }}</strong>
+      </p>
+    }
+
     <div class="purchase-panel__quantity">
       <label for="product-quantity">Cantidad</label>
       <div>
@@ -86,28 +94,35 @@
         >Solicitar cotización</app-button
       >
     </div>
-    <dl class="purchase-panel__delivery">
-      <div>
-        <dt>Envío a</dt>
-        <dd class="purchase-panel__shipping-row">
-          <span class="purchase-panel__address" [title]="item.purchase.destination">{{
-            item.purchase.destination
-          }}</span>
-          <button
-            class="purchase-panel__change-address"
-            type="button"
-            aria-label="Cambiar dirección de envío"
-            (click)="shippingAddressChangeRequest.emit()"
-          >
-            Cambiar
-          </button>
-        </dd>
-      </div>
-      <div>
-        <dt>Entrega estimada</dt>
-        <dd>{{ item.purchase.deliveryEstimate }}</dd>
-      </div>
-    </dl>
+    @if (item.purchase.destination || item.purchase.deliveryEstimate) {
+      <dl class="purchase-panel__delivery">
+        @if (item.purchase.destination) {
+          <div>
+            <dt>Envío a</dt>
+            <dd class="purchase-panel__shipping-row">
+              <span class="purchase-panel__address" [title]="item.purchase.destination">{{
+                item.purchase.destination
+              }}</span>
+              <button
+                class="purchase-panel__change-address"
+                type="button"
+                aria-label="Cambiar dirección de envío"
+                (click)="shippingAddressChangeRequest.emit()"
+              >
+                Cambiar
+              </button>
+            </dd>
+          </div>
+        }
+        @if (item.purchase.deliveryEstimate) {
+          <div>
+            <dt>Entrega estimada</dt>
+            <dd>{{ item.purchase.deliveryEstimate }}</dd>
+          </div>
+        }
+      </dl>
+    }
+
     <p class="purchase-panel__note">Disponibilidad y plazo sujetos a confirmación del proveedor.</p>
   </section>
 </aside>

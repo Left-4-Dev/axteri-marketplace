@@ -1,33 +1,42 @@
+import { catalog } from '../../../core/catalog/catalog.repository';
+import type { SellerSummary } from '../../../core/catalog/catalog.model';
 import { SellerProfile } from '../models/seller-profile.model';
 
+function sellerBrand(id: string) {
+  const brand = catalog.getBrand(id)!;
+  return { id, name: brand.name, logo: brand.logoUrl };
+}
+function baseProfile(s: SellerSummary): SellerProfile {
+  const products = catalog.productsBySeller(s.id);
+  return {
+    id: s.id,
+    name: s.name,
+    sector: s.sector,
+    verified: s.verified,
+    years: s.years,
+    logo: s.logoUrl,
+    productCount: s.productCount ?? products.length,
+    description: [s.tagline],
+    location: s.location,
+    tags: [],
+    gallery: [],
+    certifications: [],
+    brands: [...new Set(products.map((p) => p.brandId))].map(sellerBrand),
+    information: { supplierType: s.supplierType, businessHours: s.businessHours },
+  };
+}
+const ldf = catalog.getSeller('ldf-projects')!;
 // Development fixture only: counts, verification and commercial details are not API data.
 // Keep name, years, productCount and location consistent with the existing product mock.
 export const LDF_PROJECTS_SELLER: SellerProfile = {
-  id: 'ldf-projects',
-  name: 'LDF Projects',
-  logo: '/assets/sellers/ldf-projects/logo.webp',
+  ...baseProfile(ldf),
   coverImage: '/assets/sellers/ldf-projects/cover.webp',
-  sector: 'Eléctrico',
-  verified: true,
-  productCount: 200,
-  years: 12,
   tags: ['Celdas', 'Transformadores', 'EPP', 'Llaves eléctricas'],
   description: [
     'Perfil de desarrollo de LDF Projects, proveedor de soluciones eléctricas para la industria.',
     'Contenido de ejemplo para preparar la presentación de productos y servicios del proveedor.',
   ],
-  brands: [
-    {
-      id: 'schneider-electric',
-      name: 'Schneider Electric',
-      logo: '/assets/brands/schneider-electric.svg',
-    },
-    { id: 'honeywell', name: 'Honeywell', logo: '/assets/brands/honeywell.svg' },
-    { id: 'indeco', name: 'Indeco', logo: '/assets/brands/indeco.svg' },
-    { id: 'sarel', name: 'Sarel', logo: '/assets/brands/sarel.svg' },
-    { id: 'siemens', name: 'Siemens', logo: '/assets/brands/siemens.svg' },
-    { id: '3m', name: '3M', logo: '/assets/brands/3m.svg' },
-  ],
+  brands: catalog.collections.ldfBrands.map(sellerBrand),
   // Development examples matching the target; not verified certifications.
   certifications: [
     {
@@ -64,19 +73,19 @@ export const LDF_PROJECTS_SELLER: SellerProfile = {
     '/assets/sellers/ldf-projects/gallery/ldf-projects-04.webp',
   ],
   information: {
-    supplierType: 'Importador',
+    supplierType: ldf.supplierType,
     taxId: '20516921529',
     foundedOn: '01 - 07 - 2014',
     employeeCount: 6,
-    businessHours: ['L - V de 9 am a 7 pm', 'S de 9 am a 1 pm'],
+    businessHours: ldf.businessHours,
   },
   location: {
-    country: 'Perú',
-    city: 'Lima',
-    district: 'San Miguel',
+    ...ldf.location,
     address: 'Chaquilchaca 270, Lima 15088',
     coordinates: { latitude: -12.0701228, longitude: -77.0969605 },
   },
 };
 
-export const SELLER_PROFILES: readonly SellerProfile[] = [LDF_PROJECTS_SELLER];
+export const SELLER_PROFILES: readonly SellerProfile[] = catalog.sellers.map((s) =>
+  s.id === ldf.id ? LDF_PROJECTS_SELLER : baseProfile(s),
+);

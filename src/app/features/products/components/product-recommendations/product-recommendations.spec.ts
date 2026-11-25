@@ -3,8 +3,10 @@ import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 import { PRODUCT_LISTING_ITEMS } from '../../data/product-listing.data';
-import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
+
 import { ProductRecommendations } from './product-recommendations';
+
+const PRODUCT_DETAIL_RECOMMENDATIONS = PRODUCT_LISTING_ITEMS.slice(0, 6);
 
 describe('ProductRecommendations', () => {
   let fixture: ComponentFixture<ProductRecommendations>;

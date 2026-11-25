@@ -10,11 +10,11 @@
 
     <app-seller-section-nav
       class="seller-profile__nav"
-      [sections]="sections"
+      [sections]="sections()"
       [profilePath]="'/proveedores/' + item.id"
     />
 
-    @for (section of sections; track section.id) {
+    @for (section of sections(); track section.id) {
       <section
         class="seller-profile__section seller-profile__section--implemented"
         [id]="section.id"

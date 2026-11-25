@@ -13,6 +13,15 @@ function buildMultiPageProducts(totalCount = PRODUCT_LIST_PAGE_SIZE + 5): readon
     const base = PRODUCT_LISTING_ITEMS[index % PRODUCT_LISTING_ITEMS.length];
     return {
       ...base,
+      // Controlled assortment for pagination and filter interactions.
+      brand: 'Schneider Electric',
+      price: {
+        kind: 'fixed',
+        amount: index + 1,
+        currency: 'PEN',
+        unitLabel: index % 5 < 2 ? 'Por unidad' : 'Por mayor',
+      },
+
       id: `${base.id}-fixture-${index + 1}`,
     };
   });
@@ -182,7 +191,7 @@ describe('ProductListPage', () => {
     expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
 
     const schneiderCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     schneiderCheckbox.click();
     await fixture.whenStable();
@@ -205,7 +214,7 @@ describe('ProductListPage', () => {
     expect(pageButton(2)?.getAttribute('aria-current')).toBe('page');
 
     const removeChipBtn = element.querySelector<HTMLButtonElement>(
-      'button[aria-label="Quitar filtro Schneider"]',
+      'button[aria-label="Quitar filtro Schneider Electric"]',
     )!;
     removeChipBtn.click();
     await fixture.whenStable();
@@ -241,13 +250,13 @@ describe('ProductListPage', () => {
 
   it('applies combined filters (brand + verification + purchase capacity + price range + sort) and restores results on Limpiar + APLICAR FILTROS', async () => {
     const schneiderCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     const verifiedCheckbox = element.querySelector<HTMLInputElement>(
       'input[type="checkbox"][value="verified"]',
     )!;
     const wholesaleCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Por mayor"]',
+      'input[type="checkbox"][value="Por unidad"]',
     )!;
     const maxRangeInput = element.querySelector<HTMLInputElement>(
       'input[type="range"][aria-label="Precio máximo"]',
@@ -267,8 +276,10 @@ describe('ProductListPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    // Only weg-w22-3kw (fixed 345, Por mayor, verified, Schneider) matches <= 1000
-    expect(cards().map((card) => card.product().id)).toEqual(['weg-w22-3kw']);
+    expect(cards().map((card) => card.product().id)).toEqual([
+      'schneider-c60h-dc-1',
+      'schneider-llave-fuerza-1',
+    ]);
 
     clearButton().click();
     applyButton().click();
@@ -335,13 +346,22 @@ describe('ProductListPage', () => {
 
     expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
     expect(sidebar.classList.contains('product-list__sidebar--open')).toBe(false);
-    expect(cards()).toHaveLength(4);
+    const unitProducts = PRODUCT_LISTING_ITEMS.filter(
+      (p) => p.price.kind !== 'quote' && p.price.unitLabel === 'Por unidad',
+    );
+    expect(
+      cards()
+        .map((c) => c.product().id)
+        .sort(),
+    ).toEqual(unitProducts.map((p) => p.id).sort());
   });
 
   it('displays the empty state and keeps sidebar filters accessible when applied filters match 0 products', async () => {
     const siemensCheckbox = element.querySelector<HTMLInputElement>(
       'input[type="checkbox"][value="Siemens"]',
     )!;
+    const wholesale = element.querySelector<HTMLInputElement>('input[value="Por mayor"]')!;
+    wholesale.click();
     siemensCheckbox.click();
     applyButton().click();
     await fixture.whenStable();

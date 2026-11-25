@@ -9,7 +9,7 @@ import { SellerProfileHero } from '../../components/seller-profile-hero/seller-p
 import { SellerSectionNav } from '../../components/seller-section-nav/seller-section-nav';
 import { SellerProducts } from '../../components/seller-products/seller-products';
 import { SellerBrands } from '../../components/seller-brands/seller-brands';
-import { SELLER_PRODUCTS } from '../../data/seller-products.data';
+import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
 import { SELLER_PROFILES } from '../../data/seller-profile.data';
 
 @Component({
@@ -42,16 +42,29 @@ export class SellerProfilePage {
     source: this.seller,
     computation: () => '',
   });
-  protected readonly products = computed(() => SELLER_PRODUCTS[this.seller()?.id ?? ''] ?? []);
+  private readonly catalog = inject(CatalogRepository);
+  protected readonly products = computed(() =>
+    this.catalog
+      .productsBySeller(this.seller()?.id ?? '')
+      .map((p) => this.catalog.toProductCard(p)),
+  );
 
-  protected readonly sections = [
-    { id: 'productos', label: 'Productos' },
-    { id: 'marcas', label: 'Marcas' },
-    { id: 'perfil', label: 'Perfil' },
-    { id: 'informacion', label: 'Información' },
-    { id: 'certificaciones', label: 'Certificaciones' },
-    { id: 'ubicacion', label: 'Ubicación' },
-  ] as const;
+  protected readonly sections = computed(() =>
+    (
+      [
+        { id: 'productos', label: 'Productos' },
+        { id: 'marcas', label: 'Marcas' },
+        { id: 'perfil', label: 'Perfil' },
+        { id: 'informacion', label: 'Información' },
+        { id: 'certificaciones', label: 'Certificaciones' },
+        { id: 'ubicacion', label: 'Ubicación' },
+      ] as const
+    ).filter(
+      (section) =>
+        (section.id !== 'certificaciones' || this.seller()?.certifications.length) &&
+        (section.id !== 'ubicacion' || this.seller()?.location.coordinates),
+    ),
+  );
 
   protected onContactRequest(): void {
     this.actionMessage.set(

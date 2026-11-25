@@ -22,8 +22,8 @@ import { ProductDocuments } from '../../components/product-documents/product-doc
 import { ProductAccessories } from '../../components/product-accessories/product-accessories';
 import { ProductVariants } from '../../components/product-variants/product-variants';
 import { ProductReviews } from '../../components/product-reviews/product-reviews';
-import { PRODUCT_DETAILS } from '../../data/product-detail.data';
-import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
+import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
+import { buildProductDetail } from '../../data/product-detail.factory';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
 import { ProductPurchaseIntent } from '../../models/product-detail.model';
 
@@ -53,18 +53,29 @@ export class ProductDetailPage {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
-  protected readonly detail = computed(() =>
-    PRODUCT_DETAILS.find((item) => item.id === this.params().get('id')),
-  );
+  private readonly catalog = inject(CatalogRepository);
+  protected readonly detail = computed(() => {
+    const p = this.catalog.getProduct(this.params().get('id') ?? '');
+    return p && buildProductDetail(p);
+  });
+  protected readonly richDetail = computed(() => {
+    const d = this.detail();
+    return d && 'variants' in d ? d : undefined;
+  });
   protected readonly purchaseMessage = signal('');
   // Keep the existing artwork in Variants; production gallery assets belong to the Overview.
   protected readonly variantFallbackImage = computed(() => {
-    const image = this.detail()?.images[0];
+    const image = this.richDetail()?.images[0];
     return image
       ? { src: image.fallbackSrc ?? image.src, alt: image.fallbackAlt ?? image.alt }
       : undefined;
   });
-  protected readonly recommendations = PRODUCT_DETAIL_RECOMMENDATIONS;
+  protected readonly recommendations = computed(() =>
+    this.catalog
+      .listingCards()
+      .filter((product) => product.id !== this.detail()?.id)
+      .slice(0, 6),
+  );
   protected readonly sections = PRODUCT_DETAIL_SECTIONS;
 
   constructor() {

@@ -57,7 +57,7 @@ describe('ProductFilters', () => {
     expect(element.querySelectorAll('.price-range__input')).toHaveLength(2);
 
     const schneiderCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     schneiderCheckbox.click();
     await fixture.whenStable();
@@ -115,7 +115,7 @@ describe('ProductFilters', () => {
 
   it('restores the applied state when discardDraft is called (cancel/close without applying)', async () => {
     const schneiderCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     schneiderCheckbox.click();
     applyButton().click();
@@ -182,7 +182,7 @@ describe('ProductFilters', () => {
 
   it('clears the draft when clicking Limpiar without emitting until APLICAR FILTROS is clicked', async () => {
     const brandCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     const fourStarBtn = element.querySelector<HTMLButtonElement>(
       'button[aria-label="4 estrellas o más"]',
@@ -215,7 +215,7 @@ describe('ProductFilters', () => {
 
   it('removes an applied chip immediately and synchronizes both applied and draft states', async () => {
     const brandCheckbox = element.querySelector<HTMLInputElement>(
-      'input[type="checkbox"][value="Schneider"]',
+      'input[type="checkbox"][value="Schneider Electric"]',
     )!;
     const originCheckbox = element.querySelector<HTMLInputElement>(
       'input[type="checkbox"][value="Alemania"]',
@@ -258,7 +258,7 @@ describe('ProductFilters', () => {
       element.querySelectorAll<HTMLElement>('.product-filters__option--brand span'),
       (el) => el.textContent?.trim(),
     );
-    expect(brandLabels).toEqual(['Schneider']);
+    expect(brandLabels).toEqual(['Schneider Electric']);
     expect(emittedStates).toHaveLength(0);
   });
 

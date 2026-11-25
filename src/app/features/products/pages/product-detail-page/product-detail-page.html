@@ -9,7 +9,7 @@
         </li>
       </ol>
     </nav>
-    @if (detail(); as item) {
+    @if (richDetail(); as item) {
       <div class="product-detail__overview">
         <header class="product-detail__heading">
           <div class="product-detail__badges">
@@ -35,7 +35,7 @@
         />
       </div>
       <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
-      <app-product-recommendations [products]="recommendations" />
+      <app-product-recommendations [products]="recommendations()" />
       <app-product-section-nav [productId]="item.id" />
       <!-- Secciones de Product Detail activas sobre los anchors existentes. -->
       @for (section of sections; track section.id) {
@@ -71,6 +71,29 @@
           }
         </section>
       }
+    } @else if (detail(); as item) {
+      <div class="product-detail__overview product-detail__overview--base">
+        <header class="product-detail__heading">
+          <div class="product-detail__badges">
+            <span class="product-detail__brand">{{ item.brand }}</span
+            ><span class="product-detail__series">{{ item.category }}</span>
+          </div>
+          <h1>{{ item.name }}</h1>
+          @if (item.description) {
+            <p>{{ item.description }}</p>
+          }
+        </header>
+        @if (item.seller; as seller) {
+          <app-product-seller-summary [seller]="seller" (profileRequest)="onProfileRequest()" />
+        }
+        <app-product-purchase-panel
+          [detail]="item"
+          (purchaseIntent)="onPurchaseIntent($event)"
+          (shippingAddressChangeRequest)="onShippingAddressChangeRequest()"
+        />
+      </div>
+      <p class="product-detail__status" role="status">{{ purchaseMessage() }}</p>
+      <app-product-recommendations [products]="recommendations()" />
     } @else {
       <section class="product-detail__empty">
         <h1>Producto no encontrado</h1>

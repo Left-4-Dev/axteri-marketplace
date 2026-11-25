@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
-import { ProductDetail, ProductPurchaseIntent } from '../../models/product-detail.model';
+import { CommercialDetail, ProductPurchaseIntent } from '../../models/product-detail.model';
 
 @Component({
   selector: 'app-product-purchase-panel',
@@ -11,7 +11,7 @@ import { ProductDetail, ProductPurchaseIntent } from '../../models/product-detai
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductPurchasePanel {
-  readonly detail = input.required<ProductDetail>();
+  readonly detail = input.required<CommercialDetail>();
   readonly purchaseIntent = output<ProductPurchaseIntent>();
   readonly shippingAddressChangeRequest = output<void>();
   protected readonly quantity = signal(1);

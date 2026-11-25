@@ -6,7 +6,7 @@ import { routes } from '../../../../app.routes';
 import { SellerProfileHero } from '../../components/seller-profile-hero/seller-profile-hero';
 import { SellerProducts } from '../../components/seller-products/seller-products';
 import { SellerBrands } from '../../components/seller-brands/seller-brands';
-import { SELLER_PRODUCTS } from '../../data/seller-products.data';
+import { catalog } from '../../../../core/catalog/catalog.repository';
 import { LDF_PROJECTS_SELLER } from '../../data/seller-profile.data';
 import { SellerProfilePage } from './seller-profile-page';
 
@@ -83,10 +83,25 @@ describe('SellerProfilePage', () => {
     const brands: SellerBrands = harness.fixture.debugElement.query(
       By.directive(SellerBrands),
     ).componentInstance;
-    expect(products.products()).toBe(SELLER_PRODUCTS['ldf-projects']);
+    expect(products.products()).toEqual(
+      catalog.productsBySeller('ldf-projects').map((p) => catalog.toProductCard(p)),
+    );
     expect(brands.brands()).toBe(LDF_PROJECTS_SELLER.brands);
     expect(shell.querySelector('#productos app-seller-products')).not.toBeNull();
     expect(shell.querySelector('#marcas app-seller-brands')).not.toBeNull();
+  });
+
+  it('resolves base profiles without empty certification, gallery or map sections', async () => {
+    for (const seller of catalog.sellers.filter((s) => s.id !== 'ldf-projects')) {
+      await harness.navigateByUrl('/proveedores/' + seller.id);
+      expect(element.querySelector('app-seller-profile-page h1')?.textContent).toBe(seller.name);
+      expect(
+        element.querySelector(
+          'app-seller-certifications, app-seller-location, .seller-about__gallery',
+        ),
+      ).toBeNull();
+      expect(element.querySelectorAll('app-seller-profile-page nav a')).toHaveLength(4);
+    }
   });
 
   it('provides a unique labelled destination for each native fragment link', () => {

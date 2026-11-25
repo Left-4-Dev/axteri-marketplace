@@ -22,7 +22,7 @@ export interface SellerInformation {
 export interface SellerLocation {
   readonly country: string;
   readonly city: string;
-  readonly district: string;
+  readonly district?: string;
   readonly address?: string;
   readonly coordinates?: { readonly latitude: number; readonly longitude: number };
 }
@@ -32,7 +32,7 @@ export interface SellerProfile {
   readonly name: string;
   readonly years: number;
   readonly verified: boolean;
-  readonly logo: string;
+  readonly logo?: string;
   readonly coverImage?: string;
   readonly sector: string;
   readonly productCount: number;

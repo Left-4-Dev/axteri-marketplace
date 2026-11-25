@@ -262,7 +262,7 @@ describe('MessagesPage', () => {
       'true',
     );
     const search = element.querySelector<HTMLInputElement>('app-message-product-catalog input')!;
-    search.value = 'w22';
+    search.value = 'jaula de ardilla';
     search.dispatchEvent(new Event('input'));
     harness.detectChanges();
     expect(element.querySelectorAll('app-message-product-catalog li')).toHaveLength(1);
@@ -290,7 +290,7 @@ describe('MessagesPage', () => {
     const line = log.querySelector('.message-list__products li')!;
     expect(line.textContent).toContain('W22');
     expect(line.textContent).toContain('Cantidad: 2');
-    expect(line.textContent).toContain('345');
+    expect(line.textContent).toContain('4,000');
     expect(line.querySelector('img')).not.toBeNull();
   });
 

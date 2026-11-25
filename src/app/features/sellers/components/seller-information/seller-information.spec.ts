@@ -19,8 +19,8 @@ describe('SellerInformation', () => {
     expect(text).toContain('01 - 07 - 2014');
     expect(text).toContain('6');
     expect(text).toContain('12 años');
-    expect(text).toContain('L - V de 9 am a 7 pm');
-    expect(text).toContain('S de 9 am a 1 pm');
+    expect(text).toContain('Lunes a viernes: 9:00 a. m. - 7:00 p. m.');
+    expect(text).toContain('Sábados: 9:00 a. m. - 1:00 p. m.');
     expect(fixture.nativeElement.querySelectorAll('dt')).toHaveLength(10);
     expect(fixture.nativeElement.querySelectorAll('dd')).toHaveLength(10);
   });
