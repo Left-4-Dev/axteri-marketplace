@@ -4,6 +4,13 @@
       <ol class="product-detail__breadcrumb">
         <li><a routerLink="/">Inicio</a></li>
         <li><a routerLink="/productos">Productos</a></li>
+        @if (category(); as category) {
+          <li>
+            <a routerLink="/productos" [queryParams]="{ categoria: category.id }">{{
+              category.name
+            }}</a>
+          </li>
+        }
         <li aria-current="page">
           <span>{{ detail()?.name ?? 'Producto no encontrado' }}</span>
         </li>
@@ -29,7 +36,7 @@
         <app-product-gallery [images]="item.images" [icons]="item.galleryIcons" />
         <app-product-summary [detail]="item" />
         <app-product-purchase-panel
-          [detail]="item"
+          [detail]="purchaseDetail() ?? item"
           (purchaseIntent)="onPurchaseIntent($event)"
           (shippingAddressChangeRequest)="onShippingAddressChangeRequest()"
         />
@@ -47,7 +54,10 @@
         >
           @switch (section.id) {
             @case ('caracteristicas') {
-              <app-product-specifications [specifications]="item.specifications" />
+              <app-product-specifications
+                id="especificaciones"
+                [specifications]="item.specifications"
+              />
             }
             @case ('descripcion') {
               <app-product-description [description]="item.detailedDescription" />
@@ -61,7 +71,8 @@
             @case ('variaciones') {
               <app-product-variants
                 [variants]="item.variants"
-                [initialSku]="item.sku"
+                [initialSku]="purchaseDetail()?.sku"
+                (skuChange)="selectSku($event)"
                 [fallbackImage]="variantFallbackImage()"
               />
             }
@@ -87,7 +98,7 @@
           <app-product-seller-summary [seller]="seller" (profileRequest)="onProfileRequest()" />
         }
         <app-product-purchase-panel
-          [detail]="item"
+          [detail]="purchaseDetail() ?? item"
           (purchaseIntent)="onPurchaseIntent($event)"
           (shippingAddressChangeRequest)="onShippingAddressChangeRequest()"
         />

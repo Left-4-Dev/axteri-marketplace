@@ -72,7 +72,28 @@ export class SellerProfilePage {
     );
   }
 
-  protected onShareRequest(): void {
-    this.actionMessage.set('La opción de compartir este perfil estará disponible próximamente.');
+  protected async onShareRequest(): Promise<void> {
+    const seller = this.seller();
+    if (!seller) return;
+    const url = new URL('proveedores/' + encodeURIComponent(seller.id), document.baseURI);
+    url.search = '';
+    url.hash = '';
+    let message: string;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: seller.name, url: url.href });
+        if (this.seller() === seller) this.actionMessage.set('Perfil compartido.');
+        return;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url.href);
+      message = 'Enlace del perfil copiado.';
+    } catch {
+      message = 'No se pudo compartir el perfil.';
+    }
+    if (this.seller() === seller) this.actionMessage.set(message);
   }
 }

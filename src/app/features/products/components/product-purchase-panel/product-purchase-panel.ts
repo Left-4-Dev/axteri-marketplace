@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
@@ -5,7 +6,7 @@ import { CommercialDetail, ProductPurchaseIntent } from '../../models/product-de
 
 @Component({
   selector: 'app-product-purchase-panel',
-  imports: [Button, CurrencyPipe],
+  imports: [Button, CurrencyPipe, RouterLink],
   templateUrl: './product-purchase-panel.html',
   styleUrl: './product-purchase-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,10 @@ export class ProductPurchasePanel {
   readonly shippingAddressChangeRequest = output<void>();
   protected readonly quantity = signal(1);
 
+  protected request(kind: ProductPurchaseIntent['kind']): void {
+    const { id: productId, sellerId, sku } = this.detail();
+    this.purchaseIntent.emit({ kind, productId, sellerId, sku, quantity: this.quantity() });
+  }
   protected setQuantity(value: number): void {
     this.quantity.set(
       Number.isFinite(value)

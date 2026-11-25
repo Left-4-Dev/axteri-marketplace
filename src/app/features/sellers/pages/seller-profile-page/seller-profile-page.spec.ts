@@ -141,16 +141,37 @@ describe('SellerProfilePage', () => {
     expect(element.querySelector('[role="status"]')?.textContent).toContain(
       'No se ha enviado ninguna solicitud.',
     );
-    buttons[1].click();
-    await harness.fixture.whenStable();
-    expect(element.querySelector('[role="status"]')?.textContent).toContain(
-      'La opción de compartir este perfil estará disponible próximamente.',
-    );
+    const share = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'share', { value: share, configurable: true });
+    try {
+      buttons[1].click();
+      await harness.fixture.whenStable();
+      expect(element.querySelector('[role="status"]')?.textContent).toContain('Perfil compartido.');
+      expect(share).toHaveBeenCalledWith({
+        title: LDF_PROJECTS_SELLER.name,
+        url: new URL('proveedores/' + LDF_PROJECTS_SELLER.id, document.baseURI).href,
+      });
+    } finally {
+      Reflect.deleteProperty(navigator, 'share');
+    }
     await harness.navigateByUrl('/proveedores/unknown');
     await harness.navigateByUrl('/proveedores/ldf-projects');
     expect(element.querySelector('[role="status"]')?.textContent).toBe('');
   });
 
+  it('copies the canonical profile URL when native sharing is unavailable', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    try {
+      await pageInstance()['onShareRequest']();
+      expect(writeText).toHaveBeenCalledWith(
+        new URL('proveedores/ldf-projects', document.baseURI).href,
+      );
+      expect(pageInstance()['actionMessage']()).toContain('copiado');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
   it('handles a direct unknown URL and returns to products through the router', async () => {
     await harness.navigateByUrl('/productos');
     await harness.navigateByUrl('/proveedores/unknown');

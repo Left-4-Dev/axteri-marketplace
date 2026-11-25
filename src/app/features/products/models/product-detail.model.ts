@@ -149,6 +149,9 @@ export interface ProductDetail extends CommercialDetail {
 }
 
 export interface ProductPurchaseIntent {
+  readonly productId: string;
+  readonly sellerId?: string;
+  readonly sku?: string;
   readonly kind: 'contact' | 'quote';
   readonly quantity: number;
 }

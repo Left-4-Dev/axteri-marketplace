@@ -33,6 +33,7 @@ export const LDF_PROJECTS: readonly CatalogProduct[] = [
   },
   {
     id: 'weg-w22-3kw',
+    hasSpecifications: true,
     name: 'Motor eléctrico trifásico W22 jaula de ardilla, baja tensión — 380 V / 50 Hz — IP55 — Clase F — IEC 60034-30-1',
     description:
       'Motor eléctrico trifásico W22 de alta eficiencia para operación continua. Su construcción robusta permite integrarlo en equipos industriales de uso general.',

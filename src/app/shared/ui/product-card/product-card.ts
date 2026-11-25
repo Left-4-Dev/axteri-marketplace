@@ -21,6 +21,7 @@ export class ProductCard {
   readonly product = input.required<Product>();
   readonly variant = input<ProductCardVariant>('default');
   readonly requestQuote = output<Product>();
+  readonly contactSeller = output<Product>();
   readonly viewDetails = output<Product>();
 
   protected readonly discountPercent = computed(() => {

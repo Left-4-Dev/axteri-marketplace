@@ -195,3 +195,20 @@
     }
   }
 }
+
+.purchase-panel__supplier {
+  justify-self: start;
+  color: var(--color-accent-text);
+  font-size: var(--font-size-secondary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+}

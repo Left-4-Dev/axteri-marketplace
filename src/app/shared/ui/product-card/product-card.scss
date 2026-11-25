@@ -19,6 +19,10 @@
     position: relative;
     color: inherit;
     text-decoration: none;
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
     img {
       object-fit: contain;
     }
@@ -26,6 +30,14 @@
   &__link {
     color: inherit;
     text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+      border-radius: var(--radius-xs);
+    }
   }
   &__brand,
   &__seller,

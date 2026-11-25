@@ -36,7 +36,7 @@ function conversationSeller(id: string): ConversationSeller {
     ...seller,
     yearsInIndustry: seller.years,
     locationLabel: sellerLocation(seller) + ' - ' + seller.location.country,
-    ...(id === 'ldf-projects' ? { profilePath: '/proveedores/' + id } : {}),
+    profilePath: '/proveedores/' + seller.id,
   };
 }
 export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [

@@ -28,6 +28,7 @@ export interface OfferCountdown {
 }
 
 export interface Product {
+  readonly hasSpecifications?: boolean;
   readonly id: string;
   readonly name: string;
   readonly brand: string;

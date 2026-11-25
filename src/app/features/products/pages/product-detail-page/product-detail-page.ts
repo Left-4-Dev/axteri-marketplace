@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductGallery } from '../../components/product-gallery/product-gallery';
 import { ProductSummary } from '../../components/product-summary/product-summary';
 import { ProductSellerSummary } from '../../components/product-seller-summary/product-seller-summary';
@@ -53,7 +53,15 @@ export class ProductDetailPage {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
-  private readonly catalog = inject(CatalogRepository);
+  private readonly router = inject(Router);
+  private readonly query = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+  protected readonly category = computed(() => {
+    const product = this.catalog.getProduct(this.params().get('id') ?? '');
+    return product && this.catalog.getCategory(product.categoryId);
+  });
+  protected readonly catalog = inject(CatalogRepository);
   protected readonly detail = computed(() => {
     const p = this.catalog.getProduct(this.params().get('id') ?? '');
     return p && buildProductDetail(p);
@@ -62,6 +70,22 @@ export class ProductDetailPage {
     const d = this.detail();
     return d && 'variants' in d ? d : undefined;
   });
+  protected readonly purchaseDetail = computed(() => {
+    const detail = this.detail();
+    const variant = this.richDetail()?.variants.find((v) => v.sku === this.query().get('sku'));
+    if (!variant || detail?.sku === variant.sku) return detail;
+    const product = this.catalog.products().find((p) => p.sku === variant.sku);
+    return product ? buildProductDetail(product) : detail;
+  });
+  protected selectSku(sku: string): void {
+    if (this.query().get('sku') !== sku)
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sku },
+        queryParamsHandling: 'merge',
+        preserveFragment: true,
+      });
+  }
   protected readonly purchaseMessage = signal('');
   // Keep the existing artwork in Variants; production gallery assets belong to the Overview.
   protected readonly variantFallbackImage = computed(() => {
@@ -103,7 +127,8 @@ export class ProductDetailPage {
   }
 
   protected onProfileRequest(): void {
-    this.purchaseMessage.set('El perfil del proveedor estará disponible próximamente.');
+    const id = this.detail()?.sellerId;
+    if (id) void this.router.navigate(['/proveedores', id]);
   }
 
   protected onShippingAddressChangeRequest(): void {

@@ -5,6 +5,11 @@
       <p class="purchase-panel__sku">SKU: {{ item.sku }}</p>
     }
 
+    @if (item.sellerId && item.seller) {
+      <a class="purchase-panel__supplier" [routerLink]="['/proveedores', item.sellerId]">{{
+        item.seller.name
+      }}</a>
+    }
     @let price = item.price;
     <div class="purchase-panel__pricing">
       @switch (price.kind) {
@@ -85,14 +90,8 @@
       </div>
     </div>
     <div class="purchase-panel__actions">
-      <app-button (click)="purchaseIntent.emit({ kind: 'contact', quantity: quantity() })"
-        >Contactar proveedor</app-button
-      >
-      <app-button
-        variant="light"
-        (click)="purchaseIntent.emit({ kind: 'quote', quantity: quantity() })"
-        >Solicitar cotización</app-button
-      >
+      <app-button (click)="request('contact')">Contactar proveedor</app-button>
+      <app-button variant="light" (click)="request('quote')">Solicitar cotización</app-button>
     </div>
     @if (item.purchase.destination || item.purchase.deliveryEstimate) {
       <dl class="purchase-panel__delivery">

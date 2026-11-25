@@ -26,7 +26,7 @@
             <app-seller-products [products]="products()" [sellerId]="item.id" />
           }
           @case ('marcas') {
-            <app-seller-brands [brands]="item.brands" />
+            <app-seller-brands [sellerId]="item.id" [brands]="item.brands" />
           }
           @case ('perfil') {
             <app-seller-about [seller]="item" />
