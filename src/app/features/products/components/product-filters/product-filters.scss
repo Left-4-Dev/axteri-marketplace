@@ -291,20 +291,8 @@
   border-radius: var(--radius-sm);
   background: var(--color-background);
 
-  .product-filters__option {
-    min-block-size: var(--control-height-compact);
-    gap: var(--space-ms);
-  }
-
   input[type='checkbox'] {
-    inline-size: var(--control-choice-size);
-    block-size: var(--control-choice-size);
     border-radius: var(--radius-xs);
-    background: var(--color-surface);
-
-    &:checked {
-      background: var(--color-action);
-    }
   }
 }
 

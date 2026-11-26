@@ -47,8 +47,10 @@
           class="hero__ai-toggle"
           type="button"
           role="switch"
-          [attr.aria-checked]="aiModeEnabled()"
-          (click)="toggleAiMode()"
+          aria-label="Modo IA (próximamente)"
+          aria-checked="false"
+          aria-disabled="true"
+          title="Modo IA disponible próximamente"
         >
           <span class="hero__switch-track" aria-hidden="true"
             ><span class="hero__switch-thumb"></span

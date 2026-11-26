@@ -25,13 +25,4 @@ export const HOME_BRANDS: readonly Brand[] = [
 
 export const HOME_NEWS: readonly NewsItem[] = [
   { id: 'haas-vf3', alt: 'Promoción de lanzamiento Haas VF-3', badge: 'Nuevo lanzamiento' },
-  {
-    id: 'hola',
-    alt: 'Promoción de lanzamiento Hola',
-    badge: 'Nuevo lanzamiento',
-    cta: {
-      label: 'Más información',
-      destination: '/',
-    },
-  },
 ];

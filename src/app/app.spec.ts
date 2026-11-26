@@ -4,6 +4,8 @@ import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
 import { appConfig } from './app.config';
 import { Header } from './core/layout/header/header';
+import './core/layout/main-layout/main-layout';
+import './features/home/pages/home-page/home-page';
 
 describe('App', () => {
   afterEach(() => vi.unstubAllGlobals());

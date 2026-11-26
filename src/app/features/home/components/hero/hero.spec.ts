@@ -18,15 +18,14 @@ describe('Hero', () => {
     await fixture.whenStable();
   });
 
-  it('toggles AI mode without changing the query', async () => {
+  it('keeps AI mode non-operational with aria-disabled and upcoming label without changing the query', async () => {
     const toggle = element.querySelector<HTMLButtonElement>('[role="switch"]')!;
     const query = element.querySelector<HTMLTextAreaElement>('[data-primary-search]')!;
     expect(query.value).toBe('');
     query.value = 'Comparar atomizadores';
+    expect(toggle.getAttribute('aria-disabled')).toBe('true');
     expect(toggle.getAttribute('aria-checked')).toBe('false');
-    toggle.click();
-    await fixture.whenStable();
-    expect(toggle.getAttribute('aria-checked')).toBe('true');
+    expect(toggle.getAttribute('aria-label')).toBe('Modo IA (próximamente)');
     toggle.click();
     await fixture.whenStable();
     expect(toggle.getAttribute('aria-checked')).toBe('false');

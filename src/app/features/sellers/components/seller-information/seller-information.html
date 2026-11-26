@@ -5,14 +5,14 @@
       <div class="seller-information__row">
         <dt class="seller-information__label">{{ row.first.label }}</dt>
         <dd class="seller-information__value">
-          @for (val of row.first.values; track val) {
+          @for (val of row.first.values; track $index) {
             <div>{{ val }}</div>
           }
         </dd>
         @if (row.second; as second) {
           <dt class="seller-information__label">{{ second.label }}</dt>
           <dd class="seller-information__value">
-            @for (val of second.values; track val) {
+            @for (val of second.values; track $index) {
               <div>{{ val }}</div>
             }
           </dd>

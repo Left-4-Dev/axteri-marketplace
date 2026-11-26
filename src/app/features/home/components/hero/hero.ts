@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,11 +8,6 @@ import { Router } from '@angular/router';
 })
 export class Hero {
   private readonly router = inject(Router);
-  protected readonly aiModeEnabled = signal(false);
-
-  protected toggleAiMode(): void {
-    this.aiModeEnabled.update((enabled) => !enabled);
-  }
 
   protected onQueryEnter(event: Event, rawQuery: string): void {
     const keyEvent = event as KeyboardEvent;
