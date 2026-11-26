@@ -7,9 +7,11 @@ import {
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommercialNavigationService } from '../../../messages/services/commercial-navigation.service';
 import { ProductGallery } from '../../components/product-gallery/product-gallery';
 import { ProductSummary } from '../../components/product-summary/product-summary';
 import { ProductSellerSummary } from '../../components/product-seller-summary/product-seller-summary';
@@ -22,10 +24,10 @@ import { ProductDocuments } from '../../components/product-documents/product-doc
 import { ProductAccessories } from '../../components/product-accessories/product-accessories';
 import { ProductVariants } from '../../components/product-variants/product-variants';
 import { ProductReviews } from '../../components/product-reviews/product-reviews';
-import { PRODUCT_DETAILS } from '../../data/product-detail.data';
-import { PRODUCT_DETAIL_RECOMMENDATIONS } from '../../data/product-recommendations.data';
+import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
+import { buildProductDetail } from '../../data/product-detail.factory';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
-import { ProductPurchaseIntent } from '../../models/product-detail.model';
+import { ProductPurchaseIntent, ProductVariant } from '../../models/product-detail.model';
 
 @Component({
   selector: 'app-product-detail-page',
@@ -53,18 +55,55 @@ export class ProductDetailPage {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
-  protected readonly detail = computed(() =>
-    PRODUCT_DETAILS.find((item) => item.id === this.params().get('id')),
-  );
+  private readonly router = inject(Router);
+  private readonly commercialNavigation = inject(CommercialNavigationService);
+  private readonly purchasePanel = viewChild(ProductPurchasePanel);
+  private readonly query = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+  protected readonly category = computed(() => {
+    const product = this.catalog.getProduct(this.params().get('id') ?? '');
+    return product && this.catalog.getCategory(product.categoryId);
+  });
+  protected readonly catalog = inject(CatalogRepository);
+  protected readonly detail = computed(() => {
+    const p = this.catalog.getProduct(this.params().get('id') ?? '');
+    return p && buildProductDetail(p);
+  });
+  protected readonly richDetail = computed(() => {
+    const d = this.detail();
+    return d && 'variants' in d ? d : undefined;
+  });
+  protected readonly purchaseDetail = computed(() => {
+    const detail = this.detail();
+    const variant = this.richDetail()?.variants.find((v) => v.sku === this.query().get('sku'));
+    if (!variant || detail?.sku === variant.sku) return detail;
+    const product = this.catalog.products().find((p) => p.sku === variant.sku);
+    return product ? buildProductDetail(product) : detail;
+  });
+  protected selectSku(sku: string): void {
+    if (this.query().get('sku') !== sku)
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sku },
+        queryParamsHandling: 'merge',
+        preserveFragment: true,
+      });
+  }
   protected readonly purchaseMessage = signal('');
   // Keep the existing artwork in Variants; production gallery assets belong to the Overview.
   protected readonly variantFallbackImage = computed(() => {
-    const image = this.detail()?.images[0];
+    const image = this.richDetail()?.images[0];
     return image
       ? { src: image.fallbackSrc ?? image.src, alt: image.fallbackAlt ?? image.alt }
       : undefined;
   });
-  protected readonly recommendations = PRODUCT_DETAIL_RECOMMENDATIONS;
+  protected readonly recommendations = computed(() =>
+    this.catalog
+      .listingCards()
+      .filter((product) => product.id !== this.detail()?.id)
+      .slice(0, 6),
+  );
   protected readonly sections = PRODUCT_DETAIL_SECTIONS;
 
   constructor() {
@@ -84,15 +123,36 @@ export class ProductDetailPage {
   }
 
   protected onPurchaseIntent(intent: ProductPurchaseIntent): void {
-    const action =
-      intent.kind === 'contact' ? 'El contacto con el proveedor' : 'La solicitud de cotización';
-    this.purchaseMessage.set(
-      `${action} para ${intent.quantity} unidad(es) estará disponible próximamente. No se ha enviado ninguna solicitud.`,
-    );
+    const currentDetail = this.detail();
+    const sellerId = intent.sellerId ?? currentDetail?.sellerId;
+    if (intent.kind === 'contact') {
+      this.commercialNavigation.contactSeller(sellerId);
+      return;
+    }
+    this.commercialNavigation.requestProductQuote({
+      sellerId,
+      productId: currentDetail?.id ?? intent.productId,
+      sku: intent.sku ?? this.purchaseDetail()?.sku,
+      quantity: intent.quantity,
+    });
+  }
+
+  protected onVariantQuoteRequest(variant: ProductVariant): void {
+    const currentDetail = this.detail();
+    if (!currentDetail) {
+      return;
+    }
+    this.commercialNavigation.requestProductQuote({
+      sellerId: currentDetail.sellerId,
+      productId: currentDetail.id,
+      sku: variant.sku,
+      quantity: this.purchasePanel()?.selectedQuantity() ?? 1,
+    });
   }
 
   protected onProfileRequest(): void {
-    this.purchaseMessage.set('El perfil del proveedor estará disponible próximamente.');
+    const id = this.detail()?.sellerId;
+    if (id) void this.router.navigate(['/proveedores', id]);
   }
 
   protected onShippingAddressChangeRequest(): void {

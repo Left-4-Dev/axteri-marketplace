@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { PRODUCT_MENU_CATEGORIES } from './data/products-menu.data';
 import { Header, PRODUCTS_MENU_CLOSE_DELAY, PRODUCTS_MENU_MEDIA_QUERY } from './header';
 
@@ -277,8 +277,10 @@ describe('Header', () => {
       '.header__mobile-category',
     );
     expect(mobileCategories).toHaveLength(PRODUCT_MENU_CATEGORIES.length);
-    mobileCategories.forEach((link) => {
-      expect(link.getAttribute('href')).toBe('/productos');
+    mobileCategories.forEach((link, index) => {
+      expect(link.getAttribute('href')).toBe(
+        `/productos?categoria=${PRODUCT_MENU_CATEGORIES[index].id}`,
+      );
     });
 
     desktopMedia.matches = true;
@@ -372,5 +374,40 @@ describe('Header', () => {
     button.click();
     await fixture.whenStable();
     expect(button.classList.contains('header__search-button--attention')).toBe(true);
+  });
+
+  it('opens and focuses the header search input via openSearch() and submits queries to /productos?q=', async () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    const input = element.querySelector<HTMLInputElement>('.header__search-input')!;
+    const button = element.querySelector<HTMLButtonElement>('.header__search-button')!;
+    const form = element.querySelector<HTMLFormElement>('.header__search')!;
+
+    expect(input.hidden).toBe(true);
+    fixture.componentInstance.openSearch();
+    await fixture.whenStable();
+
+    expect(input.hidden).toBe(false);
+    expect(document.activeElement).toBe(input);
+
+    input.value = '  variadores siemens  ';
+    button.click();
+    await fixture.whenStable();
+    expect(navigateSpy).toHaveBeenCalledWith(['/productos'], {
+      queryParams: { q: 'variadores siemens' },
+    });
+
+    navigateSpy.mockClear();
+    input.value = 'tableros';
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await fixture.whenStable();
+    expect(navigateSpy).toHaveBeenCalledWith(['/productos'], {
+      queryParams: { q: 'tableros' },
+    });
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(input.hidden).toBe(true);
+    expect(document.activeElement).toBe(button);
   });
 });

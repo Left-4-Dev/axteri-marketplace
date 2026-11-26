@@ -120,7 +120,7 @@ describe('MessagesStore', () => {
 
   it('searches the active catalog by brand or name and resets search on navigation', () => {
     store.selectConversation('ldf-projects');
-    store.setProductSearch('  w22  ');
+    store.setProductSearch('  jaula de ardilla  ');
     expect(store.filteredProducts().map((p) => p.id)).toEqual(['weg-w22-3kw']);
     store.setProductSearch('schneider');
     expect(store.filteredProducts().length).toBeGreaterThan(1);
@@ -154,9 +154,10 @@ describe('MessagesStore', () => {
     expect(sent.kind).toBe('product-request');
     expect(sent.items).toEqual(draft);
     expect(sent.items[0]).not.toBe(draft[0]);
-    expect(store.messages().length).toBe(before + 1);
-    expect(store.messages().at(-1)).toEqual(sent);
-    expect(store.activeConversation()?.lastActivity?.preview).toBe('Solicitud de productos');
+    expect(store.messages().length).toBe(before + 2);
+    expect(store.messages().at(-2)).toEqual(sent);
+    expect(store.messages().at(-1)?.kind).toBe('quotation');
+    expect(store.activeConversation()?.lastActivity?.preview).toBe('Cotización');
     expect(store.selection()).toEqual([]);
     expect(store.sendProductRequest()).toBeNull();
     store.selectConversation('electro-sur-industrial');
@@ -248,12 +249,13 @@ describe('MessagesStore', () => {
       store.setProductQuantity(product.id, 1);
       const before = store.messages().length;
       store.submitDraft('Con el plano');
-      expect(store.messages()).toHaveLength(before + 1);
-      expect(store.messages().at(-1)).toMatchObject({
+      expect(store.messages()).toHaveLength(before + 2);
+      expect(store.messages().at(-2)).toMatchObject({
         kind: 'product-request',
         note: 'Con el plano',
         resourceIds: [id],
       });
+      expect(store.messages().at(-1)?.kind).toBe('quotation');
       expect(store.selection()).toEqual([]);
       expect(store.pendingFiles()).toEqual([]);
       store.selectConversation('electro-sur-industrial');
@@ -280,5 +282,140 @@ describe('MessagesStore', () => {
     expect(formatDateSeparator('2026-11-18T10:00:00-05:00', referenceNow)).toBe('Ayer');
     expect(formatCurrencyEsPe(1500.5, 'PEN')).toContain('1,500.50');
     expect(formatQuantityEsPe(1250)).toBe('1,250');
+  });
+
+  it('resolves and reuses conversations by counterpart.seller.id for all five canonical sellers and rejects unknown sellers', () => {
+    const sellerIds = [
+      'ldf-projects',
+      'electro-sur-industrial',
+      'automatizacion-andina',
+      'suministros-mineros-pacifico',
+      'tableros-control-peru',
+    ];
+
+    for (const sellerId of sellerIds) {
+      const first = store.findOrCreateConversationBySellerId(sellerId);
+      const second = store.findOrCreateConversationBySellerId(sellerId);
+      expect(first).not.toBeNull();
+      expect(first?.counterpart.seller.id).toBe(sellerId);
+      expect(second).toBe(first);
+    }
+
+    const countBefore = store.conversations().length;
+    expect(store.findOrCreateConversationBySellerId('proveedor-inexistente')).toBeNull();
+    expect(store.findOrCreateConversationBySellerId('   ')).toBeNull();
+    expect(store.conversations().length).toBe(countBefore);
+  });
+
+  it('validates product ownership, SKU variants, quantity, and intention when applying product context while preserving drafts and selections', () => {
+    store.selectConversation('ldf-projects');
+    store.setDraft('Borrador existente');
+    const firstProduct = store.products()[0];
+    store.setProductQuantity(firstProduct.id, 1);
+
+    // Contact intention does not add products
+    expect(
+      store.applyProductContext({
+        productId: 'weg-w22-3kw',
+        quantity: 2,
+        intention: 'contactar',
+      }),
+    ).toBe(false);
+    expect(store.selection().map((p) => p.id)).toEqual([firstProduct.id]);
+
+    // Product belonging to another seller is rejected
+    expect(
+      store.applyProductContext({
+        productId: 'schneider-c60h-dc-1',
+        quantity: 2,
+        intention: 'cotizar',
+      }),
+    ).toBe(false);
+
+    // Invalid SKU or invalid quantity is rejected
+    expect(
+      store.applyProductContext({
+        productId: 'weg-w22-3kw',
+        sku: 'SKU-INEXISTENTE',
+        quantity: 2,
+        intention: 'cotizar',
+      }),
+    ).toBe(false);
+    expect(
+      store.applyProductContext({
+        productId: 'weg-w22-3kw',
+        quantity: 0,
+        intention: 'cotizar',
+      }),
+    ).toBe(false);
+
+    // Valid variant SKU of weg-w22-3kw resolves to w22-11kw-4p and preserves existing draft and selection
+    expect(
+      store.applyProductContext({
+        productId: 'weg-w22-3kw',
+        sku: 'W22-11KW-4P-380-B3-IP55',
+        quantity: 3,
+        intention: 'cotizar',
+      }),
+    ).toBe(true);
+    expect(store.draft()).toBe('Borrador existente');
+    expect(store.selection()).toEqual([
+      expect.objectContaining({ id: firstProduct.id, quantity: 1 }),
+      expect.objectContaining({ id: 'w22-11kw-4p', quantity: 3 }),
+    ]);
+
+    // Re-applying the same product context is idempotent (does not duplicate or sum to 6)
+    expect(
+      store.applyProductContext({
+        productId: 'weg-w22-3kw',
+        sku: 'W22-11KW-4P-380-B3-IP55',
+        quantity: 3,
+        intention: 'cotizar',
+      }),
+    ).toBe(true);
+    expect(store.selection()).toHaveLength(2);
+    expect(store.selection()[1]?.quantity).toBe(3);
+  });
+
+  it('generates synchronous quotations and purchase orders for any canonical seller without generating quotes for normal messages', () => {
+    store.selectConversation('electro-sur-industrial');
+    const initialCount = store.messages().length;
+
+    // Normal text message and contact request do NOT generate quotations
+    store.sendTextMessage('Consulta general de disponibilidad');
+    store.requestContact();
+    expect(store.messages().length).toBe(initialCount + 2);
+    expect(store.messages().some((m) => m.kind === 'quotation')).toBe(false);
+
+    // Product request generates a synchronous quotation with real catalog prices
+    const esiProduct = store.products()[0];
+    store.setProductQuantity(esiProduct.id, 4);
+    store.sendProductRequest('Cotizar envío a Tacna');
+
+    const latestMessages = store.messages();
+    expect(latestMessages.at(-2)?.kind).toBe('product-request');
+    const quote = latestMessages.at(-1)!;
+    expect(quote.kind).toBe('quotation');
+    if (quote.kind === 'quotation') {
+      expect(quote.status).toBe('pending');
+      expect(quote.lines).toEqual([
+        {
+          product: esiProduct.name,
+          quantity: 4,
+          unitPriceCents: 5000,
+        },
+      ]);
+      expect(store.resources().has(quote.resourceId)).toBe(true);
+
+      // Accepting the quotation generates a single purchase order
+      store.decideQuotation(quote.id, 'accepted');
+      store.decideQuotation(quote.id, 'accepted');
+      expect(store.orders().size).toBe(1);
+      const [order] = store.orders().values();
+      expect(order.supplier).toBe('Electro Sur Industrial');
+      expect(order.subtotalCents).toBe(20000);
+      expect(order.taxCents).toBe(3600);
+      expect(order.totalCents).toBe(23600);
+    }
   });
 });

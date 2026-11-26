@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { W22_PRODUCT_DETAIL } from '../../data/product-detail.data';
 import { ProductPurchasePanel } from './product-purchase-panel';
@@ -13,6 +14,7 @@ describe('ProductPurchasePanel', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [ProductPurchasePanel] }).compileComponents();
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     fixture = TestBed.createComponent(ProductPurchasePanel);
     fixture.componentRef.setInput('detail', W22_PRODUCT_DETAIL);
     await fixture.whenStable();
@@ -49,9 +51,21 @@ describe('ProductPurchasePanel', () => {
     await fixture.whenStable();
     const buttons = element.querySelectorAll<HTMLButtonElement>('.purchase-panel__actions button');
     buttons[0].click();
-    expect(emit).toHaveBeenCalledWith({ kind: 'contact', quantity: 2 });
+    expect(emit).toHaveBeenCalledWith({
+      kind: 'contact',
+      quantity: 2,
+      productId: W22_PRODUCT_DETAIL.id,
+      sellerId: W22_PRODUCT_DETAIL.sellerId,
+      sku: W22_PRODUCT_DETAIL.sku,
+    });
     buttons[1].click();
-    expect(emit).toHaveBeenCalledWith({ kind: 'quote', quantity: 2 });
+    expect(emit).toHaveBeenCalledWith({
+      kind: 'quote',
+      quantity: 2,
+      productId: W22_PRODUCT_DETAIL.id,
+      sellerId: W22_PRODUCT_DETAIL.sellerId,
+      sku: W22_PRODUCT_DETAIL.sku,
+    });
   });
 
   it('renders the previous price from detail purchase information', () => {

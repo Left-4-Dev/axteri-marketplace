@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { HOME_BRANDS } from '../../data/home-content.data';
 import { PreferredBrands } from './preferred-brands';
 
@@ -23,7 +24,10 @@ describe('PreferredBrands', () => {
     );
     matchMedia.mockReturnValue({ matches: false });
     vi.stubGlobal('matchMedia', matchMedia);
-    await TestBed.configureTestingModule({ imports: [PreferredBrands] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [PreferredBrands],
+      providers: [provideRouter([{ path: 'productos', children: [] }])],
+    }).compileComponents();
     fixture = TestBed.createComponent(PreferredBrands);
     fixture.componentRef.setInput('brands', HOME_BRANDS);
     await fixture.whenStable();
@@ -80,8 +84,10 @@ describe('PreferredBrands', () => {
   });
 
   it.each(HOME_BRANDS)(
-    'renders $name categories, four previews and its unavailable CTA',
-    (brand) => {
+    'renders $name categories, four previews and navigates to /productos?marca=$id from its CTA',
+    async (brand) => {
+      const router = TestBed.inject(Router);
+      const navigateSpy = vi.spyOn(router, 'navigate');
       const article = viewport(brand.id).closest('article')!;
       expect(article.getAttribute('aria-labelledby')).toBe(article.querySelector('h3')!.id);
       expect(viewport(brand.id).getAttribute('aria-label')).toBe(`Categorías de ${brand.name}`);
@@ -100,11 +106,12 @@ describe('PreferredBrands', () => {
       });
       const cta = article.querySelector('button')!;
       expect(cta.textContent?.trim()).toBe('VER MÁS PRODUCTOS');
-      expect(cta.disabled).toBe(true);
-      expect(
-        element.querySelector(`#${cta.getAttribute('aria-describedby')}`)?.textContent,
-      ).toContain('aún no está disponible');
-      expect(article.querySelector('a')).toBeNull();
+      expect(cta.disabled).toBe(false);
+      cta.click();
+      await fixture.whenStable();
+      expect(navigateSpy).toHaveBeenCalledWith(['/productos'], {
+        queryParams: { marca: brand.id },
+      });
     },
   );
 

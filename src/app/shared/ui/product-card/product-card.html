@@ -35,17 +35,17 @@
       <div class="product-card__quick-actions">
         <button
           type="button"
-          disabled
-          (click)="requestQuote.emit(item)"
-          [attr.aria-label]="'Consultar sobre ' + item.name + ' (próximamente)'"
+          (click)="onRequestQuote(item)"
+          [attr.aria-label]="'Consultar sobre ' + item.name"
         >
           <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
         </button>
         <button
           type="button"
-          disabled
+          [routerLink]="['/productos', item.id]"
+          [fragment]="item.hasSpecifications ? 'especificaciones' : undefined"
           (click)="viewDetails.emit(item)"
-          [attr.aria-label]="'Ver ficha de ' + item.name + ' (próximamente)'"
+          [attr.aria-label]="'Ver ficha de ' + item.name"
         >
           <span class="product-card__icon product-card__icon--details" aria-hidden="true"></span>
         </button>
@@ -54,13 +54,15 @@
       <div class="product-card__actions">
         <button
           type="button"
-          (click)="requestQuote.emit(item)"
+          (click)="onRequestQuote(item)"
           [attr.aria-label]="'Consultar sobre ' + item.name"
         >
           <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
         </button>
         <button
           type="button"
+          [routerLink]="['/productos', item.id]"
+          [fragment]="item.hasSpecifications ? 'especificaciones' : undefined"
           (click)="viewDetails.emit(item)"
           [attr.aria-label]="'Ver ficha de ' + item.name"
         >
@@ -103,10 +105,26 @@
     @if (item.seller; as seller) {
       <div class="product-card__seller">
         @if (isOffer) {
-          <p>{{ seller.name }}</p>
+          @if (item.sellerId) {
+            <p>
+              <a class="product-card__link" [routerLink]="['/proveedores', item.sellerId]">{{
+                seller.name
+              }}</a>
+            </p>
+          } @else {
+            <p>{{ seller.name }}</p>
+          }
           <p>{{ seller.location }} · {{ seller.years }} años</p>
         } @else {
-          <p class="product-card__seller-name">{{ seller.name }}</p>
+          @if (item.sellerId) {
+            <p class="product-card__seller-name">
+              <a class="product-card__link" [routerLink]="['/proveedores', item.sellerId]">{{
+                seller.name
+              }}</a>
+            </p>
+          } @else {
+            <p class="product-card__seller-name">{{ seller.name }}</p>
+          }
           <div class="product-card__seller-details">
             <p class="product-card__location">
               <span class="product-card__location-icon" aria-hidden="true"></span>
@@ -219,7 +237,7 @@
       <button
         class="product-card__cta product-card__cta--primary"
         type="button"
-        (click)="viewDetails.emit(item)"
+        (click)="onContactSeller(item)"
         [attr.aria-label]="'Contactar proveedor sobre ' + item.name"
       >
         Contactar proveedor
@@ -227,7 +245,7 @@
       <button
         class="product-card__cta product-card__cta--secondary"
         type="button"
-        (click)="requestQuote.emit(item)"
+        (click)="onRequestQuote(item)"
         [attr.aria-label]="'Solicitar cotización de ' + item.name"
       >
         Solicitar cotización

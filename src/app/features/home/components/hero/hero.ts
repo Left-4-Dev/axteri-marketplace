@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
@@ -6,9 +7,27 @@ import { Component, signal } from '@angular/core';
   styleUrls: ['./hero.scss', './hero-search.scss', './hero-responsive.scss'],
 })
 export class Hero {
-  protected readonly aiModeEnabled = signal(false);
+  private readonly router = inject(Router);
 
-  protected toggleAiMode(): void {
-    this.aiModeEnabled.update((enabled) => !enabled);
+  protected onQueryEnter(event: Event, rawQuery: string): void {
+    const keyEvent = event as KeyboardEvent;
+    if (keyEvent.shiftKey || keyEvent.isComposing) {
+      return;
+    }
+    event.preventDefault();
+    this.submitSearch(rawQuery);
+  }
+
+  protected onSubmit(event: Event, rawQuery: string): void {
+    event.preventDefault();
+    this.submitSearch(rawQuery);
+  }
+
+  private submitSearch(rawQuery: string): void {
+    const query = rawQuery.trim();
+    if (!query) {
+      return;
+    }
+    void this.router.navigate(['/productos'], { queryParams: { q: query } });
   }
 }

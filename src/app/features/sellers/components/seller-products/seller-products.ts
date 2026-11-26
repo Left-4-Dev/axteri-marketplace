@@ -12,4 +12,5 @@ import { ProductCard } from '../../../../shared/ui/product-card/product-card';
 })
 export class SellerProducts {
   readonly products = input.required<readonly Product[]>();
+  readonly sellerId = input<string>();
 }

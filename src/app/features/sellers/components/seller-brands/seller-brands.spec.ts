@@ -1,4 +1,5 @@
-﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LDF_PROJECTS_SELLER } from '../../data/seller-profile.data';
 import { SellerBrands } from './seller-brands';
 
@@ -26,7 +27,9 @@ describe('SellerBrands', () => {
     );
     matchMedia.mockReturnValue({ matches: false });
     vi.stubGlobal('matchMedia', matchMedia);
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     fixture = TestBed.createComponent(SellerBrands);
+    fixture.componentRef.setInput('sellerId', LDF_PROJECTS_SELLER.id);
     fixture.componentRef.setInput('brands', LDF_PROJECTS_SELLER.brands);
     await fixture.whenStable();
     element = fixture.nativeElement;
@@ -52,6 +55,9 @@ describe('SellerBrands', () => {
     expect(new Set(brands.map((brand) => brand.id)).size).toBe(brands.length);
     const items = Array.from(element.querySelectorAll('li'));
     expect(items).toHaveLength(brands.length);
+    expect(items.map((li) => li.querySelector('a')?.getAttribute('href'))).toEqual(
+      brands.map((b) => '/productos?marca=' + b.id + '&proveedor=' + LDF_PROJECTS_SELLER.id),
+    );
     expect(items.map((item) => item.getAttribute('aria-label'))).toEqual(
       brands.map((brand) => brand.name),
     );

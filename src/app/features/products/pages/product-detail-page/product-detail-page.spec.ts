@@ -1,8 +1,9 @@
 import { ViewportScroller } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
+import { MessagesStore } from '../../../messages/stores/messages.store';
 import { W22_PRODUCT_DETAIL } from '../../data/product-detail.data';
 
 describe('ProductDetailPage', () => {
@@ -15,6 +16,17 @@ describe('ProductDetailPage', () => {
     }).compileComponents();
     harness = await RouterTestingHarness.create('/productos/weg-w22-3kw');
     element = harness.routeNativeElement!;
+  });
+
+  it('renders a base detail without absent gallery, technical sections or dangling anchors', async () => {
+    await harness.navigateByUrl('/productos/metabo-khe96');
+    expect(element.querySelector('app-product-detail-page h1')?.textContent).toContain('KHE 96');
+    expect(element.querySelector('.purchase-panel__price')?.textContent).toContain('850');
+    expect(
+      element.querySelector(
+        'app-product-documents, app-product-gallery,app-product-section-nav,app-product-variants,app-product-reviews',
+      ),
+    ).toBeNull();
   });
 
   it('loads the lazy detail route inside the global layout', () => {
@@ -31,7 +43,7 @@ describe('ProductDetailPage', () => {
     expect(breadcrumb.querySelector('ol')).not.toBeNull();
     expect(
       Array.from(breadcrumb.querySelectorAll('a')).map((link) => link.getAttribute('href')),
-    ).toEqual(['/', '/productos']);
+    ).toEqual(['/', '/productos', '/productos?categoria=electrical-materials']);
     expect(breadcrumb.querySelector('[aria-current="page"]')?.textContent).toContain(
       W22_PRODUCT_DETAIL.name,
     );
@@ -56,20 +68,42 @@ describe('ProductDetailPage', () => {
     );
   });
 
-  it('shows both CTAs and acknowledges intent without claiming to send a request', async () => {
+  it('differentiates Contactar proveedor and Solicitar cotización with selected variant and quantity without auto-sending', async () => {
+    const store = TestBed.inject(MessagesStore);
     const buttons = element.querySelectorAll<HTMLButtonElement>('.purchase-panel__actions button');
     expect(buttons[0].textContent).toContain('Contactar proveedor');
     expect(buttons[1].textContent).toContain('Solicitar cotización');
-    buttons[1].click();
+
+    // Contactar proveedor -> opens conversation without preselecting products
+    buttons[0].click();
     await harness.fixture.whenStable();
-    expect(element.querySelector('.product-detail__status')?.textContent).toContain(
-      'No se ha enviado ninguna solicitud',
-    );
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
+    expect(store.selection()).toEqual([]);
+    const initialMessagesCount = store.messages().length;
+
+    // Navigate back to product detail with a specific variant SKU, increment quantity to 3, and request quote
+    await harness.navigateByUrl('/productos/weg-w22-3kw?sku=W22-11KW-4P-380-B3-IP55');
+    element.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    element.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    await harness.fixture.whenStable();
+
+    element.querySelectorAll<HTMLButtonElement>('.purchase-panel__actions button')[1].click();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
+    expect(store.activeContextTab()).toBe('products');
+    expect(store.selection()).toEqual([
+      expect.objectContaining({
+        id: 'w22-11kw-4p',
+        quantity: 3,
+      }),
+    ]);
+    expect(store.messages().length).toBe(initialMessagesCount);
+    expect(store.messages().some((m) => m.kind === 'product-request')).toBe(false);
   });
 
   it('acknowledges profile and shipping intentions locally and opens the gallery lightbox on expand', async () => {
     for (const [selector, message] of [
-      ['.seller-summary button', 'El perfil del proveedor'],
       ['.purchase-panel__change-address', 'El cambio de dirección'],
     ]) {
       element.querySelector<HTMLButtonElement>(selector)!.click();
@@ -86,6 +120,22 @@ describe('ProductDetailPage', () => {
     );
   });
 
+  it('opens the canonical provider from the purchase overview', async () => {
+    element.querySelector<HTMLButtonElement>('.seller-summary button')!.click();
+    await harness.fixture.whenStable();
+    expect(element.querySelector('app-seller-profile-page h1')?.textContent).toBe('LDF Projects');
+  });
+  it('resolves a direct variant SKU and ignores a foreign SKU', async () => {
+    const variant = W22_PRODUCT_DETAIL.variants[0];
+    await harness.navigateByUrl('/productos/' + W22_PRODUCT_DETAIL.id + '?sku=' + variant.sku);
+    expect(element.querySelector('.purchase-panel__sku')?.textContent).toContain(variant.sku);
+    expect(element.querySelector('.product-variants__sku')?.textContent).toContain(variant.sku);
+    await harness.navigateByUrl('/productos/' + W22_PRODUCT_DETAIL.id + '?sku=unknown');
+    expect(element.querySelector('.purchase-panel__sku')?.textContent).toContain(
+      W22_PRODUCT_DETAIL.sku,
+    );
+    expect(element.querySelector('#especificaciones')).not.toBeNull();
+  });
   it('reacts to route parameter changes and handles an unknown product', async () => {
     await harness.navigateByUrl('/productos/no-existe');
     expect(element.querySelector('app-product-detail-page h1')?.textContent).toBe(
@@ -273,6 +323,12 @@ describe('ProductDetailPage', () => {
     filteredRows[1].querySelector<HTMLButtonElement>('.product-variants__row-trigger')!.click();
     await harness.fixture.whenStable();
 
+    expect(TestBed.inject(Router).parseUrl(TestBed.inject(Router).url).queryParams['sku']).toBe(
+      'W22-11KW-4P-380-B3-IP55',
+    );
+    expect(page.querySelector('.purchase-panel__sku')?.textContent).toContain(
+      'W22-11KW-4P-380-B3-IP55',
+    );
     expect(page.querySelector('app-product-variants .product-variants__sku')?.textContent).toBe(
       'W22-11KW-4P-380-B3-IP55',
     );

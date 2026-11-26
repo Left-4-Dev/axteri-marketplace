@@ -28,9 +28,17 @@ export interface OfferCountdown {
 }
 
 export interface Product {
+  readonly hasSpecifications?: boolean;
   readonly id: string;
+  readonly sku?: string;
   readonly name: string;
   readonly brand: string;
+  readonly brandId?: string;
+  readonly sellerId?: string;
+  readonly categoryId?: string;
+  readonly subcategoryId?: string;
+  readonly origin?: string;
+  readonly rating?: number;
   readonly description?: string;
   readonly badge?: string;
   readonly minOrderLabel?: string;

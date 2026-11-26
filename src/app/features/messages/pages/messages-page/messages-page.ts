@@ -14,7 +14,8 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { MessageDialog } from '../../utils/message-dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { combineLatest } from 'rxjs';
 import { ConversationContext } from '../../components/conversation-context/conversation-context';
 import { ConversationHeader } from '../../components/conversation-header/conversation-header';
 import { SelectionTray } from '../../components/product-selection/selection-tray';
@@ -43,6 +44,7 @@ import { MessagesStore } from '../../stores/messages.store';
 })
 export class MessagesPage {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   protected readonly store = inject(MessagesStore);
 
   protected readonly mobilePanel = signal<MobileMessagesPanel>('chat');
@@ -62,10 +64,45 @@ export class MessagesPage {
     inject(DestroyRef).onDestroy(() =>
       this.drawerMedia?.removeEventListener('change', closeOnDesktop),
     );
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.store.selectConversation(params.get('conversationId'));
-      this.mobilePanel.set('chat');
-      this.drawerTrigger.set(null);
+    combineLatest([this.route.paramMap, this.route.queryParamMap])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([params, queryParams]) => {
+        const id = params.get('conversationId');
+        const previousId = this.store.activeConversationId();
+        this.store.selectConversation(id);
+        this.mobilePanel.set(id ? 'chat' : 'list');
+        if (previousId !== (id?.trim() || null)) {
+          this.drawerTrigger.set(null);
+        }
+        if (id && this.hasCommercialQueryParams(queryParams)) {
+          this.consumeCommercialQueryParams(id, queryParams);
+        }
+      });
+  }
+
+  private hasCommercialQueryParams(queryParams: ParamMap): boolean {
+    const keys = [
+      'producto',
+      'productId',
+      'variante',
+      'sku',
+      'cantidad',
+      'quantity',
+      'intencion',
+      'intent',
+    ];
+    return keys.some((key) => queryParams.has(key));
+  }
+
+  private consumeCommercialQueryParams(conversationId: string, queryParams: ParamMap): void {
+    this.store.applyProductContext({
+      productId: queryParams.get('producto') ?? queryParams.get('productId'),
+      sku: queryParams.get('variante') ?? queryParams.get('sku'),
+      quantity: queryParams.get('cantidad') ?? queryParams.get('quantity'),
+      intention: queryParams.get('intencion') ?? queryParams.get('intent'),
+    });
+    void this.router.navigate(['/mensajes', conversationId], {
+      replaceUrl: true,
     });
   }
 

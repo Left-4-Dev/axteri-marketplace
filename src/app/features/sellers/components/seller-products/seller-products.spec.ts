@@ -28,14 +28,15 @@ describe('SellerProducts', () => {
     expect(fixture.debugElement.queryAll(By.directive(ProductCard))).toHaveLength(1);
   });
 
-  it('navigates to the catalog with Ver más', async () => {
+  it('navigates to the catalog with Ver más, including ?proveedor={sellerId} when provided', async () => {
     const fixture = TestBed.createComponent(SellerProducts);
     fixture.componentRef.setInput('products', []);
+    fixture.componentRef.setInput('sellerId', 'ldf-projects');
     await fixture.whenStable();
     const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.seller-products__more');
-    expect(link.getAttribute('href')).toBe('/productos');
+    expect(link.getAttribute('href')).toBe('/productos?proveedor=ldf-projects');
     link.click();
     await fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe('/productos');
+    expect(TestBed.inject(Router).url).toBe('/productos?proveedor=ldf-projects');
   });
 });

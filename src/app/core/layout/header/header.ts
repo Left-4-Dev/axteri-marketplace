@@ -11,7 +11,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HEADER_NAVIGATION_LINKS, PRODUCT_MENU_CATEGORIES } from './data/products-menu.data';
 import { ProductsMegaMenu } from './products-mega-menu/products-mega-menu';
 
@@ -45,19 +45,21 @@ export class Header {
   protected readonly navigationLinks = HEADER_NAVIGATION_LINKS;
   protected readonly productCategories = PRODUCT_MENU_CATEGORIES;
   protected readonly scrolled = signal(false);
+  protected readonly searchOpen = signal(false);
   protected readonly searchAttention = signal(false);
   protected readonly productsMenuAvailable = signal(false);
   protected readonly productsMenuOpen = signal(false);
   protected readonly productsMenuPosition = signal({ offset: 0, maxWidth: 0, maxHeight: 0 });
   protected readonly mobileMenuOpen = signal(false);
   protected readonly mobileProductsOpen = signal(false);
-  // In mobile (<= 48rem), scrolled keeps the simplified bar (Logo + Search + Menu) without expanding the horizontal input.
+  // In mobile (<= 48rem), scrolled keeps the simplified bar (Logo + Search + Menu) without expanding the horizontal input unless explicitly opened.
   protected readonly compactSearchVisible = computed(
-    () => this.scrolled() && this.productsMenuAvailable(),
+    () => this.searchOpen() || (this.scrolled() && this.productsMenuAvailable()),
   );
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
+  private readonly router = inject(Router);
   private readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>('searchInput');
   private readonly searchButton = viewChild.required<ElementRef<HTMLButtonElement>>('searchButton');
   private readonly menuButton = viewChild.required<ElementRef<HTMLButtonElement>>('menuButton');
@@ -86,7 +88,11 @@ export class Header {
         ) {
           this.closeProductsMenu();
         }
-        if (!next && this.document.activeElement === this.searchInput().nativeElement) {
+        if (
+          !next &&
+          !this.searchOpen() &&
+          this.document.activeElement === this.searchInput().nativeElement
+        ) {
           this.searchButton().nativeElement.focus({ preventScroll: true });
         }
         this.scrolled.set(next);
@@ -114,7 +120,10 @@ export class Header {
           this.closeMobileMenu();
         } else {
           this.closeProductsMenu();
-          if (this.document.activeElement === this.searchInput().nativeElement) {
+          if (
+            !this.searchOpen() &&
+            this.document.activeElement === this.searchInput().nativeElement
+          ) {
             this.searchButton().nativeElement.focus({ preventScroll: true });
           }
         }
@@ -251,10 +260,18 @@ export class Header {
       this.closeMobileMenu(true);
       return;
     }
-    if (!this.productsMenuOpen()) return;
-    event.preventDefault();
-    event.stopPropagation();
-    this.closeProductsMenu(true);
+    if (this.productsMenuOpen()) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeProductsMenu(true);
+      return;
+    }
+    if (this.searchOpen()) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.searchOpen.set(false);
+      this.searchButton().nativeElement.focus({ preventScroll: true });
+    }
   }
 
   protected onProductsOutsidePointer(event: PointerEvent): void {
@@ -262,6 +279,21 @@ export class Header {
     if (this.mobileMenuOpen() && !this.isMobileMenuTarget(event.target)) {
       this.closeMobileMenu();
     }
+    if (
+      this.searchOpen() &&
+      !this.isSearchTarget(event.target) &&
+      !this.searchInput().nativeElement.value.trim()
+    ) {
+      this.searchOpen.set(false);
+    }
+  }
+
+  private isSearchTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof Node)) return false;
+    return (
+      this.searchInput().nativeElement.contains(target) ||
+      this.searchButton().nativeElement.contains(target)
+    );
   }
 
   private isProductsTarget(target: EventTarget | null): boolean {
@@ -280,9 +312,28 @@ export class Header {
     );
   }
 
+  openSearch(): void {
+    this.closeProductsMenu();
+    this.closeMobileMenu();
+    this.searchOpen.set(true);
+    const input = this.searchInput().nativeElement;
+    input.hidden = false;
+    input.focus({ preventScroll: true });
+  }
+
+  protected onSearchSubmit(event: Event): void {
+    event.preventDefault();
+    if (!this.submitSearch()) {
+      this.openSearch();
+    }
+  }
+
   protected requestSearch(): void {
     this.closeMobileMenu();
     if (this.compactSearchVisible()) {
+      if (this.submitSearch()) {
+        return;
+      }
       this.searchInput().nativeElement.focus({ preventScroll: true });
       return;
     }
@@ -293,6 +344,17 @@ export class Header {
     }
 
     this.searchAttention.set(true);
+  }
+
+  private submitSearch(): boolean {
+    const query = this.searchInput().nativeElement.value.trim();
+    if (!query) {
+      return false;
+    }
+    this.closeProductsMenu();
+    this.closeMobileMenu();
+    void this.router.navigate(['/productos'], { queryParams: { q: query } });
+    return true;
   }
 
   protected finishSearchAttention(event: AnimationEvent): void {

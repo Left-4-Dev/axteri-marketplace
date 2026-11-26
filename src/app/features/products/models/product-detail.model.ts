@@ -112,7 +112,17 @@ export interface ProductDetailSeller extends NonNullable<Product['seller']> {
   readonly productCount?: number;
 }
 
-export interface ProductDetail extends Product {
+export interface CommercialDetail extends Product {
+  readonly category: string;
+  readonly sku?: string;
+  readonly purchase: {
+    readonly previousAmount?: number;
+    readonly stock?: number;
+    readonly destination?: string;
+    readonly deliveryEstimate?: string;
+  };
+}
+export interface ProductDetail extends CommercialDetail {
   readonly series?: string;
   readonly seller?: ProductDetailSeller;
   readonly galleryIcons?: { readonly favorite: string; readonly expand: string };
@@ -139,6 +149,9 @@ export interface ProductDetail extends Product {
 }
 
 export interface ProductPurchaseIntent {
+  readonly productId: string;
+  readonly sellerId?: string;
+  readonly sku?: string;
   readonly kind: 'contact' | 'quote';
   readonly quantity: number;
 }

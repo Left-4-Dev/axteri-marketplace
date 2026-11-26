@@ -2,7 +2,9 @@
   <ul role="list">
     @for (section of sections; track section.id) {
       <li>
-        <a [href]="productPath() + '#' + section.id">{{ section.label }}</a>
+        <a [routerLink]="productPath()" [fragment]="section.id" queryParamsHandling="preserve">{{
+          section.label
+        }}</a>
       </li>
     }
   </ul>

@@ -21,7 +21,7 @@ describe('ProductAccessories', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProductAccessories],
-      providers: [provideRouter([])],
+      providers: [provideRouter([{ path: 'productos/:id', children: [] }])],
     }).compileComponents();
   });
 

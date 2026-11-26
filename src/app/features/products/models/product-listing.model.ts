@@ -29,6 +29,7 @@ export interface ProductFilterOption<T extends string = string> {
 export interface ProductBreadcrumbItem {
   readonly label: string;
   readonly routerLink?: string;
+  readonly queryParams?: Readonly<Record<string, string>>;
 }
 
 export interface ProductListingSummary {

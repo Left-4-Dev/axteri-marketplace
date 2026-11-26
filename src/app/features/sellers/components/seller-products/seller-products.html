@@ -6,6 +6,11 @@
     }
   </ul>
   <div class="seller-products__footer">
-    <a class="seller-products__more" routerLink="/productos">Ver más</a>
+    <a
+      class="seller-products__more"
+      routerLink="/productos"
+      [queryParams]="sellerId() ? { proveedor: sellerId() } : null"
+      >Ver más</a
+    >
   </div>
 </div>

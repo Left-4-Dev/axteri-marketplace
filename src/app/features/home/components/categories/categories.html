@@ -25,7 +25,11 @@
         @for (category of categories(); track category.id) {
           <li class="categories__item">
             <article class="categories__card">
-              <a class="categories__link" routerLink="/productos">
+              <a
+                class="categories__link"
+                routerLink="/productos"
+                [queryParams]="{ categoria: category.id }"
+              >
                 <div class="categories__image">
                   @if (category.imageUrl; as imageUrl) {
                     <img

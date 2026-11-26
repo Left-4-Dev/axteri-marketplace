@@ -1,5 +1,6 @@
+import { catalog } from '../../../core/catalog/catalog.repository';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { Product, ProductPrice } from '../../../models/product.model';
 import { ProductCard } from './product-card';
 
@@ -14,7 +15,7 @@ describe('ProductCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProductCard],
-      providers: [provideRouter([])],
+      providers: [provideRouter([{ path: 'productos/:id', children: [] }])],
     }).compileComponents();
   });
 
@@ -110,7 +111,7 @@ describe('ProductCard', () => {
     );
     expect(actions).toHaveLength(2);
     actions.forEach((button) => {
-      expect(button.disabled).toBe(true);
+      expect(button.disabled).toBe(false);
       expect(button.getAttribute('aria-label')).toContain(product.name);
       expect(button.querySelector('span')?.getAttribute('aria-hidden')).toBe('true');
     });
@@ -312,14 +313,14 @@ describe('ProductCard', () => {
       });
     }
 
-    it('emits viewDetails and requestQuote from the textual list CTAs', async () => {
+    it('emits contactSeller and requestQuote from the textual list CTAs', async () => {
       const fixture = TestBed.createComponent(ProductCard);
       fixture.componentRef.setInput('variant', 'list');
       fixture.componentRef.setInput('product', product);
       const onQuote = vi.fn();
       const onDetails = vi.fn();
       fixture.componentInstance.requestQuote.subscribe(onQuote);
-      fixture.componentInstance.viewDetails.subscribe(onDetails);
+      fixture.componentInstance.contactSeller.subscribe(onDetails);
       await fixture.whenStable();
 
       const element = fixture.nativeElement as HTMLElement;
@@ -338,6 +339,25 @@ describe('ProductCard', () => {
     });
   });
 
+  it.each(['offer', 'default', 'list'] as const)(
+    'keeps canonical product and supplier destinations separate in %s',
+    async (variant) => {
+      const fixture = TestBed.createComponent(ProductCard);
+      for (const entry of catalog.products()) {
+        fixture.componentRef.setInput('variant', variant);
+        fixture.componentRef.setInput('product', catalog.toProductCard(entry));
+        fixture.detectChanges();
+        const root: HTMLElement = fixture.nativeElement;
+        expect(root.querySelector('.product-card__title a')?.getAttribute('href')).toBe(
+          '/productos/' + entry.id,
+        );
+        expect(root.querySelector('.product-card__seller a')?.getAttribute('href')).toBe(
+          '/proveedores/' + entry.sellerId,
+        );
+        expect(root.querySelector('a a,a button')).toBeNull();
+      }
+    },
+  );
   it('links both the product image and title to /productos/:id without nesting action buttons inside links', async () => {
     const fixture = TestBed.createComponent(ProductCard);
     fixture.componentRef.setInput('product', { ...product, id: 'weg-w22-3kw' });
@@ -354,5 +374,34 @@ describe('ProductCard', () => {
     expect(titleLink?.getAttribute('href')).toBe('/productos/weg-w22-3kw');
     expect(titleLink?.textContent?.trim()).toBe(product.name);
     expect(element.querySelectorAll('a button')).toHaveLength(0);
+  });
+
+  it('differentiates contactSeller and requestQuote navigation for catalog products', async () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const catalogCard = catalog.toProductCard(catalog.getProduct('weg-w22-3kw')!);
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('variant', 'list');
+    fixture.componentRef.setInput('product', catalogCard);
+    await fixture.whenStable();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const ctas = element.querySelectorAll<HTMLButtonElement>('.product-card__list-actions button');
+
+    // Contactar proveedor -> opens conversation without product preselection
+    ctas[0].click();
+    expect(navigateSpy).toHaveBeenCalledWith(['/mensajes', 'ldf-projects']);
+
+    navigateSpy.mockClear();
+    // Solicitar cotización -> opens conversation with product and SKU preselection
+    ctas[1].click();
+    expect(navigateSpy).toHaveBeenCalledWith(['/mensajes', 'ldf-projects'], {
+      queryParams: {
+        producto: 'weg-w22-3kw',
+        cantidad: 1,
+        variante: 'W22-3KW-380-B3-IP55',
+        intencion: 'cotizar',
+      },
+    });
   });
 });

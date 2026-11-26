@@ -21,16 +21,18 @@
       id="home-search"
       role="search"
       aria-label="Buscador principal de productos"
-      (submit)="$event.preventDefault()"
+      (submit)="onSubmit($event, queryInput.value)"
     >
       <label class="hero__sr-only" for="hero-query">¿Qué producto estás buscando?</label>
       <textarea
+        #queryInput
         class="hero__query"
         id="hero-query"
         data-primary-search
         name="query"
         rows="2"
         placeholder="DAME UNA LISTA COMPARATIVA DE ATOMIZADORES, COMPARANDO PRECIOS, PORTABOQUILLAS Y SISTEMA DE FILTRADO"
+        (keydown.enter)="onQueryEnter($event, queryInput.value)"
       ></textarea>
       <div class="hero__search-actions">
         <button
@@ -45,8 +47,10 @@
           class="hero__ai-toggle"
           type="button"
           role="switch"
-          [attr.aria-checked]="aiModeEnabled()"
-          (click)="toggleAiMode()"
+          aria-label="Modo IA (próximamente)"
+          aria-checked="false"
+          aria-disabled="true"
+          title="Modo IA disponible próximamente"
         >
           <span class="hero__switch-track" aria-hidden="true"
             ><span class="hero__switch-thumb"></span

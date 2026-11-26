@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductSectionNav } from './product-section-nav';
 
@@ -6,7 +7,10 @@ describe('ProductSectionNav', () => {
   let element: HTMLElement;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [ProductSectionNav] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [ProductSectionNav],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(ProductSectionNav);
     fixture.componentRef.setInput('productId', 'weg-w22-3kw');
     await fixture.whenStable();

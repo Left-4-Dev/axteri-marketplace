@@ -1,4 +1,4 @@
-@let listing = summary();
+@let listing = effectiveSummary();
 @let currentMode = viewMode();
 @let visibleProducts = paginatedProducts();
 @let pages = totalPages();
@@ -15,7 +15,11 @@
             [attr.aria-current]="last ? 'page' : null"
           >
             @if (crumb.routerLink && !last) {
-              <a class="product-list__breadcrumb-link" [routerLink]="crumb.routerLink">
+              <a
+                class="product-list__breadcrumb-link"
+                [routerLink]="crumb.routerLink"
+                [queryParams]="crumb.queryParams"
+              >
                 {{ crumb.label }}
               </a>
             } @else {
@@ -47,6 +51,8 @@
 
         <app-product-filters
           [appliedFilters]="appliedFilters()"
+          [contextChips]="contextFilterChips()"
+          (clearContext)="onClearContext()"
           (filtersChange)="onFiltersChange($event)"
         />
       </aside>

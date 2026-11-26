@@ -7,14 +7,24 @@
 
   <div class="seller-hero__identity">
     <div class="seller-hero__logo">
-      <img
-        #logoAsset="productAsset"
-        [appProductAsset]="seller().logo"
-        [alt]="'Logo de ' + seller().name"
-        width="272"
-        height="272"
-      />
-      @if (!logoAsset.loaded()) {
+      @if (seller().logo; as logo) {
+        <img
+          #logoAsset="productAsset"
+          [appProductAsset]="logo"
+          [alt]="'Logo de ' + seller().name"
+          width="272"
+          height="272"
+        />
+        @if (!logoAsset.loaded()) {
+          <span
+            class="seller-hero__logo-fallback"
+            role="img"
+            [attr.aria-label]="'Logo de ' + seller().name"
+          >
+            {{ seller().name.charAt(0) }}
+          </span>
+        }
+      } @else {
         <span
           class="seller-hero__logo-fallback"
           role="img"

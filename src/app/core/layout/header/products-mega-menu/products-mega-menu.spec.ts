@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { PRODUCT_MENU_CATEGORIES, RECOMMENDED_PRODUCT_BRANDS } from '../data/products-menu.data';
 import { ProductsMegaMenu } from './products-mega-menu';
 
 describe('ProductsMegaMenu', () => {
@@ -9,14 +10,14 @@ describe('ProductsMegaMenu', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProductsMegaMenu],
-      providers: [provideRouter([])],
+      providers: [provideRouter([{ path: 'productos', children: [] }])],
     }).compileComponents();
     fixture = TestBed.createComponent(ProductsMegaMenu);
     element = fixture.nativeElement as HTMLElement;
     await fixture.whenStable();
   });
 
-  it('renders nine categories, seven unique subcategory links to /productos and seven brand assets', () => {
+  it('renders nine categories, seven unique subcategory links with categoria and subcategoria query params, and seven brand links with marca query param', () => {
     expect(element.querySelectorAll('[role="tab"]')).toHaveLength(9);
     const subcategoryLinks = element.querySelectorAll<HTMLAnchorElement>(
       '.products-menu__subcategory',
@@ -24,11 +25,32 @@ describe('ProductsMegaMenu', () => {
     const labels = [...subcategoryLinks].map((node) => node.textContent?.trim());
     expect(labels).toHaveLength(7);
     expect(new Set(labels).size).toBe(7);
-    subcategoryLinks.forEach((link) => {
-      expect(link.getAttribute('href')).toBe('/productos');
+    const expectedSubcategories = PRODUCT_MENU_CATEGORIES[0].subcategories;
+    subcategoryLinks.forEach((link, index) => {
+      expect(link.getAttribute('href')).toBe(
+        `/productos?categoria=${PRODUCT_MENU_CATEGORIES[0].id}&subcategoria=${expectedSubcategories[index].id}`,
+      );
+    });
+    const brandLinks = element.querySelectorAll<HTMLAnchorElement>('a.products-menu__brand');
+    expect(brandLinks).toHaveLength(7);
+    brandLinks.forEach((link, index) => {
+      expect(link.getAttribute('href')).toBe(
+        `/productos?marca=${RECOMMENDED_PRODUCT_BRANDS[index].id}`,
+      );
     });
     expect(element.querySelectorAll('.products-menu__brand-logo')).toHaveLength(7);
     expect(element.querySelectorAll('[role="tab"][tabindex="0"]')).toHaveLength(1);
+  });
+
+  it('navigates to /productos?categoria={id} when clicking a category tab', async () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    const tabs = element.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs[7].click();
+    await fixture.whenStable();
+    expect(navigateSpy).toHaveBeenCalledWith(['/productos'], {
+      queryParams: { categoria: PRODUCT_MENU_CATEGORIES[7].id },
+    });
   });
 
   it('changes the selected category and content on pointer or focus without inventing items', async () => {

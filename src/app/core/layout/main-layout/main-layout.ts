@@ -1,4 +1,4 @@
-import { Component, DOCUMENT, inject } from '@angular/core';
+import { Component, DOCUMENT, inject, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Footer } from '../footer/footer';
 import { FloatingActions } from '../floating-actions/floating-actions';
@@ -12,10 +12,14 @@ import { Header } from '../header/header';
 })
 export class MainLayout {
   private readonly document = inject(DOCUMENT);
+  private readonly header = viewChild.required(Header);
 
   protected focusPrimarySearch(): void {
     const target = this.document.querySelector<HTMLElement>('[data-primary-search]');
-    if (!target) return;
+    if (!target) {
+      this.header().openSearch();
+      return;
+    }
 
     const reducedMotion = this.document.defaultView?.matchMedia(
       '(prefers-reduced-motion: reduce)',

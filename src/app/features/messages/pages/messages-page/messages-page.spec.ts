@@ -1,5 +1,6 @@
+import { MessagesStore } from '../../stores/messages.store';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
 
@@ -7,16 +8,21 @@ describe('MessagesPage', () => {
   let harness: RouterTestingHarness;
   let element: HTMLElement;
 
+  let mobile = false;
   let compact = false;
 
   beforeEach(async () => {
+    mobile = false;
     compact = false;
     vi.stubGlobal(
       'matchMedia',
       (query: string) =>
         new (class extends EventTarget {
           get matches() {
-            return compact && query === '(max-width: 79.9375rem)';
+            return (
+              (compact && query === '(max-width: 79.9375rem)') ||
+              (mobile && query === '(max-width: 47.9375rem)')
+            );
           }
         })(),
     );
@@ -28,6 +34,57 @@ describe('MessagesPage', () => {
   });
 
   afterEach(() => vi.unstubAllGlobals());
+
+  it('enters the most recently updated thread from the global Messages link', async () => {
+    const router = TestBed.inject(Router);
+    const store = TestBed.inject(MessagesStore);
+    const recent = store.conversations()[1];
+    store.selectConversation(recent.id);
+    store.sendTextMessage('Nueva actividad');
+    const link = element.querySelector<HTMLAnchorElement>(
+      'app-floating-actions a[href="/mensajes"]',
+    )!;
+    expect(link.tabIndex).toBe(0);
+    link.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/mensajes/' + recent.id);
+    expect(router.lastSuccessfulNavigation()?.extras.replaceUrl).toBe(true);
+  });
+
+  it('opens the mobile inbox before entering a selected conversation', async () => {
+    mobile = true;
+    element.querySelector<HTMLButtonElement>('.header__menu-button')!.click();
+    harness.detectChanges();
+    const link = element.querySelector<HTMLAnchorElement>(
+      '.header__mobile-link[href="/mensajes"]',
+    )!;
+    expect(link.tabIndex).toBe(0);
+    link.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/mensajes');
+    expect(element.querySelector('.messages-page__workspace--mobile-list')).not.toBeNull();
+    expect(TestBed.inject(MessagesStore).activeConversationId()).toBeNull();
+  });
+  it('keeps an empty desktop inbox at its general URL', async () => {
+    const store = TestBed.inject(MessagesStore);
+    vi.spyOn(store, 'conversations').mockReturnValue([]);
+    await harness.navigateByUrl('/mensajes');
+    expect(TestBed.inject(Router).url).toBe('/mensajes');
+    expect(store.activeConversationId()).toBeNull();
+  });
+  it('redirects unmatched paths to Home', async () => {
+    await harness.navigateByUrl('/unmatched/path');
+    expect(TestBed.inject(Router).url).toBe('/');
+    expect(harness.routeNativeElement?.querySelector('app-home-page')).not.toBeNull();
+  });
+  it('provides native links for desktop and mobile accounts and selling, with orders disabled', () => {
+    expect(element.querySelectorAll('app-header a[href="/login/clientes"]')).toHaveLength(2);
+    expect(element.querySelectorAll('app-header a[href="/registro/proveedores"]')).toHaveLength(2);
+    expect(element.querySelector('app-floating-actions a[href="/login/clientes"]')).not.toBeNull();
+    expect(element.querySelectorAll('button[aria-label="Mis pedidos"]:disabled')).toHaveLength(2);
+    expect(element.querySelector('.header__orders-count')).toBeNull();
+  });
 
   it('moves real focus and the single tab stop through consecutive arrows, Home and End', () => {
     compact = true;
@@ -262,7 +319,7 @@ describe('MessagesPage', () => {
       'true',
     );
     const search = element.querySelector<HTMLInputElement>('app-message-product-catalog input')!;
-    search.value = 'w22';
+    search.value = 'jaula de ardilla';
     search.dispatchEvent(new Event('input'));
     harness.detectChanges();
     expect(element.querySelectorAll('app-message-product-catalog li')).toHaveLength(1);
@@ -290,7 +347,7 @@ describe('MessagesPage', () => {
     const line = log.querySelector('.message-list__products li')!;
     expect(line.textContent).toContain('W22');
     expect(line.textContent).toContain('Cantidad: 2');
-    expect(line.textContent).toContain('345');
+    expect(line.textContent).toContain('4,000');
     expect(line.querySelector('img')).not.toBeNull();
   });
 
@@ -307,10 +364,12 @@ describe('MessagesPage', () => {
     textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
     harness.detectChanges();
     const messages = element.querySelectorAll('.message-list__message');
-    expect(messages.length).toBe(count + 1);
-    const last = messages[messages.length - 1];
-    expect(last.querySelector('.message-list__products')).not.toBeNull();
-    expect(last.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
+    expect(messages.length).toBe(count + 2);
+    const requestMsg = messages[messages.length - 2];
+    expect(requestMsg.querySelector('.message-list__products')).not.toBeNull();
+    expect(requestMsg.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
+    const quoteMsg = messages[messages.length - 1];
+    expect(quoteMsg.querySelector('.message-list__document')).not.toBeNull();
     expect(textarea.value).toBe('');
   });
 
@@ -448,5 +507,40 @@ describe('MessagesPage', () => {
     expect(element.querySelector('.messages-page__not-found-copy')?.textContent).toContain(
       'id-inexistente',
     );
+  });
+
+  it('preselects product context from query params idempotently, cleans the URL, and completes the quote-to-order flow for any seller', async () => {
+    const router = TestBed.inject(Router);
+    const store = TestBed.inject(MessagesStore);
+
+    await harness.navigateByUrl(
+      '/mensajes/electro-sur-industrial?producto=schneider-c60h-dc-1&cantidad=2&intencion=cotizar',
+    );
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    // Query params are consumed and cleaned with replaceUrl
+    expect(router.url).toBe('/mensajes/electro-sur-industrial');
+    expect(store.selection()).toEqual([
+      expect.objectContaining({
+        id: 'schneider-c60h-dc-1',
+        quantity: 2,
+      }),
+    ]);
+    expect(element.querySelector('app-product-selection-tray')).not.toBeNull();
+
+    // Sending the request generates a simulated quotation that can be immediately accepted to issue an order
+    element.querySelector<HTMLButtonElement>('.message-composer__submit')!.click();
+    harness.detectChanges();
+
+    expect(element.querySelector('app-product-selection-tray')).toBeNull();
+    const acceptButton = element.querySelector<HTMLButtonElement>(
+      '.message-list__decisions button:first-child',
+    );
+    expect(acceptButton).not.toBeNull();
+    acceptButton!.click();
+    harness.detectChanges();
+
+    expect(element.querySelector('app-order-summary')).not.toBeNull();
   });
 });

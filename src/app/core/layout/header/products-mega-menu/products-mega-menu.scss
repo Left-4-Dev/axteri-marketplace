@@ -70,6 +70,7 @@
 
 .products-menu__category:focus-visible,
 .products-menu__subcategory:focus-visible,
+.products-menu__brand:focus-visible,
 .products-menu__content:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: -3px;
@@ -109,6 +110,8 @@
   justify-items: center;
   align-content: start;
   gap: var(--space-xs);
+  color: inherit;
+  text-decoration: none;
 }
 
 .products-menu__brand-circle {
@@ -155,7 +158,7 @@
 .products-menu__subcategory {
   min-block-size: 1.875rem;
   padding: var(--space-xs) var(--space-md);
-  cursor: default;
+  cursor: pointer;
 }
 
 .products-menu__empty {

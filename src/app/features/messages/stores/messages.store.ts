@@ -1,6 +1,7 @@
 import { ATTACHMENT_POLICY } from '../data/attachment-policy';
 import { DestroyRef, computed, inject, Injectable, signal } from '@angular/core';
 import { take } from 'rxjs';
+import { CatalogRepository } from '../../../core/catalog/catalog.repository';
 import {
   AttachmentMessage,
   SharedResource,
@@ -8,6 +9,7 @@ import {
   PurchaseOrderMessage,
   ContactInfoMessage,
   QuotationDecision,
+  QuotationMessage,
   Conversation,
   ConversationContextMode,
   ConversationContextTab,
@@ -22,6 +24,7 @@ import { getMessagePreview } from '../utils/message-preview';
 @Injectable({ providedIn: 'root' })
 export class MessagesStore {
   private readonly dataSource = inject(MessagesDataSource);
+  private readonly catalog = inject(CatalogRepository);
 
   private readonly conversationsState = signal<readonly Conversation[]>([]);
   private readonly messagesByConversationState = signal<
@@ -78,6 +81,7 @@ export class MessagesStore {
       .map((file) => file.resource),
   );
   readonly resources = computed(() => {
+    this.messages();
     const id = this.activeConversationId();
     const shared = id ? this.dataSource.getResources(id) : [];
     const sent = this.localFiles()
@@ -247,6 +251,101 @@ export class MessagesStore {
     this.markConversationAsRead(normalizedId);
   }
 
+  findOrCreateConversationBySellerId(sellerId: string): Conversation | null {
+    const normalizedId = sellerId?.trim() ?? '';
+    if (!normalizedId) {
+      return null;
+    }
+
+    const existing = this.conversationsState().find(
+      (item) => item.counterpart.seller.id === normalizedId,
+    );
+    if (existing) {
+      return existing;
+    }
+
+    const resolved = this.dataSource.findOrCreateConversationBySellerId(normalizedId);
+    if (!resolved) {
+      return null;
+    }
+
+    if (!this.conversationsState().some((item) => item.id === resolved.id)) {
+      this.conversationsState.update((items) => [...items, resolved]);
+    }
+    this.ensureMessagesLoaded(resolved.id);
+    return resolved;
+  }
+
+  applyProductContext(params: {
+    readonly productId?: string | null;
+    readonly sku?: string | null;
+    readonly quantity?: string | number | null;
+    readonly intention?: string | null;
+  }): boolean {
+    const active = this.activeConversation();
+    if (!active) {
+      return false;
+    }
+
+    const intention = (params.intention ?? '').trim().toLowerCase();
+    if (intention === 'contactar' || intention === 'contact') {
+      return false;
+    }
+    if (intention && intention !== 'cotizar' && intention !== 'quote') {
+      return false;
+    }
+
+    const productId = (params.productId ?? '').trim();
+    if (!productId) {
+      return false;
+    }
+
+    let quantity = 1;
+    const rawQuantity =
+      params.quantity !== undefined && params.quantity !== null
+        ? String(params.quantity).trim()
+        : '';
+    if (rawQuantity !== '') {
+      const parsed = Number(rawQuantity);
+      if (!Number.isSafeInteger(parsed) || parsed < 1) {
+        return false;
+      }
+      quantity = parsed;
+    }
+
+    const sellerId = active.counterpart.seller.id;
+    const baseProduct = this.catalog.getProduct(productId);
+    if (!baseProduct || baseProduct.sellerId !== sellerId) {
+      return false;
+    }
+
+    const rawSku = (params.sku ?? '').trim();
+    let targetProductId = baseProduct.id;
+    if (rawSku) {
+      if (baseProduct.sku === rawSku) {
+        targetProductId = baseProduct.id;
+      } else if (baseProduct.id === 'weg-w22-3kw') {
+        const variantProduct = this.catalog
+          .productsBySeller(sellerId)
+          .find((item) => item.sku === rawSku);
+        if (!variantProduct) {
+          return false;
+        }
+        targetProductId = variantProduct.id;
+      } else {
+        return false;
+      }
+    }
+
+    if (!this.products().some((item) => item.id === targetProductId)) {
+      return false;
+    }
+
+    this.setProductQuantity(targetProductId, quantity);
+    this.selectContextTab('products');
+    return true;
+  }
+
   setProductSearch(term: string): void {
     this.productQuery.set(term);
   }
@@ -307,11 +406,17 @@ export class MessagesStore {
     const active = this.activeConversation();
     const items = this.selection();
     if (!active || !items.length) return null;
-    const message = {
+    const message: ProductRequestMessage = {
       ...this.dataSource.createProductRequest(active.id, items, note?.trim()),
       ...(resourceIds.length ? { resourceIds } : {}),
     };
     this.appendMessage(message);
+    const quotation = this.dataSource.createQuotationForRequest(
+      active.id,
+      message.items,
+      message.sentAt,
+    );
+    this.appendMessage(quotation);
     this.selections.update((state) => ({ ...state, [active.id]: [] }));
     return message;
   }
@@ -364,6 +469,7 @@ export class MessagesStore {
       | TextMessage
       | ProductRequestMessage
       | ContactInfoMessage
+      | QuotationMessage
       | PurchaseOrderMessage,
   ): void {
     const { conversationId, sentAt } = newMessage;

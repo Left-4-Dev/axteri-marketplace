@@ -6,7 +6,7 @@ import { routes } from '../../../../app.routes';
 import { SellerProfileHero } from '../../components/seller-profile-hero/seller-profile-hero';
 import { SellerProducts } from '../../components/seller-products/seller-products';
 import { SellerBrands } from '../../components/seller-brands/seller-brands';
-import { SELLER_PRODUCTS } from '../../data/seller-products.data';
+import { catalog } from '../../../../core/catalog/catalog.repository';
 import { LDF_PROJECTS_SELLER } from '../../data/seller-profile.data';
 import { SellerProfilePage } from './seller-profile-page';
 
@@ -83,10 +83,25 @@ describe('SellerProfilePage', () => {
     const brands: SellerBrands = harness.fixture.debugElement.query(
       By.directive(SellerBrands),
     ).componentInstance;
-    expect(products.products()).toBe(SELLER_PRODUCTS['ldf-projects']);
+    expect(products.products()).toEqual(
+      catalog.productsBySeller('ldf-projects').map((p) => catalog.toProductCard(p)),
+    );
     expect(brands.brands()).toBe(LDF_PROJECTS_SELLER.brands);
     expect(shell.querySelector('#productos app-seller-products')).not.toBeNull();
     expect(shell.querySelector('#marcas app-seller-brands')).not.toBeNull();
+  });
+
+  it('resolves base profiles without empty certification, gallery or map sections', async () => {
+    for (const seller of catalog.sellers.filter((s) => s.id !== 'ldf-projects')) {
+      await harness.navigateByUrl('/proveedores/' + seller.id);
+      expect(element.querySelector('app-seller-profile-page h1')?.textContent).toBe(seller.name);
+      expect(
+        element.querySelector(
+          'app-seller-certifications, app-seller-location, .seller-about__gallery',
+        ),
+      ).toBeNull();
+      expect(element.querySelectorAll('app-seller-profile-page nav a')).toHaveLength(4);
+    }
   });
 
   it('provides a unique labelled destination for each native fragment link', () => {
@@ -119,23 +134,46 @@ describe('SellerProfilePage', () => {
     expect(element.querySelectorAll('.seller-profile__section')).toHaveLength(6);
   });
 
-  it('acknowledges hero actions locally and clears the message when the seller changes', async () => {
+  it('navigates to the seller conversation on Contactarnos and shares the profile on Compartir', async () => {
     const buttons = element.querySelectorAll<HTMLButtonElement>('app-seller-profile-hero button');
-    buttons[0].click();
-    await harness.fixture.whenStable();
-    expect(element.querySelector('[role="status"]')?.textContent).toContain(
-      'No se ha enviado ninguna solicitud.',
-    );
-    buttons[1].click();
-    await harness.fixture.whenStable();
-    expect(element.querySelector('[role="status"]')?.textContent).toContain(
-      'La opción de compartir este perfil estará disponible próximamente.',
-    );
+    const share = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'share', { value: share, configurable: true });
+    try {
+      buttons[1].click();
+      await harness.fixture.whenStable();
+      expect(element.querySelector('[role="status"]')?.textContent).toContain('Perfil compartido.');
+      expect(share).toHaveBeenCalledWith({
+        title: LDF_PROJECTS_SELLER.name,
+        url: new URL('proveedores/' + LDF_PROJECTS_SELLER.id, document.baseURI).href,
+      });
+    } finally {
+      Reflect.deleteProperty(navigator, 'share');
+    }
     await harness.navigateByUrl('/proveedores/unknown');
     await harness.navigateByUrl('/proveedores/ldf-projects');
     expect(element.querySelector('[role="status"]')?.textContent).toBe('');
+
+    const heroButtons = element.querySelectorAll<HTMLButtonElement>(
+      'app-seller-profile-hero button',
+    );
+    heroButtons[0].click();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
   });
 
+  it('copies the canonical profile URL when native sharing is unavailable', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    try {
+      await pageInstance()['onShareRequest']();
+      expect(writeText).toHaveBeenCalledWith(
+        new URL('proveedores/ldf-projects', document.baseURI).href,
+      );
+      expect(pageInstance()['actionMessage']()).toContain('copiado');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
   it('handles a direct unknown URL and returns to products through the router', async () => {
     await harness.navigateByUrl('/productos');
     await harness.navigateByUrl('/proveedores/unknown');

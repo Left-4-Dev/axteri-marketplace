@@ -5,6 +5,7 @@ import {
   computed,
   input,
   linkedSignal,
+  OnChanges,
   output,
 } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
@@ -41,8 +42,9 @@ function sortTechnicalValues(values: readonly string[]): string[] {
   styleUrl: './product-variants.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductVariants {
+export class ProductVariants implements OnChanges {
   readonly variants = input.required<readonly ProductVariant[]>();
+  readonly skuChange = output<string>();
   readonly initialSku = input<string>();
   readonly fallbackImage = input<ProductImage>();
   readonly variantQuoteRequest = output<ProductVariant>();
@@ -105,7 +107,7 @@ export class ProductVariants {
       }
 
       const datasetChanged = !previous || previous.source.variants !== next.variants;
-      if (datasetChanged) {
+      if (datasetChanged || previous?.source.initialSku !== next.initialSku) {
         const matched = next.initialSku
           ? next.filtered.find((item) => item.sku === next.initialSku)
           : undefined;
@@ -149,11 +151,25 @@ export class ProductVariants {
     computation: () => '',
   });
 
+  ngOnChanges(): void {
+    const requested = this.initialSku();
+    if (
+      requested &&
+      this.variants().some((v) => v.sku === requested) &&
+      !this.filteredVariants().some((v) => v.sku === requested)
+    )
+      this.resetFilters();
+  }
+  private publishSelection(): void {
+    const selected = this.selectedVariant();
+    if (selected) this.skuChange.emit(selected.sku);
+  }
   protected toggleFilter(key: VariantFilterKey, option: string): void {
     this.selectedFilters.update((current) => ({
       ...current,
       [key]: current[key] === option ? null : option,
     }));
+    this.publishSelection();
   }
 
   protected resetFilters(): void {
@@ -163,6 +179,7 @@ export class ProductVariants {
   protected selectVariant(id: string): void {
     if (this.filteredVariants().some((item) => item.id === id)) {
       this.selectedVariantId.set(id);
+      this.publishSelection();
     }
   }
 

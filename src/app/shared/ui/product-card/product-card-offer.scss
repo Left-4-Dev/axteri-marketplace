@@ -101,7 +101,10 @@
     border-radius: 50%;
     background: var(--color-action);
     color: var(--color-on-action);
-    cursor: not-allowed;
+    cursor: pointer;
+    &:disabled {
+      cursor: not-allowed;
+    }
     &:focus-visible {
       outline: 2px solid var(--color-focus);
       outline-offset: 3px;

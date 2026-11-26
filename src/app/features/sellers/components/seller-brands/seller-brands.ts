@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,12 +14,13 @@ import { SellerBrand } from '../../models/seller-profile.model';
 
 @Component({
   selector: 'app-seller-brands',
-  imports: [ProductAsset],
+  imports: [ProductAsset, RouterLink],
   templateUrl: './seller-brands.html',
   styleUrl: './seller-brands.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SellerBrands {
+  readonly sellerId = input.required<string>();
   readonly brands = input.required<readonly SellerBrand[]>();
   private readonly viewport = viewChild.required<ElementRef<HTMLUListElement>>('viewport');
   private readonly document = inject(DOCUMENT);

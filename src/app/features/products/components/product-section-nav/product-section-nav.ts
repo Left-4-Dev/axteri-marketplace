@@ -1,7 +1,9 @@
+import { RouterLink } from '@angular/router';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
 
 @Component({
+  imports: [RouterLink],
   selector: 'app-product-section-nav',
   templateUrl: './product-section-nav.html',
   styleUrl: './product-section-nav.scss',

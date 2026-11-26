@@ -34,7 +34,7 @@
   <h3>Descripción:</h3>
   <p class="product-summary__description">
     {{ detail().description }}
-    <a [routerLink]="[]" fragment="descripcion">Leer más…</a>
+    <a [routerLink]="[]" fragment="descripcion" queryParamsHandling="preserve">Leer más…</a>
   </p>
   <h3>Aplicaciones típicas</h3>
   <ul class="product-summary__applications">

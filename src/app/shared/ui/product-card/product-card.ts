@@ -1,6 +1,7 @@
 import { CurrencyPipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CommercialNavigationService } from '../../../features/messages/services/commercial-navigation.service';
 import { Product } from '../../../models/product.model';
 
 export type ProductCardVariant = 'default' | 'offer' | 'list';
@@ -18,10 +19,27 @@ export type ProductCardVariant = 'default' | 'offer' | 'list';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCard {
+  private readonly commercialNavigation = inject(CommercialNavigationService);
   readonly product = input.required<Product>();
   readonly variant = input<ProductCardVariant>('default');
   readonly requestQuote = output<Product>();
+  readonly contactSeller = output<Product>();
   readonly viewDetails = output<Product>();
+
+  protected onRequestQuote(item: Product): void {
+    this.requestQuote.emit(item);
+    this.commercialNavigation.requestProductQuote({
+      sellerId: item.sellerId,
+      productId: item.id,
+      sku: item.sku,
+      quantity: 1,
+    });
+  }
+
+  protected onContactSeller(item: Product): void {
+    this.contactSeller.emit(item);
+    this.commercialNavigation.contactSeller(item.sellerId);
+  }
 
   protected readonly discountPercent = computed(() => {
     const price = this.product().price;

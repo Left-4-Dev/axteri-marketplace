@@ -53,8 +53,7 @@
           <app-button
             class="preferred-brands__cta"
             variant="light"
-            disabled
-            ariaDescribedby="preferred-brands-unavailable"
+            (click)="viewBrandProducts(brand.id)"
           >
             VER MÁS PRODUCTOS
           </app-button>
@@ -64,9 +63,5 @@
   </ul>
   @if (brands().length === 0) {
     <p>No hay marcas preferidas disponibles.</p>
-  } @else {
-    <span id="preferred-brands-unavailable" hidden
-      >El catálogo por marca aún no está disponible.</span
-    >
   }
 </section>

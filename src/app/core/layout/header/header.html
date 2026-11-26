@@ -1,4 +1,8 @@
-<header class="header" [class.header--scrolled]="scrolled()">
+<header
+  class="header"
+  [class.header--scrolled]="scrolled()"
+  [class.header--search-open]="searchOpen()"
+>
   <div #navbar class="header__navbar">
     <a class="header__brand" routerLink="/" aria-label="Axteri, inicio" (click)="closeMobileMenu()">
       <span class="header__logo" aria-hidden="true"
@@ -48,7 +52,7 @@
       class="header__search"
       role="search"
       aria-label="Buscar productos"
-      (submit)="$event.preventDefault()"
+      (submit)="onSearchSubmit($event)"
     >
       <input
         #searchInput
@@ -117,7 +121,12 @@
       >
         @for (category of productCategories; track category.id) {
           <li>
-            <a class="header__mobile-category" routerLink="/productos" (click)="closeMobileMenu()">
+            <a
+              class="header__mobile-category"
+              routerLink="/productos"
+              [queryParams]="{ categoria: category.id }"
+              (click)="closeMobileMenu()"
+            >
               {{ category.name }}
             </a>
           </li>
@@ -137,6 +146,7 @@
           <button class="header__mobile-link" type="button" disabled>{{ link.label }}</button>
         }
       }
+      <a class="header__mobile-link" routerLink="/mensajes" (click)="closeMobileMenu()">Mensajes</a>
     </nav>
 
     <div class="header__mobile-actions" role="group" aria-label="Ubicación y cuenta">
@@ -155,10 +165,9 @@
         </span>
         <span class="header__icon header__location-chevron" aria-hidden="true"></span>
       </button>
-      <button
+      <a
         class="header__action"
-        type="button"
-        disabled
+        routerLink="/login/clientes"
         aria-label="Registrarse, iniciar sesión"
       >
         <span class="header__action-icon" aria-hidden="true"
@@ -168,13 +177,12 @@
           <span class="header__action-label">Registrarse</span>
           <strong>Iniciar sesión</strong>
         </span>
-      </button>
-      <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
+      </a>
+      <button class="header__action" type="button" disabled aria-label="Mis pedidos">
         <span class="header__orders-icon">
           <span class="header__action-icon" aria-hidden="true"
             ><span class="header__icon header__icon--orders"></span
           ></span>
-          <span class="header__orders-count" aria-hidden="true">1</span>
         </span>
         <span class="header__action-copy">
           <span class="header__action-label">Mis</span>
@@ -201,7 +209,7 @@
       </span>
       <span class="header__icon header__location-chevron" aria-hidden="true"></span>
     </button>
-    <button class="header__action" type="button" disabled aria-label="Registrarse, iniciar sesión">
+    <a class="header__action" routerLink="/login/clientes" aria-label="Registrarse, iniciar sesión">
       <span class="header__action-icon" aria-hidden="true"
         ><span class="header__icon header__icon--account"></span
       ></span>
@@ -210,13 +218,12 @@
         <span class="header__action-label">Registrarse</span>
         <strong>Iniciar sesión</strong>
       </span>
-    </button>
-    <button class="header__action" type="button" disabled aria-label="Mis pedidos, 1">
+    </a>
+    <button class="header__action" type="button" disabled aria-label="Mis pedidos">
       <span class="header__orders-icon">
         <span class="header__action-icon" aria-hidden="true"
           ><span class="header__icon header__icon--orders"></span
         ></span>
-        <span class="header__orders-count" aria-hidden="true">1</span>
       </span>
       <span class="header__action-short" aria-hidden="true">Pedidos</span>
       <span class="header__action-copy">

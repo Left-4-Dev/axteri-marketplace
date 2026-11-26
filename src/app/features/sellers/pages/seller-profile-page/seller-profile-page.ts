@@ -9,7 +9,8 @@ import { SellerProfileHero } from '../../components/seller-profile-hero/seller-p
 import { SellerSectionNav } from '../../components/seller-section-nav/seller-section-nav';
 import { SellerProducts } from '../../components/seller-products/seller-products';
 import { SellerBrands } from '../../components/seller-brands/seller-brands';
-import { SELLER_PRODUCTS } from '../../data/seller-products.data';
+import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
+import { CommercialNavigationService } from '../../../messages/services/commercial-navigation.service';
 import { SELLER_PROFILES } from '../../data/seller-profile.data';
 
 @Component({
@@ -42,24 +43,57 @@ export class SellerProfilePage {
     source: this.seller,
     computation: () => '',
   });
-  protected readonly products = computed(() => SELLER_PRODUCTS[this.seller()?.id ?? ''] ?? []);
+  private readonly catalog = inject(CatalogRepository);
+  private readonly commercialNavigation = inject(CommercialNavigationService);
+  protected readonly products = computed(() =>
+    this.catalog
+      .productsBySeller(this.seller()?.id ?? '')
+      .map((p) => this.catalog.toProductCard(p)),
+  );
 
-  protected readonly sections = [
-    { id: 'productos', label: 'Productos' },
-    { id: 'marcas', label: 'Marcas' },
-    { id: 'perfil', label: 'Perfil' },
-    { id: 'informacion', label: 'Información' },
-    { id: 'certificaciones', label: 'Certificaciones' },
-    { id: 'ubicacion', label: 'Ubicación' },
-  ] as const;
+  protected readonly sections = computed(() =>
+    (
+      [
+        { id: 'productos', label: 'Productos' },
+        { id: 'marcas', label: 'Marcas' },
+        { id: 'perfil', label: 'Perfil' },
+        { id: 'informacion', label: 'Información' },
+        { id: 'certificaciones', label: 'Certificaciones' },
+        { id: 'ubicacion', label: 'Ubicación' },
+      ] as const
+    ).filter(
+      (section) =>
+        (section.id !== 'certificaciones' || this.seller()?.certifications.length) &&
+        (section.id !== 'ubicacion' || this.seller()?.location.coordinates),
+    ),
+  );
 
   protected onContactRequest(): void {
-    this.actionMessage.set(
-      'El contacto con el proveedor estará disponible próximamente. No se ha enviado ninguna solicitud.',
-    );
+    this.commercialNavigation.contactSeller(this.seller()?.id);
   }
 
-  protected onShareRequest(): void {
-    this.actionMessage.set('La opción de compartir este perfil estará disponible próximamente.');
+  protected async onShareRequest(): Promise<void> {
+    const seller = this.seller();
+    if (!seller) return;
+    const url = new URL('proveedores/' + encodeURIComponent(seller.id), document.baseURI);
+    url.search = '';
+    url.hash = '';
+    let message: string;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: seller.name, url: url.href });
+        if (this.seller() === seller) this.actionMessage.set('Perfil compartido.');
+        return;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url.href);
+      message = 'Enlace del perfil copiado.';
+    } catch {
+      message = 'No se pudo compartir el perfil.';
+    }
+    if (this.seller() === seller) this.actionMessage.set(message);
   }
 }

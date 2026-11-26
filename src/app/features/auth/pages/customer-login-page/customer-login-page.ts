@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthLayout } from '../../components/auth-layout/auth-layout';
 import { AuthLoginForm } from '../../components/auth-login-form/auth-login-form';
 import { CUSTOMER_LOGIN_FEATURES } from '../../data/provider-register.data';
-import { AuthLoginPageConfig, AuthTopActionConfig } from '../../models/auth.model';
+import { AuthLoginPageConfig } from '../../models/auth.model';
 
 @Component({
   selector: 'app-customer-login-page',
@@ -12,12 +12,6 @@ import { AuthLoginPageConfig, AuthTopActionConfig } from '../../models/auth.mode
 })
 export class CustomerLoginPage {
   protected readonly features = CUSTOMER_LOGIN_FEATURES;
-
-  protected readonly topAction: AuthTopActionConfig = {
-    prompt: '¿Todavía no tienes una cuenta?',
-    ctaLabel: 'Regístrate',
-    route: '/registro/proveedores',
-  };
 
   protected readonly loginConfig: AuthLoginPageConfig = {
     userType: 'customer',
