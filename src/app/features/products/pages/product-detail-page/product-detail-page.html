@@ -73,6 +73,7 @@
                 [variants]="item.variants"
                 [initialSku]="purchaseDetail()?.sku"
                 (skuChange)="selectSku($event)"
+                (variantQuoteRequest)="onVariantQuoteRequest($event)"
                 [fallbackImage]="variantFallbackImage()"
               />
             }

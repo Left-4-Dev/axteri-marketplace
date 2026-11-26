@@ -30,14 +30,21 @@ export const SELLER_CONTACTS: Readonly<Record<string, ContactDetails>> = {
   },
 };
 
-function conversationSeller(id: string): ConversationSeller {
-  const seller = catalog.getSeller(id)!;
+export function buildConversationSeller(id: string): ConversationSeller | null {
+  const seller = catalog.getSeller(id);
+  if (!seller) {
+    return null;
+  }
   return {
     ...seller,
     yearsInIndustry: seller.years,
     locationLabel: sellerLocation(seller) + ' - ' + seller.location.country,
     profilePath: '/proveedores/' + seller.id,
   };
+}
+
+function conversationSeller(id: string): ConversationSeller {
+  return buildConversationSeller(id)!;
 }
 export const INITIAL_CONVERSATIONS_FIXTURE: readonly Conversation[] = [
   {

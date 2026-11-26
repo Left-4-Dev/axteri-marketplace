@@ -17,6 +17,10 @@ export class ProductPurchasePanel {
   readonly shippingAddressChangeRequest = output<void>();
   protected readonly quantity = signal(1);
 
+  selectedQuantity(): number {
+    return this.quantity();
+  }
+
   protected request(kind: ProductPurchaseIntent['kind']): void {
     const { id: productId, sellerId, sku } = this.detail();
     this.purchaseIntent.emit({ kind, productId, sellerId, sku, quantity: this.quantity() });

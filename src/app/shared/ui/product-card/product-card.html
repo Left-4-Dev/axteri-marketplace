@@ -35,9 +35,8 @@
       <div class="product-card__quick-actions">
         <button
           type="button"
-          disabled
-          (click)="requestQuote.emit(item)"
-          [attr.aria-label]="'Consultar sobre ' + item.name + ' (próximamente)'"
+          (click)="onRequestQuote(item)"
+          [attr.aria-label]="'Consultar sobre ' + item.name"
         >
           <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
         </button>
@@ -55,7 +54,7 @@
       <div class="product-card__actions">
         <button
           type="button"
-          (click)="requestQuote.emit(item)"
+          (click)="onRequestQuote(item)"
           [attr.aria-label]="'Consultar sobre ' + item.name"
         >
           <span class="product-card__icon product-card__icon--chat" aria-hidden="true"></span>
@@ -238,7 +237,7 @@
       <button
         class="product-card__cta product-card__cta--primary"
         type="button"
-        (click)="contactSeller.emit(item)"
+        (click)="onContactSeller(item)"
         [attr.aria-label]="'Contactar proveedor sobre ' + item.name"
       >
         Contactar proveedor
@@ -246,7 +245,7 @@
       <button
         class="product-card__cta product-card__cta--secondary"
         type="button"
-        (click)="requestQuote.emit(item)"
+        (click)="onRequestQuote(item)"
         [attr.aria-label]="'Solicitar cotización de ' + item.name"
       >
         Solicitar cotización

@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../../../app.routes';
+import { MessagesStore } from '../../../messages/stores/messages.store';
 import { W22_PRODUCT_DETAIL } from '../../data/product-detail.data';
 
 describe('ProductDetailPage', () => {
@@ -67,15 +68,38 @@ describe('ProductDetailPage', () => {
     );
   });
 
-  it('shows both CTAs and acknowledges intent without claiming to send a request', async () => {
+  it('differentiates Contactar proveedor and Solicitar cotización with selected variant and quantity without auto-sending', async () => {
+    const store = TestBed.inject(MessagesStore);
     const buttons = element.querySelectorAll<HTMLButtonElement>('.purchase-panel__actions button');
     expect(buttons[0].textContent).toContain('Contactar proveedor');
     expect(buttons[1].textContent).toContain('Solicitar cotización');
-    buttons[1].click();
+
+    // Contactar proveedor -> opens conversation without preselecting products
+    buttons[0].click();
     await harness.fixture.whenStable();
-    expect(element.querySelector('.product-detail__status')?.textContent).toContain(
-      'No se ha enviado ninguna solicitud',
-    );
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
+    expect(store.selection()).toEqual([]);
+    const initialMessagesCount = store.messages().length;
+
+    // Navigate back to product detail with a specific variant SKU, increment quantity to 3, and request quote
+    await harness.navigateByUrl('/productos/weg-w22-3kw?sku=W22-11KW-4P-380-B3-IP55');
+    element.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    element.querySelector<HTMLButtonElement>('[aria-label="Aumentar cantidad"]')!.click();
+    await harness.fixture.whenStable();
+
+    element.querySelectorAll<HTMLButtonElement>('.purchase-panel__actions button')[1].click();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
+    expect(store.activeContextTab()).toBe('products');
+    expect(store.selection()).toEqual([
+      expect.objectContaining({
+        id: 'w22-11kw-4p',
+        quantity: 3,
+      }),
+    ]);
+    expect(store.messages().length).toBe(initialMessagesCount);
+    expect(store.messages().some((m) => m.kind === 'product-request')).toBe(false);
   });
 
   it('acknowledges profile and shipping intentions locally and opens the gallery lightbox on expand', async () => {

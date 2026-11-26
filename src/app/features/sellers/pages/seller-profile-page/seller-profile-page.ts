@@ -10,6 +10,7 @@ import { SellerSectionNav } from '../../components/seller-section-nav/seller-sec
 import { SellerProducts } from '../../components/seller-products/seller-products';
 import { SellerBrands } from '../../components/seller-brands/seller-brands';
 import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
+import { CommercialNavigationService } from '../../../messages/services/commercial-navigation.service';
 import { SELLER_PROFILES } from '../../data/seller-profile.data';
 
 @Component({
@@ -43,6 +44,7 @@ export class SellerProfilePage {
     computation: () => '',
   });
   private readonly catalog = inject(CatalogRepository);
+  private readonly commercialNavigation = inject(CommercialNavigationService);
   protected readonly products = computed(() =>
     this.catalog
       .productsBySeller(this.seller()?.id ?? '')
@@ -67,9 +69,7 @@ export class SellerProfilePage {
   );
 
   protected onContactRequest(): void {
-    this.actionMessage.set(
-      'El contacto con el proveedor estará disponible próximamente. No se ha enviado ninguna solicitud.',
-    );
+    this.commercialNavigation.contactSeller(this.seller()?.id);
   }
 
   protected async onShareRequest(): Promise<void> {

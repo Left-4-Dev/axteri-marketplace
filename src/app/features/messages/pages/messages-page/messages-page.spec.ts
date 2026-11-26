@@ -364,10 +364,12 @@ describe('MessagesPage', () => {
     textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
     harness.detectChanges();
     const messages = element.querySelectorAll('.message-list__message');
-    expect(messages.length).toBe(count + 1);
-    const last = messages[messages.length - 1];
-    expect(last.querySelector('.message-list__products')).not.toBeNull();
-    expect(last.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
+    expect(messages.length).toBe(count + 2);
+    const requestMsg = messages[messages.length - 2];
+    expect(requestMsg.querySelector('.message-list__products')).not.toBeNull();
+    expect(requestMsg.querySelector('.message-list__body')?.textContent).toBe('Entrega\nen Lima');
+    const quoteMsg = messages[messages.length - 1];
+    expect(quoteMsg.querySelector('.message-list__document')).not.toBeNull();
     expect(textarea.value).toBe('');
   });
 
@@ -505,5 +507,40 @@ describe('MessagesPage', () => {
     expect(element.querySelector('.messages-page__not-found-copy')?.textContent).toContain(
       'id-inexistente',
     );
+  });
+
+  it('preselects product context from query params idempotently, cleans the URL, and completes the quote-to-order flow for any seller', async () => {
+    const router = TestBed.inject(Router);
+    const store = TestBed.inject(MessagesStore);
+
+    await harness.navigateByUrl(
+      '/mensajes/electro-sur-industrial?producto=schneider-c60h-dc-1&cantidad=2&intencion=cotizar',
+    );
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    // Query params are consumed and cleaned with replaceUrl
+    expect(router.url).toBe('/mensajes/electro-sur-industrial');
+    expect(store.selection()).toEqual([
+      expect.objectContaining({
+        id: 'schneider-c60h-dc-1',
+        quantity: 2,
+      }),
+    ]);
+    expect(element.querySelector('app-product-selection-tray')).not.toBeNull();
+
+    // Sending the request generates a simulated quotation that can be immediately accepted to issue an order
+    element.querySelector<HTMLButtonElement>('.message-composer__submit')!.click();
+    harness.detectChanges();
+
+    expect(element.querySelector('app-product-selection-tray')).toBeNull();
+    const acceptButton = element.querySelector<HTMLButtonElement>(
+      '.message-list__decisions button:first-child',
+    );
+    expect(acceptButton).not.toBeNull();
+    acceptButton!.click();
+    harness.detectChanges();
+
+    expect(element.querySelector('app-order-summary')).not.toBeNull();
   });
 });

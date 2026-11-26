@@ -27,6 +27,12 @@ export abstract class MessagesDataSource {
     items: readonly RequestedProduct[],
     note?: string,
   ): ProductRequestMessage;
+  abstract createQuotationForRequest(
+    conversationId: string,
+    items: readonly RequestedProduct[],
+    sentAt?: string,
+  ): QuotationMessage;
+  abstract findOrCreateConversationBySellerId(sellerId: string): Conversation | null;
   abstract getConversations(): Observable<readonly Conversation[]>;
   abstract getConversationById(conversationId: string): Observable<Conversation | null>;
   abstract getMessages(conversationId: string): Observable<readonly Message[]>;

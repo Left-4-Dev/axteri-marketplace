@@ -134,13 +134,8 @@ describe('SellerProfilePage', () => {
     expect(element.querySelectorAll('.seller-profile__section')).toHaveLength(6);
   });
 
-  it('acknowledges hero actions locally and clears the message when the seller changes', async () => {
+  it('navigates to the seller conversation on Contactarnos and shares the profile on Compartir', async () => {
     const buttons = element.querySelectorAll<HTMLButtonElement>('app-seller-profile-hero button');
-    buttons[0].click();
-    await harness.fixture.whenStable();
-    expect(element.querySelector('[role="status"]')?.textContent).toContain(
-      'No se ha enviado ninguna solicitud.',
-    );
     const share = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'share', { value: share, configurable: true });
     try {
@@ -157,6 +152,13 @@ describe('SellerProfilePage', () => {
     await harness.navigateByUrl('/proveedores/unknown');
     await harness.navigateByUrl('/proveedores/ldf-projects');
     expect(element.querySelector('[role="status"]')?.textContent).toBe('');
+
+    const heroButtons = element.querySelectorAll<HTMLButtonElement>(
+      'app-seller-profile-hero button',
+    );
+    heroButtons[0].click();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/mensajes/ldf-projects');
   });
 
   it('copies the canonical profile URL when native sharing is unavailable', async () => {

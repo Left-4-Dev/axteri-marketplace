@@ -7,9 +7,11 @@ import {
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommercialNavigationService } from '../../../messages/services/commercial-navigation.service';
 import { ProductGallery } from '../../components/product-gallery/product-gallery';
 import { ProductSummary } from '../../components/product-summary/product-summary';
 import { ProductSellerSummary } from '../../components/product-seller-summary/product-seller-summary';
@@ -25,7 +27,7 @@ import { ProductReviews } from '../../components/product-reviews/product-reviews
 import { CatalogRepository } from '../../../../core/catalog/catalog.repository';
 import { buildProductDetail } from '../../data/product-detail.factory';
 import { PRODUCT_DETAIL_SECTIONS } from '../../data/product-sections.data';
-import { ProductPurchaseIntent } from '../../models/product-detail.model';
+import { ProductPurchaseIntent, ProductVariant } from '../../models/product-detail.model';
 
 @Component({
   selector: 'app-product-detail-page',
@@ -54,6 +56,8 @@ export class ProductDetailPage {
     initialValue: this.route.snapshot.paramMap,
   });
   private readonly router = inject(Router);
+  private readonly commercialNavigation = inject(CommercialNavigationService);
+  private readonly purchasePanel = viewChild(ProductPurchasePanel);
   private readonly query = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
@@ -119,11 +123,31 @@ export class ProductDetailPage {
   }
 
   protected onPurchaseIntent(intent: ProductPurchaseIntent): void {
-    const action =
-      intent.kind === 'contact' ? 'El contacto con el proveedor' : 'La solicitud de cotización';
-    this.purchaseMessage.set(
-      `${action} para ${intent.quantity} unidad(es) estará disponible próximamente. No se ha enviado ninguna solicitud.`,
-    );
+    const currentDetail = this.detail();
+    const sellerId = intent.sellerId ?? currentDetail?.sellerId;
+    if (intent.kind === 'contact') {
+      this.commercialNavigation.contactSeller(sellerId);
+      return;
+    }
+    this.commercialNavigation.requestProductQuote({
+      sellerId,
+      productId: currentDetail?.id ?? intent.productId,
+      sku: intent.sku ?? this.purchaseDetail()?.sku,
+      quantity: intent.quantity,
+    });
+  }
+
+  protected onVariantQuoteRequest(variant: ProductVariant): void {
+    const currentDetail = this.detail();
+    if (!currentDetail) {
+      return;
+    }
+    this.commercialNavigation.requestProductQuote({
+      sellerId: currentDetail.sellerId,
+      productId: currentDetail.id,
+      sku: variant.sku,
+      quantity: this.purchasePanel()?.selectedQuantity() ?? 1,
+    });
   }
 
   protected onProfileRequest(): void {
